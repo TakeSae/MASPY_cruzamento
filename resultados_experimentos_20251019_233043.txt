@@ -1,0 +1,401 @@
+
+================================================================================
+EXPERIMENTO 1: Cenario Base - Ambulancia deve vencer
+================================================================================
+
+Veiculos participantes:
+  - Carro1: carro (prioridade=10)
+  - Ambulancia: ambulancia (prioridade=100)
+  - Moto1: moto (prioridade=5)
+  - Onibus1: onibus (prioridade=30)
+
+Iniciando negociacao...
+
+--------------------------------------------------------------------------------
+
+[38;5;220m# Admin #> Starting MASPY Program - ver.2025.06.07[0m
+[38;5;220m# Admin #> Starting Agents[0m
+[38;5;220m# Admin #> Starting System[0m
+[38;5;99mAgent:Moto1> Proposta: tipo=moto, prio=5[0m
+[38;5;99mAgent:Onibus1> Proposta: tipo=onibus, prio=30[0m
+[31mAgent:Coordenador> Recebi de Moto1_1: moto, prio=5[0m
+[38;5;99mAgent:Carro1> Proposta: tipo=carro, prio=10[0m
+[38;5;99mAgent:Ambulancia> Proposta: tipo=ambulancia, prio=100[0m
+[31mAgent:Coordenador> Recebi de Onibus1_1: onibus, prio=30[0m
+[31mAgent:Coordenador> Recebi de Carro1_1: carro, prio=10[0m
+[31mAgent:Coordenador> Recebi de Ambulancia_1: ambulancia, prio=100[0m
+[31mAgent:Coordenador> 
+==================================================[0m
+[31mAgent:Coordenador> AVALIANDO PROPOSTAS[0m
+[31mAgent:Coordenador> ==================================================[0m
+[31mAgent:Coordenador> 
+Total: 4 propostas[0m
+[31mAgent:Coordenador>   - Moto1_1: moto (prio=5)[0m
+[31mAgent:Coordenador>   - Onibus1_1: onibus (prio=30)[0m
+[31mAgent:Coordenador>   - Carro1_1: carro (prio=10)[0m
+[31mAgent:Coordenador>   - Ambulancia_1: ambulancia (prio=100)[0m
+[31mAgent:Coordenador> 
+==================================================[0m
+[31mAgent:Coordenador> >>> VENCEDOR: Ambulancia_1[0m
+[31mAgent:Coordenador>     Tipo: ambulancia[0m
+[31mAgent:Coordenador>     Prioridade: 100[0m
+[31mAgent:Coordenador> ==================================================
+[0m
+[38;5;99mAgent:Onibus1> Aguardando (Ambulancia_1 venceu)[0m
+[38;5;99mAgent:Carro1> Aguardando (Ambulancia_1 venceu)[0m
+[38;5;99mAgent:Moto1> Aguardando (Ambulancia_1 venceu)[0m
+[38;5;99mAgent:Ambulancia> >>> VENCI! Atravessando...[0m
+[38;5;220m# Admin #> [Closing System][0m
+[38;5;220m# Admin #> Ending MASPY Program[0m
+
+--------------------------------------------------------------------------------
+EXPERIMENTO 1 CONCLUIDO
+================================================================================
+
+
+================================================================================
+EXPERIMENTO 2: Multiplas Emergencias - Ambulancia1 (prio=100) deve vencer
+================================================================================
+
+Veiculos participantes:
+  - Ambulancia1: ambulancia (prioridade=100)
+  - Ambulancia2: ambulancia (prioridade=95)
+  - Bombeiros: bombeiros (prioridade=98)
+  - Carro1: carro (prioridade=10)
+
+Iniciando negociacao...
+
+--------------------------------------------------------------------------------
+
+[38;5;220m# Admin #> Starting MASPY Program - ver.2025.06.07[0m
+[38;5;220m# Admin #> Starting Agents[0m
+[38;5;220m# Admin #> Starting System[0m
+[38;5;99mAgent:Ambulancia1> Proposta: tipo=ambulancia, prio=100[0m
+[38;5;99mAgent:Ambulancia2> Proposta: tipo=ambulancia, prio=95[0m
+[38;5;99mAgent:Carro1> Proposta: tipo=carro, prio=10[0m
+[31mAgent:Coordenador> Recebi de Ambulancia1_1: ambulancia, prio=100[0m
+[31mAgent:Coordenador> Recebi de Ambulancia2_1: ambulancia, prio=95[0m
+[38;5;99mAgent:Bombeiros> Proposta: tipo=bombeiros, prio=98[0m
+[31mAgent:Coordenador> Recebi de Carro1_1: carro, prio=10[0m
+[31mAgent:Coordenador> Recebi de Bombeiros_1: bombeiros, prio=98[0m
+[31mAgent:Coordenador> 
+==================================================[0m
+[31mAgent:Coordenador> AVALIANDO PROPOSTAS[0m
+[31mAgent:Coordenador> ==================================================[0m
+[31mAgent:Coordenador> 
+Total: 4 propostas[0m
+[31mAgent:Coordenador>   - Ambulancia1_1: ambulancia (prio=100)[0m
+[31mAgent:Coordenador>   - Ambulancia2_1: ambulancia (prio=95)[0m
+[31mAgent:Coordenador>   - Carro1_1: carro (prio=10)[0m
+[31mAgent:Coordenador>   - Bombeiros_1: bombeiros (prio=98)[0m
+[31mAgent:Coordenador> 
+==================================================[0m
+[31mAgent:Coordenador> >>> VENCEDOR: Ambulancia1_1[0m
+[31mAgent:Coordenador>     Tipo: ambulancia[0m
+[31mAgent:Coordenador>     Prioridade: 100[0m
+[31mAgent:Coordenador> ==================================================
+[0m
+[38;5;99mAgent:Bombeiros> Aguardando (Ambulancia1_1 venceu)[0m
+[38;5;99mAgent:Ambulancia2> Aguardando (Ambulancia1_1 venceu)[0m
+[38;5;99mAgent:Carro1> Aguardando (Ambulancia1_1 venceu)[0m
+[38;5;99mAgent:Ambulancia1> >>> VENCI! Atravessando...[0m
+[38;5;220m# Admin #> [Closing System][0m
+[38;5;220m# Admin #> Ending MASPY Program[0m
+
+--------------------------------------------------------------------------------
+EXPERIMENTO 2 CONCLUIDO
+================================================================================
+
+
+================================================================================
+EXPERIMENTO 3: Prioridades Iguais - Primeiro a ser processado vence
+================================================================================
+
+Veiculos participantes:
+  - Carro1: carro (prioridade=10)
+  - Carro2: carro (prioridade=10)
+  - Carro3: carro (prioridade=10)
+  - Carro4: carro (prioridade=10)
+
+Iniciando negociacao...
+
+--------------------------------------------------------------------------------
+
+[38;5;220m# Admin #> Starting MASPY Program - ver.2025.06.07[0m
+[38;5;220m# Admin #> Starting Agents[0m
+[38;5;220m# Admin #> Starting System[0m
+[38;5;99mAgent:Carro2> Proposta: tipo=carro, prio=10[0m
+[38;5;99mAgent:Carro1> Proposta: tipo=carro, prio=10[0m
+[31mAgent:Coordenador> Recebi de Carro1_1: carro, prio=10[0m
+[38;5;99mAgent:Carro4> Proposta: tipo=carro, prio=10[0m
+[38;5;99mAgent:Carro3> Proposta: tipo=carro, prio=10[0m
+[31mAgent:Coordenador> Recebi de Carro3_1: carro, prio=10[0m
+[31mAgent:Coordenador> Recebi de Carro4_1: carro, prio=10[0m
+[31mAgent:Coordenador> Recebi de Carro2_1: carro, prio=10[0m
+[31mAgent:Coordenador> 
+==================================================[0m
+[31mAgent:Coordenador> AVALIANDO PROPOSTAS[0m
+[31mAgent:Coordenador> ==================================================[0m
+[31mAgent:Coordenador> 
+Total: 4 propostas[0m
+[31mAgent:Coordenador>   - Carro1_1: carro (prio=10)[0m
+[31mAgent:Coordenador>   - Carro3_1: carro (prio=10)[0m
+[31mAgent:Coordenador>   - Carro4_1: carro (prio=10)[0m
+[31mAgent:Coordenador>   - Carro2_1: carro (prio=10)[0m
+[31mAgent:Coordenador> 
+==================================================[0m
+[31mAgent:Coordenador> >>> VENCEDOR: Carro1_1[0m
+[31mAgent:Coordenador>     Tipo: carro[0m
+[31mAgent:Coordenador>     Prioridade: 10[0m
+[31mAgent:Coordenador> ==================================================
+[0m
+[38;5;99mAgent:Carro1> >>> VENCI! Atravessando...[0m
+[38;5;99mAgent:Carro4> Aguardando (Carro1_1 venceu)[0m
+[38;5;99mAgent:Carro2> Aguardando (Carro1_1 venceu)[0m
+[38;5;99mAgent:Carro3> Aguardando (Carro1_1 venceu)[0m
+[38;5;220m# Admin #> [Closing System][0m
+[38;5;220m# Admin #> Ending MASPY Program[0m
+
+--------------------------------------------------------------------------------
+EXPERIMENTO 3 CONCLUIDO
+================================================================================
+
+
+================================================================================
+EXPERIMENTO 4: Cargas Pesadas - Caminhao (prio=50) deve vencer
+================================================================================
+
+Veiculos participantes:
+  - Caminhao1: caminhao (prioridade=50)
+  - Onibus1: onibus (prioridade=40)
+  - Moto1: moto (prioridade=5)
+  - Carro1: carro (prioridade=10)
+
+Iniciando negociacao...
+
+--------------------------------------------------------------------------------
+
+[38;5;220m# Admin #> Starting MASPY Program - ver.2025.06.07[0m
+[38;5;220m# Admin #> Starting Agents[0m
+[38;5;220m# Admin #> Starting System[0m
+[38;5;99mAgent:Carro1> Proposta: tipo=carro, prio=10[0m
+[38;5;99mAgent:Onibus1> Proposta: tipo=onibus, prio=40[0m
+[31mAgent:Coordenador> Recebi de Carro1_1: carro, prio=10[0m
+[38;5;99mAgent:Caminhao1> Proposta: tipo=caminhao, prio=50[0m
+[38;5;99mAgent:Moto1> Proposta: tipo=moto, prio=5[0m
+[31mAgent:Coordenador> Recebi de Caminhao1_1: caminhao, prio=50[0m
+[31mAgent:Coordenador> Recebi de Onibus1_1: onibus, prio=40[0m
+[31mAgent:Coordenador> Recebi de Moto1_1: moto, prio=5[0m
+[31mAgent:Coordenador> 
+==================================================[0m
+[31mAgent:Coordenador> AVALIANDO PROPOSTAS[0m
+[31mAgent:Coordenador> ==================================================[0m
+[31mAgent:Coordenador> 
+Total: 4 propostas[0m
+[31mAgent:Coordenador>   - Carro1_1: carro (prio=10)[0m
+[31mAgent:Coordenador>   - Caminhao1_1: caminhao (prio=50)[0m
+[31mAgent:Coordenador>   - Onibus1_1: onibus (prio=40)[0m
+[31mAgent:Coordenador>   - Moto1_1: moto (prio=5)[0m
+[31mAgent:Coordenador> 
+==================================================[0m
+[31mAgent:Coordenador> >>> VENCEDOR: Caminhao1_1[0m
+[31mAgent:Coordenador>     Tipo: caminhao[0m
+[31mAgent:Coordenador>     Prioridade: 50[0m
+[31mAgent:Coordenador> ==================================================
+[0m
+[38;5;99mAgent:Caminhao1> >>> VENCI! Atravessando...[0m
+[38;5;99mAgent:Carro1> Aguardando (Caminhao1_1 venceu)[0m
+[38;5;99mAgent:Moto1> Aguardando (Caminhao1_1 venceu)[0m
+[38;5;99mAgent:Onibus1> Aguardando (Caminhao1_1 venceu)[0m
+[38;5;220m# Admin #> [Closing System][0m
+[38;5;220m# Admin #> Ending MASPY Program[0m
+
+--------------------------------------------------------------------------------
+EXPERIMENTO 4 CONCLUIDO
+================================================================================
+
+
+================================================================================
+EXPERIMENTO 5: Cenario Misto (6 veiculos) - Ambulancia deve vencer
+================================================================================
+
+Veiculos participantes:
+  - Moto1: moto (prioridade=5)
+  - Carro1: carro (prioridade=15)
+  - Onibus1: onibus (prioridade=35)
+  - Caminhao1: caminhao (prioridade=45)
+  - Taxi1: taxi (prioridade=20)
+  - Ambulancia: ambulancia (prioridade=100)
+
+Iniciando negociacao...
+
+--------------------------------------------------------------------------------
+
+[38;5;220m# Admin #> Starting MASPY Program - ver.2025.06.07[0m
+[38;5;220m# Admin #> Starting Agents[0m
+[38;5;220m# Admin #> Starting System[0m
+[38;5;99mAgent:Onibus1> Proposta: tipo=onibus, prio=35[0m
+[38;5;99mAgent:Moto1> Proposta: tipo=moto, prio=5[0m
+[38;5;99mAgent:Ambulancia> Proposta: tipo=ambulancia, prio=100[0m
+[31mAgent:Coordenador> Recebi de Onibus1_1: onibus, prio=35[0m
+[38;5;99mAgent:Taxi1> Proposta: tipo=taxi, prio=20[0m
+[38;5;99mAgent:Caminhao1> Proposta: tipo=caminhao, prio=45[0m
+[38;5;99mAgent:Carro1> Proposta: tipo=carro, prio=15[0m
+[31mAgent:Coordenador> Recebi de Moto1_1: moto, prio=5[0m
+[31mAgent:Coordenador> Recebi de Taxi1_1: taxi, prio=20[0m
+[31mAgent:Coordenador> Recebi de Caminhao1_1: caminhao, prio=45[0m
+[31mAgent:Coordenador> Recebi de Ambulancia_1: ambulancia, prio=100[0m
+[31mAgent:Coordenador> Recebi de Carro1_1: carro, prio=15[0m
+[31mAgent:Coordenador> 
+==================================================[0m
+[31mAgent:Coordenador> AVALIANDO PROPOSTAS[0m
+[31mAgent:Coordenador> ==================================================[0m
+[31mAgent:Coordenador> 
+Total: 6 propostas[0m
+[31mAgent:Coordenador>   - Onibus1_1: onibus (prio=35)[0m
+[31mAgent:Coordenador>   - Moto1_1: moto (prio=5)[0m
+[31mAgent:Coordenador>   - Taxi1_1: taxi (prio=20)[0m
+[31mAgent:Coordenador>   - Caminhao1_1: caminhao (prio=45)[0m
+[31mAgent:Coordenador>   - Ambulancia_1: ambulancia (prio=100)[0m
+[31mAgent:Coordenador>   - Carro1_1: carro (prio=15)[0m
+[31mAgent:Coordenador> 
+==================================================[0m
+[31mAgent:Coordenador> >>> VENCEDOR: Ambulancia_1[0m
+[31mAgent:Coordenador>     Tipo: ambulancia[0m
+[31mAgent:Coordenador>     Prioridade: 100[0m
+[31mAgent:Coordenador> ==================================================
+[0m
+[38;5;99mAgent:Ambulancia> >>> VENCI! Atravessando...[0m
+[38;5;99mAgent:Taxi1> Aguardando (Ambulancia_1 venceu)[0m
+[38;5;99mAgent:Moto1> Aguardando (Ambulancia_1 venceu)[0m
+[38;5;99mAgent:Caminhao1> Aguardando (Ambulancia_1 venceu)[0m
+[38;5;99mAgent:Carro1> Aguardando (Ambulancia_1 venceu)[0m
+[38;5;99mAgent:Onibus1> Aguardando (Ambulancia_1 venceu)[0m
+[38;5;220m# Admin #> [Closing System][0m
+[38;5;220m# Admin #> Ending MASPY Program[0m
+
+--------------------------------------------------------------------------------
+EXPERIMENTO 5 CONCLUIDO
+================================================================================
+
+
+================================================================================
+EXPERIMENTO 6: Teste de Estresse (10 veiculos) - Veiculo10 (prio=100) deve vencer
+================================================================================
+
+Veiculos participantes:
+  - Veiculo1: carro (prioridade=10)
+  - Veiculo2: carro (prioridade=20)
+  - Veiculo3: carro (prioridade=30)
+  - Veiculo4: carro (prioridade=40)
+  - Veiculo5: carro (prioridade=50)
+  - Veiculo6: carro (prioridade=60)
+  - Veiculo7: carro (prioridade=70)
+  - Veiculo8: carro (prioridade=80)
+  - Veiculo9: carro (prioridade=90)
+  - Veiculo10: carro (prioridade=100)
+
+Iniciando negociacao...
+
+--------------------------------------------------------------------------------
+
+[38;5;220m# Admin #> Starting MASPY Program - ver.2025.06.07[0m
+[38;5;220m# Admin #> Starting Agents[0m
+[38;5;220m# Admin #> Starting System[0m
+[38;5;99mAgent:Veiculo8> Proposta: tipo=carro, prio=80[0m
+[38;5;99mAgent:Veiculo5> Proposta: tipo=carro, prio=50[0m
+[38;5;99mAgent:Veiculo2> Proposta: tipo=carro, prio=20[0m
+[31mAgent:Coordenador> Recebi de Veiculo2_1: carro, prio=20[0m
+[38;5;99mAgent:Veiculo6> Proposta: tipo=carro, prio=60[0m
+[38;5;99mAgent:Veiculo9> Proposta: tipo=carro, prio=90[0m
+[38;5;99mAgent:Veiculo7> Proposta: tipo=carro, prio=70[0m
+[38;5;99mAgent:Veiculo1> Proposta: tipo=carro, prio=10[0m
+[38;5;99mAgent:Veiculo4> Proposta: tipo=carro, prio=40[0m
+[38;5;99mAgent:Veiculo3> Proposta: tipo=carro, prio=30[0m
+[38;5;99mAgent:Veiculo10> Proposta: tipo=carro, prio=100[0m
+[31mAgent:Coordenador> Recebi de Veiculo8_1: carro, prio=80[0m
+[31mAgent:Coordenador> Recebi de Veiculo5_1: carro, prio=50[0m
+[31mAgent:Coordenador> Recebi de Veiculo6_1: carro, prio=60[0m
+[31mAgent:Coordenador> Recebi de Veiculo7_1: carro, prio=70[0m
+[31mAgent:Coordenador> Recebi de Veiculo1_1: carro, prio=10[0m
+[31mAgent:Coordenador> Recebi de Veiculo9_1: carro, prio=90[0m
+[31mAgent:Coordenador> Recebi de Veiculo3_1: carro, prio=30[0m
+[31mAgent:Coordenador> Recebi de Veiculo10_1: carro, prio=100[0m
+[31mAgent:Coordenador> Recebi de Veiculo4_1: carro, prio=40[0m
+[31mAgent:Coordenador> 
+==================================================[0m
+[31mAgent:Coordenador> AVALIANDO PROPOSTAS[0m
+[31mAgent:Coordenador> ==================================================[0m
+[31mAgent:Coordenador> 
+Total: 10 propostas[0m
+[31mAgent:Coordenador>   - Veiculo2_1: carro (prio=20)[0m
+[31mAgent:Coordenador>   - Veiculo8_1: carro (prio=80)[0m
+[31mAgent:Coordenador>   - Veiculo5_1: carro (prio=50)[0m
+[31mAgent:Coordenador>   - Veiculo6_1: carro (prio=60)[0m
+[31mAgent:Coordenador>   - Veiculo7_1: carro (prio=70)[0m
+[31mAgent:Coordenador>   - Veiculo1_1: carro (prio=10)[0m
+[31mAgent:Coordenador>   - Veiculo9_1: carro (prio=90)[0m
+[31mAgent:Coordenador>   - Veiculo3_1: carro (prio=30)[0m
+[31mAgent:Coordenador>   - Veiculo10_1: carro (prio=100)[0m
+[31mAgent:Coordenador>   - Veiculo4_1: carro (prio=40)[0m
+[31mAgent:Coordenador> 
+==================================================[0m
+[31mAgent:Coordenador> >>> VENCEDOR: Veiculo10_1[0m
+[31mAgent:Coordenador>     Tipo: carro[0m
+[31mAgent:Coordenador>     Prioridade: 100[0m
+[31mAgent:Coordenador> ==================================================
+[0m
+[38;5;99mAgent:Veiculo1> Aguardando (Veiculo10_1 venceu)[0m
+[38;5;99mAgent:Veiculo3> Aguardando (Veiculo10_1 venceu)[0m
+[38;5;99mAgent:Veiculo9> Aguardando (Veiculo10_1 venceu)[0m
+[38;5;99mAgent:Veiculo6> Aguardando (Veiculo10_1 venceu)[0m
+[38;5;99mAgent:Veiculo8> Aguardando (Veiculo10_1 venceu)[0m
+[38;5;99mAgent:Veiculo10> >>> VENCI! Atravessando...[0m
+[38;5;99mAgent:Veiculo2> Aguardando (Veiculo10_1 venceu)[0m
+[38;5;99mAgent:Veiculo7> Aguardando (Veiculo10_1 venceu)[0m
+[38;5;99mAgent:Veiculo4> Aguardando (Veiculo10_1 venceu)[0m
+[38;5;99mAgent:Veiculo5> Aguardando (Veiculo10_1 venceu)[0m
+[38;5;220m# Admin #> [Closing System][0m
+[38;5;220m# Admin #> Ending MASPY Program[0m
+
+--------------------------------------------------------------------------------
+EXPERIMENTO 6 CONCLUIDO
+================================================================================
+
+================================================================================
+SUITE DE EXPERIMENTOS - SISTEMA DE NEGOCIACAO EM CRUZAMENTO
+Trabalho 1 - SMA 2025.2 - UTFPR
+================================================================================
+
+Executando 6 experimentos separadamente...
+
+Executando Experimento 1 - Cenario Base...
+  Experimento 1 - Cenario Base concluido com sucesso!
+
+Executando Experimento 2 - Multiplas Emergencias...
+  Experimento 2 - Multiplas Emergencias concluido com sucesso!
+
+Executando Experimento 3 - Prioridades Iguais...
+  Experimento 3 - Prioridades Iguais concluido com sucesso!
+
+Executando Experimento 4 - Cargas Pesadas...
+  Experimento 4 - Cargas Pesadas concluido com sucesso!
+
+Executando Experimento 5 - Cenario Misto...
+  Experimento 5 - Cenario Misto concluido com sucesso!
+
+Executando Experimento 6 - Teste de Estresse...
+  Experimento 6 - Teste de Estresse concluido com sucesso!
+
+================================================================================
+RESUMO DA EXECUCAO
+================================================================================
+  [OK] Experimento 1 - Cenario Base
+  [OK] Experimento 2 - Multiplas Emergencias
+  [OK] Experimento 3 - Prioridades Iguais
+  [OK] Experimento 4 - Cargas Pesadas
+  [OK] Experimento 5 - Cenario Misto
+  [OK] Experimento 6 - Teste de Estresse
+
+================================================================================
+TODOS OS EXPERIMENTOS CONCLUIDOS COM SUCESSO!

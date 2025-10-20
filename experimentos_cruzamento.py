@@ -55,7 +55,7 @@ class CruzamentoEnvironment(Environment):
 class VeiculoAgent(Agent):
     """Agente veiculo"""
 
-    def __init__(self, agt_name=None, tipo="carro", prioridade=10, coordenador="Coordenador_1"):
+    def __init__(self, agt_name=None, tipo="carro", prioridade=10, coordenador="Coordenador"):
         super().__init__(agt_name)
         self.tipo = tipo
         self.prioridade = prioridade
@@ -136,13 +136,8 @@ class CoordenadorAgent(Agent):
 # ============================================================================
 
 def limpar_sistema():
-    """Aguarda e limpa sistema entre testes"""
-    time.sleep(0.5)
-    # Força reset do Admin para limpar estado entre experimentos
-    try:
-        Admin().reset()
-    except:
-        pass
+    """Aguarda entre testes"""
+    time.sleep(0.3)
 
 def executar_experimento(numero, descricao, veiculos_config):
     """
@@ -167,14 +162,14 @@ def executar_experimento(numero, descricao, veiculos_config):
     # Cria ambiente
     env = CruzamentoEnvironment()
 
-    # Cria coordenador com nome unico
-    coord_name = f"Coordenador_{numero}"
+    # Cria coordenador - mesmo nome, diferentes instancias por experimento
+    coord_name = "Coordenador"
     coord = CoordenadorAgent(coord_name, num_veiculos=len(veiculos_config))
 
-    # Cria veiculos com nomes unicos
+    # Cria veiculos
     veiculos = []
     for v_config in veiculos_config:
-        veiculo_name = f"{v_config['nome']}_exp{numero}"
+        veiculo_name = v_config['nome']
         veiculo = VeiculoAgent(
             veiculo_name,
             tipo=v_config['tipo'],
@@ -187,9 +182,6 @@ def executar_experimento(numero, descricao, veiculos_config):
     admin = Admin()
     admin.connect_to([coord] + veiculos, env)
     admin.start_system()
-
-    # Aguarda conclusão
-    time.sleep(1)
 
     print("\n" + "-"*80)
     print(f"EXPERIMENTO {numero} CONCLUIDO")
@@ -295,38 +287,18 @@ if __name__ == "__main__":
     print("Trabalho 1 - SMA 2025.2 - UTFPR")
     print("="*80)
 
-    print("\nEste script executa 6 experimentos diferentes para demonstrar")
+    print("\nEste script define 6 experimentos diferentes para demonstrar")
     print("todas as possibilidades de negociacao do sistema.")
-
-    # input("\nPressione ENTER para iniciar os experimentos...")
-
-    # Executa todos os experimentos
-    try:
-        experimento_1_base()
-        experimento_2_multiplas_emergencias()
-        experimento_3_prioridades_iguais()
-        experimento_4_cargas_pesadas()
-        experimento_5_misto()
-        experimento_6_estresse()
-    except Exception as e:
-        print(f"\nERRO durante execucao: {e}")
-        import traceback
-        traceback.print_exc()
-
-    print("\n" + "="*80)
-    print("TODOS OS EXPERIMENTOS CONCLUIDOS COM SUCESSO!")
-    print("="*80)
-
-    print("\nRESUMO DOS RESULTADOS:")
-    print("  1. Cenario Base: Ambulancia venceu (emergencia priorizada)")
-    print("  2. Multiplas Emergencias: Maior prioridade venceu")
-    print("  3. Prioridades Iguais: Sistema decide por ordem de chegada")
-    print("  4. Cargas Pesadas: Caminhao venceu")
-    print("  5. Cenario Misto: Ambulancia venceu entre 6 veiculos")
-    print("  6. Teste Estresse: Sistema suportou 10 veiculos simultaneos")
-
-    print("\nCONCLUSAO:")
-    print("O sistema de negociacao funcionou corretamente em todos os cenarios,")
-    print("sempre priorizando veiculos de emergencia e respeitando as prioridades")
-    print("definidas no protocolo.")
+    print("\nPara executar os experimentos:")
+    print("  1. Execute um experimento especifico:")
+    print("     python -c \"from experimentos_cruzamento import experimento_1_base; experimento_1_base()\"")
+    print("\n  2. OU execute todos usando o script shell:")
+    print("     ./run_all_experiments.sh")
+    print("\nExperimentos disponiveis:")
+    print("  - experimento_1_base()")
+    print("  - experimento_2_multiplas_emergencias()")
+    print("  - experimento_3_prioridades_iguais()")
+    print("  - experimento_4_cargas_pesadas()")
+    print("  - experimento_5_misto()")
+    print("  - experimento_6_estresse()")
     print("\n" + "="*80)

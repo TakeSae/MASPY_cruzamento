@@ -1,34 +1,32 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-Script para executar todos os experimentos sequencialmente
-Cada experimento roda em um processo Python separado para evitar conflitos
-"""
-
 import subprocess
 import sys
+import time
+from datetime import datetime
 
 def run_experiment(name, func_name):
-    """Executa um experimento individual"""
-    print(f"\nExecutando {name}...")
+    print(f"\n[{datetime.now().strftime('%H:%M:%S')}] Executando {name}...")
     cmd = f"python -c 'from experimentos_cruzamento import {func_name}; {func_name}()'"
 
+    start_time = time.time()
     try:
         result = subprocess.run(cmd, shell=True, check=True, timeout=10)
-        print(f"  {name} concluido com sucesso!")
-        return True
+        elapsed = time.time() - start_time
+        print(f"  {name} concluido com sucesso! (Tempo: {elapsed:.3f}s)")
+        return True, elapsed
     except subprocess.TimeoutExpired:
-        print(f"  ERRO: {name} excedeu o tempo limite!")
-        return False
+        elapsed = time.time() - start_time
+        print(f"  ERRO: {name} excedeu o tempo limite! (Tempo: {elapsed:.3f}s)")
+        return False, elapsed
     except subprocess.CalledProcessError as e:
-        print(f"  ERRO ao executar {name}: {e}")
-        return False
+        elapsed = time.time() - start_time
+        print(f"  ERRO ao executar {name}: {e} (Tempo: {elapsed:.3f}s)")
+        return False, elapsed
 
 if __name__ == "__main__":
-    print("="*80)
-    print("SUITE DE EXPERIMENTOS - SISTEMA DE NEGOCIACAO EM CRUZAMENTO")
-    print("Trabalho 1 - SMA 2025.2 - UTFPR")
-    print("="*80)
+    inicio_total = time.time()
+    timestamp_inicio = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    print(f"Inicio da execucao: {timestamp_inicio}")
     print("\nExecutando 6 experimentos separadamente...")
 
     experimentos = [
@@ -42,25 +40,30 @@ if __name__ == "__main__":
 
     resultados = []
     for nome, func in experimentos:
-        sucesso = run_experiment(nome, func)
-        resultados.append((nome, sucesso))
+        sucesso, tempo = run_experiment(nome, func)
+        resultados.append((nome, sucesso, tempo))
+
+    tempo_total = time.time() - inicio_total
+    timestamp_fim = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     print("\n" + "="*80)
     print("RESUMO DA EXECUCAO")
     print("="*80)
 
-    for nome, sucesso in resultados:
+    for nome, sucesso, tempo in resultados:
         status = "OK" if sucesso else "FALHOU"
-        print(f"  [{status}] {nome}")
+        print(f"  [{status}] {nome} - {tempo:.3f}s")
 
-    total_sucesso = sum(1 for _, s in resultados if s)
+    total_sucesso = sum(1 for _, s, _ in resultados if s)
 
     print("\n" + "="*80)
+    print(f"Termino da execucao: {timestamp_fim}")
+    print(f"Tempo total: {tempo_total:.3f}s")
+    print("="*80)
+
     if total_sucesso == len(experimentos):
         print("TODOS OS EXPERIMENTOS CONCLUIDOS COM SUCESSO!")
         sys.exit(0)
     else:
         print(f"ALGUNS EXPERIMENTOS FALHARAM: {total_sucesso}/{len(experimentos)} concluidos")
         sys.exit(1)
-
-    print("="*80)

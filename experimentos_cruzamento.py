@@ -1,32 +1,9 @@
-# -*- coding: utf-8 -*-
-"""
-Script de Experimentos - Sistema de Negociacao em Cruzamento
-==============================================================
-
-Trabalho 1 - Sistemas Multi-Agentes 2025.2
-UTFPR - Campus Ponta Grossa - COCIC
-
-Este script executa diferentes cenarios de negociacao para demonstrar
-todas as possibilidades do sistema (Tarefa f do trabalho).
-
-EXPERIMENTOS REALIZADOS:
-1. Cenario Base: 1 emergencia vs 3 normais
-2. Cenario Multiplas Emergencias: 2 ambulancias competindo
-3. Cenario Prioridades Iguais: Todos com mesma prioridade
-4. Cenario Cargas Pesadas: Onibus e caminhoes vs carros
-5. Cenario Misto: Diferentes tipos e prioridades
-6. Cenario Estresse: 10 veiculos simultaneos
-"""
-
 from maspy import *
 import time
 
-# ============================================================================
 # CLASSES DO SISTEMA (Importadas do arquivo principal)
-# ============================================================================
 
 class CruzamentoEnvironment(Environment):
-    """Ambiente do cruzamento"""
 
     def __init__(self):
         super().__init__()
@@ -53,7 +30,6 @@ class CruzamentoEnvironment(Environment):
         self.print(f"{veiculo_id} concluiu travessia")
 
 class VeiculoAgent(Agent):
-    """Agente veiculo"""
 
     def __init__(self, agt_name=None, tipo="carro", prioridade=10, coordenador="Coordenador"):
         super().__init__(agt_name)
@@ -81,7 +57,6 @@ class VeiculoAgent(Agent):
         self.stop_cycle()
 
 class CoordenadorAgent(Agent):
-    """Agente coordenador"""
 
     def __init__(self, agt_name=None, num_veiculos=4):
         super().__init__(agt_name)
@@ -131,23 +106,13 @@ class CoordenadorAgent(Agent):
         self.send(broadcast, tell, Belief("decisao", vencedor_id))
         self.stop_cycle()
 
-# ============================================================================
 # FUNCOES AUXILIARES
-# ============================================================================
 
 def limpar_sistema():
-    """Aguarda entre testes"""
     time.sleep(0.3)
 
 def executar_experimento(numero, descricao, veiculos_config):
-    """
-    Executa um experimento individual
 
-    Args:
-        numero: Numero do experimento
-        descricao: Descricao do cenario
-        veiculos_config: Lista de dicts com 'nome', 'tipo', 'prioridade'
-    """
     print("\n" + "="*80)
     print(f"EXPERIMENTO {numero}: {descricao}")
     print("="*80)
@@ -159,14 +124,11 @@ def executar_experimento(numero, descricao, veiculos_config):
     print("\nIniciando negociacao...\n")
     print("-"*80 + "\n")
 
-    # Cria ambiente
     env = CruzamentoEnvironment()
 
-    # Cria coordenador - mesmo nome, diferentes instancias por experimento
     coord_name = "Coordenador"
     coord = CoordenadorAgent(coord_name, num_veiculos=len(veiculos_config))
 
-    # Cria veiculos
     veiculos = []
     for v_config in veiculos_config:
         veiculo_name = v_config['nome']
@@ -178,7 +140,6 @@ def executar_experimento(numero, descricao, veiculos_config):
         )
         veiculos.append(veiculo)
 
-    # Conecta e executa com Admin novo
     admin = Admin()
     admin.connect_to([coord] + veiculos, env)
     admin.start_system()
@@ -189,9 +150,7 @@ def executar_experimento(numero, descricao, veiculos_config):
 
     limpar_sistema()
 
-# ============================================================================
 # EXPERIMENTOS
-# ============================================================================
 
 def experimento_1_base():
     """Experimento 1: Cenario base - 1 emergencia vs 3 normais"""
@@ -277,16 +236,9 @@ def experimento_6_estresse():
         veiculos
     )
 
-# ============================================================================
 # EXECUCAO PRINCIPAL
-# ============================================================================
 
 if __name__ == "__main__":
-    print("\n" + "="*80)
-    print("SUITE DE EXPERIMENTOS - SISTEMA DE NEGOCIACAO EM CRUZAMENTO")
-    print("Trabalho 1 - SMA 2025.2 - UTFPR")
-    print("="*80)
-
     print("\nEste script define 6 experimentos diferentes para demonstrar")
     print("todas as possibilidades de negociacao do sistema.")
     print("\nPara executar os experimentos:")

@@ -1,25 +1,7 @@
-# -*- coding: utf-8 -*-
-"""
-Sistema de Negociacao de Cruzamento - MASPY Framework
-=======================================================
-
-"""
-
 from maspy import *
 
-# ============================================================================
 # AMBIENTE - CRUZAMENTO
-# ============================================================================
-
 class CruzamentoEnvironment(Environment):
-    """
-    Ambiente que representa o cruzamento de 4 vias.
-
-    Responsabilidades:
-    - Manter estado do cruzamento (livre/ocupado)
-    - Registrar veiculos aguardando
-    - Notificar eventos de travessia
-    """
 
     def __init__(self):
         super().__init__()
@@ -28,7 +10,6 @@ class CruzamentoEnvironment(Environment):
         self.veiculo_atravessando = None
 
     def registrar_chegada(self, agt, veiculo_id, tipo, prioridade):
-        """Registra chegada de um veiculo ao cruzamento"""
         self.veiculos_aguardando.append({
             'id': veiculo_id,
             'tipo': tipo,
@@ -37,30 +18,17 @@ class CruzamentoEnvironment(Environment):
         self.print(f"Veiculo {veiculo_id} chegou ao cruzamento (tipo={tipo}, prio={prioridade})")
 
     def iniciar_travessia(self, agt, veiculo_id):
-        """Marca inicio da travessia do veiculo vencedor"""
         self.cruzamento_livre = False
         self.veiculo_atravessando = veiculo_id
         self.print(f">>> {veiculo_id} iniciou a travessia do cruzamento")
 
     def finalizar_travessia(self, agt, veiculo_id):
-        """Marca fim da travessia"""
         self.cruzamento_livre = True
         self.veiculo_atravessando = None
         self.print(f"{veiculo_id} finalizou a travessia. Cruzamento livre.")
 
-# ============================================================================
 # AGENTE VEICULO
-# ============================================================================
-
 class VeiculoAgent(Agent):
-    """
-    Agente veiculo que participa da negociacao.
-
-    BDI:
-    - Belief: tipo, prioridade
-    - Goal: atravessar cruzamento
-    - Plan: enviar_proposta, receber_decisao
-    """
 
     def __init__(self, agt_name=None, tipo="carro", prioridade=10):
         super().__init__(agt_name)
@@ -70,10 +38,6 @@ class VeiculoAgent(Agent):
 
     @pl(gain, Goal("atravessar"))
     def enviar_proposta(self, src):
-        """
-        Plano 1: Envia proposta ao coordenador
-        Trigger: gain Goal("atravessar")
-        """
         proposta = {
             'id': self.my_name,
             'tipo': self.tipo,
@@ -85,31 +49,15 @@ class VeiculoAgent(Agent):
 
     @pl(gain, Belief("decisao", Any))
     def receber_decisao(self, src, vencedor):
-        """
-        Plano 2: Recebe decisao do coordenador
-        Trigger: gain Belief("decisao", vencedor)
-        """
         if vencedor == self.my_name:
             self.print(f">>> GANHEI! Atravessando o cruzamento...")
         else:
             self.print(f"Aguardando. Vencedor: {vencedor}")
 
-        # IMPORTANTE: Para o ciclo do agente para permitir finalizacao
         self.stop_cycle()
 
-# ============================================================================
 # AGENTE COORDENADOR
-# ============================================================================
-
 class CoordenadorAgent(Agent):
-    """
-    Agente coordenador que gerencia a negociacao.
-
-    BDI:
-    - Belief: propostas recebidas
-    - Goal: decidir vencedor
-    - Plan: coletar_propostas, decidir_vencedor
-    """
 
     def __init__(self, agt_name=None, num_veiculos=4):
         super().__init__(agt_name)
@@ -118,28 +66,18 @@ class CoordenadorAgent(Agent):
 
     @pl(gain, Belief("proposta", Any))
     def coletar_propostas(self, src, dados):
-        """
-        Plano 1: Coleta propostas dos veiculos
-        Trigger: gain Belief("proposta", dados)
-        """
         self.print(f"Proposta recebida de {src}: tipo={dados['tipo']}, prioridade={dados['prio']}")
         self.contador_propostas += 1
 
-        # Quando todas as propostas chegarem, decide
         if self.contador_propostas >= self.num_veiculos:
             self.add(Goal("decidir"))
 
     @pl(gain, Goal("decidir"))
     def decidir_vencedor(self, src):
-        """
-        Plano 2: Decide qual veiculo tem prioridade
-        Trigger: gain Goal("decidir")
-        """
         self.print("\n" + "="*60)
         self.print("AVALIANDO PROPOSTAS")
         self.print("="*60)
 
-        # Busca todas as propostas
         propostas = self.get(Belief("proposta", Any), all=True, ck_src=False)
 
         if not propostas or len(propostas) == 0:
@@ -147,7 +85,6 @@ class CoordenadorAgent(Agent):
             self.stop_cycle()
             return
 
-        # Avalia propostas
         self.print(f"\nTotal de propostas: {len(propostas)}")
 
         melhor_prioridade = -1
@@ -163,22 +100,17 @@ class CoordenadorAgent(Agent):
                 vencedor_id = dados['id']
                 vencedor_dados = dados
 
-        # Anuncia decisao
         self.print("\n" + "="*60)
         self.print(f">>> VENCEDOR: {vencedor_dados['id']} <<<")
         self.print(f"  Tipo: {vencedor_dados['tipo']}")
         self.print(f"  Prioridade: {vencedor_dados['prio']}")
         self.print("="*60 + "\n")
 
-        # Notifica todos os veiculos via broadcast
         self.send(broadcast, tell, Belief("decisao", vencedor_id))
 
-        # IMPORTANTE: Para o ciclo do coordenador
         self.stop_cycle()
 
-# ============================================================================
 # EXECUCAO PRINCIPAL
-# ============================================================================
 
 if __name__ == "__main__":
     print("="*70)
@@ -204,24 +136,17 @@ if __name__ == "__main__":
 
     print("="*70 + "\n")
 
-    # Cria coordenador (1 instancia)
     coord = CoordenadorAgent("Coordenador", num_veiculos=4)
 
-    # Cria veiculos (4 instancias)
     v1 = VeiculoAgent("Veiculo1", tipo="carro", prioridade=10)
     v2 = VeiculoAgent("Veiculo2", tipo="ambulancia", prioridade=100)
     v3 = VeiculoAgent("Veiculo3", tipo="onibus", prioridade=30)
     v4 = VeiculoAgent("Veiculo4", tipo="moto", prioridade=5)
 
-    # Total: 5 agentes (atende requisito minimo)
-
-    # Cria ambiente
     env = CruzamentoEnvironment()
 
-    # Conecta agentes ao ambiente
     Admin().connect_to([coord, v1, v2, v3, v4], env)
 
-    # Inicia sistema
     Admin().start_system()
 
     print("\n" + "="*70)

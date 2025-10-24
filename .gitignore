@@ -1,1 +1,7 @@
 /__pycache__
+/resultados/
+*.txt
+!README.txt
+/venv_maspy
+/docs
+/artigo

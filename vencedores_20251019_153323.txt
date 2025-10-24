@@ -1,6 +1,0 @@
-Agent:Coordenador> >>> VENCEDOR: Ambulancia_1
-Agent:Coordenador> >>> VENCEDOR: Ambulancia1_1
-Agent:Coordenador> >>> VENCEDOR: Carro1_1
-Agent:Coordenador> >>> VENCEDOR: Caminhao1_1
-Agent:Coordenador> >>> VENCEDOR: Ambulancia_1
-Agent:Coordenador> >>> VENCEDOR: Veiculo10_1

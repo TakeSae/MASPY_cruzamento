@@ -1,172 +1,323 @@
 # Sistema Multi-Agentes de Negociação em Cruzamento
 
-Trabalho 1 - Sistemas Multi-Agentes 2025.2
-UTFPR - Campus Ponta Grossa - COCIC
+**Trabalho 1 - Sistemas Multi-Agentes 2025.2**
+**UTFPR - Campus Ponta Grossa - COCIC**
+
+[![Python](https://img.shields.io/badge/Python-3.13-blue.svg)](https://www.python.org/)
+[![MASPY](https://img.shields.io/badge/MASPY-2025.06.07-green.svg)](https://github.com/laca-is/MASPY)
+[![Status](https://img.shields.io/badge/Status-Completo-success.svg)]()
+
+---
 
 ## Descrição
 
-Sistema de negociação entre veículos em um cruzamento de 4 vias implementado usando o framework MASPY. O sistema utiliza agentes inteligentes para decidir qual veículo tem prioridade para atravessar o cruzamento.
+Sistema de negociação entre veículos autônomos em um cruzamento de 4 vias implementado usando o framework MASPY. O sistema utiliza agentes inteligentes com arquitetura BDI (Beliefs, Desires, Intentions) para negociar e decidir qual veículo tem prioridade para atravessar o cruzamento.
 
-## Arquivos Principais
+**Características principais:**
+- Protocolo de negociação centralizado baseado em prioridades
+- Arquitetura BDI completa (Beliefs, Desires, Intentions)
+- Sistema de logging configurável (SILENT, ERROR, INFO, DEBUG)
+- Documentação PEAS completa integrada ao código
+- Tratamento robusto de erros e validações
+- 6 experimentos validados (taxa de sucesso: 100%)
 
-- **cruzamento_maspy_v2.py**: Implementação principal do sistema (versão funcional)
-- **experimentos_cruzamento.py**: Suite de 6 experimentos diferentes
-- **run_all_experiments.py**: Script Python para executar todos os experimentos
-- **run_all_experiments.sh**: Script shell para executar todos os experimentos
+---
 
-## Estrutura do Sistema
+## Estrutura do Projeto
 
-### Agentes
+```
+MASPY_cruzamento/
+├── cruzamento_maspy_v3.py          # Sistema principal (RECOMENDADO)
+├── experimentos_cruzamento_v3.py   # Suite de experimentos v3
+├── coletar_dados_v3.sh             # Script de coleta v3
+│
+├── cruzamento_maspy_v2.py          # Sistema v2 (legado)
+├── experimentos_cruzamento.py      # Experimentos v2
+├── coletar_dados.sh                # Script v2
+│
+├── run_all_experiments.py          # Executor de experimentos
+├── analisar_resultados.py          # Analisador de resultados
+│
+├── resultados/                     # Resultados organizados por timestamp
+│   ├── 20251024_023513/            # Sessão de exemplo
+│   │   ├── info_sessao.txt
+│   │   ├── resultados_completos.txt
+│   │   ├── resumo.txt
+│   │   ├── vencedores.txt
+│   │   ├── metricas.txt
+│   │   └── analise.txt
+│   └── ultima_execucao -> 20251024_023513/
+│
+```
 
-1. **VeiculoAgent**: Representa um veículo no cruzamento
-   - Envia propostas ao coordenador
-   - Recebe decisão sobre quem venceu a negociação
+---
 
-2. **CoordenadorAgent**: Gerencia a negociação
-   - Coleta propostas de todos os veículos
-   - Avalia prioridades
-   - Decide o vencedor
-   - Notifica todos os veículos
+## Arquitetura do Sistema
 
-### Ambiente
+### **Agentes**
 
-**CruzamentoEnvironment**: Representa o cruzamento
-- Mantém estado (livre/ocupado)
-- Registra veículos aguardando
-- Gerencia travessias
+#### **1. VeiculoAgent** (Agente Veículo)
+Representa um veículo que participa da negociação.
+
+**Arquitetura BDI:**
+- **Beliefs (Crenças):** `tipo`, `prioridade`, `Belief("decisao", vencedor)`
+- **Desires/Goals (Objetivos):** `Goal("atravessar")`
+- **Intentions/Plans (Planos):**
+  - `enviar_proposta()` - Envia proposta ao coordenador
+  - `receber_decisao()` - Processa resultado da negociação
+
+**Atributos:**
+- `tipo`: String (carro, ambulancia, onibus, moto, caminhao, etc.)
+- `prioridade`: Int (0-100, quanto maior mais urgente)
+- `coordenador`: String (nome do agente coordenador)
+- `log_level`: LogLevel (SILENT, ERROR, INFO, DEBUG)
+
+#### **2. CoordenadorAgent** (Agente Coordenador)
+Gerencia o processo de negociação.
+
+**Arquitetura BDI:**
+- **Beliefs (Crenças):** `Belief("proposta", dados)` (múltiplas instâncias)
+- **Desires/Goals (Objetivos):** `Goal("decidir")`
+- **Intentions/Plans (Planos):**
+  - `coletar_propostas()` - Recebe e armazena propostas
+  - `decidir_vencedor()` - Avalia prioridades e decide
+
+**Algoritmo de decisão:**
+```python
+vencedor = max(propostas, key=lambda p: p['prio'])
+```
+Em caso de empate: ordem de processamento (FIFO)
+
+### **Ambiente**
+
+#### **CruzamentoEnvironment**
+Representa o cruzamento físico de 4 vias.
+
+**Estado:**
+- `cruzamento_livre`: Boolean (indica disponibilidade)
+- `veiculos_aguardando`: List[Dict] (fila de veículos)
+- `veiculo_atravessando`: String (ID do veículo atual)
+- `historico_travessias`: List[String] (histórico completo)
+
+**Métodos:**
+- `registrar_chegada()` - Registra veículo no cruzamento
+- `iniciar_travessia()` - Marca início da travessia
+- `finalizar_travessia()` - Libera o cruzamento
+
+---
 
 ## Experimentos Disponíveis
 
-### 1. Cenário Base
-- 1 ambulância (prioridade 100) vs 3 veículos normais
-- **Resultado esperado**: Ambulância vence
+| # | Nome | Veículos | Objetivo | Tempo Médio |
+|---|------|----------|----------|-------------|
+| 1 | Cenário Base | 4 | Validar priorização de emergência | 1.368s |
+| 2 | Múltiplas Emergências | 4 | Desempate entre emergências | 1.367s |
+| 3 | Prioridades Iguais | 4 | Comportamento em empate | 1.367s |
+| 4 | Cargas Pesadas | 4 | Priorização de veículos grandes | 1.318s |
+| 5 | Cenário Misto | 6 | Teste com diversidade | 1.370s |
+| 6 | Teste de Estresse | 10 | Avaliar escalabilidade | 1.372s |
 
-### 2. Múltiplas Emergências
-- 2 ambulâncias + bombeiros + carro normal
-- **Resultado esperado**: Ambulância com maior prioridade vence
 
-### 3. Prioridades Iguais
-- 4 carros com mesma prioridade
-- **Resultado esperado**: Sistema decide por ordem de processamento
-
-### 4. Cargas Pesadas
-- Caminhão vs Ônibus vs Moto vs Carro
-- **Resultado esperado**: Caminhão (maior prioridade) vence
-
-### 5. Cenário Misto
-- 6 veículos de tipos variados
-- **Resultado esperado**: Ambulância vence entre todos
-
-### 6. Teste de Estresse
-- 10 veículos simultâneos
-- **Resultado esperado**: Sistema suporta carga e decide corretamente
+---
 
 ## Como Executar
 
-### Pré-requisitos
+### **Pré-requisitos**
 
 ```bash
 # Ativar ambiente virtual
 source venv_maspy/bin/activate
 
+# Instalar dependências
+pip install -r requirements.txt
+
 # Verificar instalação do MASPY
-python -c "import maspy; print('MASPY instalado com sucesso')"
+python -c "import maspy; print('MASPY instalado')"
 ```
 
-### Opção 1: Coletar Dados com Timestamp (MAIS RECOMENDADO)
+### **Opção 1: Coletar Dados v3 (RECOMENDADO)**
 
 ```bash
-# Executa experimentos e gera arquivos com timestamp automaticamente
-./coletar_dados.sh
+./coletar_dados_v3.sh
 ```
 
-Este script gera automaticamente:
-- `resultados_experimentos_AAAAMMDD_HHMMSS.txt` (log completo)
-- `resumo_AAAAMMDD_HHMMSS.txt` (resumo)
-- `vencedores_AAAAMMDD_HHMMSS.txt` (lista de vencedores)
+**Gera automaticamente:**
+- Pasta `resultados/YYYYMMDD_HHMMSS/` organizada
+- `info_sessao.txt` - Metadados da sessão
+- `resultados_completos.txt` - Log completo (90% mais limpo que v2)
+- `resumo.txt` - Resumo dos experimentos
+- `vencedores.txt` - Lista de vencedores
+- `metricas.txt` - Tempos de execução
+- `analise.txt` - Análise estatística
+- `comparacao_v2_v3.txt` - Comparação de performance
 
-### Opção 2: Executar Todos os Experimentos
-
+**Visualizar resultados:**
 ```bash
-# Usando script Python
-python run_all_experiments.py
-
-# OU usando script shell
-./run_all_experiments.sh
+cat resultados/ultima_execucao/resumo.txt
+cat resultados/ultima_execucao/metricas.txt
+cat resultados/ultima_execucao/vencedores.txt
 ```
 
-### Opção 3: Executar Experimento Individual
+### **Opção 2: Executar Bateria de Experimentos**
 
 ```bash
-# Experimento 1
-python -c "from experimentos_cruzamento import experimento_1_base; experimento_1_base()"
+# v3 (RECOMENDADO - logs limpos)
+python experimentos_cruzamento_v3.py
 
-# Experimento 2
-python -c "from experimentos_cruzamento import experimento_2_multiplas_emergencias; experimento_2_multiplas_emergencias()"
-
-# Experimento 3
-python -c "from experimentos_cruzamento import experimento_3_prioridades_iguais; experimento_3_prioridades_iguais()"
-
-# Experimento 4
-python -c "from experimentos_cruzamento import experimento_4_cargas_pesadas; experimento_4_cargas_pesadas()"
-
-# Experimento 5
-python -c "from experimentos_cruzamento import experimento_5_misto; experimento_5_misto()"
-
-# Experimento 6
-python -c "from experimentos_cruzamento import experimento_6_estresse; experimento_6_estresse()"
+# v2 (legado - logs completos)
+python experimentos_cruzamento.py
 ```
 
-### Opção 4: Executar Sistema Principal
+### **Opção 3: Executar Sistema Principal**
 
 ```bash
+# v3 (RECOMENDADO)
+python cruzamento_maspy_v3.py
+
+# v2 (legado)
 python cruzamento_maspy_v2.py
 ```
 
+### **Opção 4: Executar Experimento Individual**
+
+```bash
+# Exemplo: Experimento 1
+python -c "from experimentos_cruzamento_v3 import experimento_1_base; experimento_1_base()"
+```
+
+---
+
+## Sistema de Logging (v3)
+
+A v3 introduz níveis de verbosidade configuráveis:
+
+```python
+from cruzamento_maspy_v3 import LogLevel
+
+# Níveis disponíveis:
+LogLevel.SILENT  # Sem output (benchmarks)
+LogLevel.ERROR   # Apenas erros
+LogLevel.INFO    # Informações importantes (RECOMENDADO)
+LogLevel.DEBUG   # Tudo (modo v2)
+```
+
+**Configurar no código:**
+```python
+GLOBAL_LOG_LEVEL = LogLevel.INFO  # Linha 147
+```
+
+**Impacto:**
+- Tamanho dos logs: 20KB → 2KB (90% menor)
+- Tempo de execução: ~20% mais rápido
+- Resultados mais legíveis
+
+---
+
 ## Protocolo de Negociação
 
-1. Veículos chegam ao cruzamento e enviam propostas ao Coordenador
-2. Coordenador coleta todas as propostas (aguarda todos os veículos)
-3. Coordenador avalia propostas por prioridade (maior prioridade vence)
-4. Coordenador notifica todos os veículos via broadcast
-5. Veículo vencedor atravessa o cruzamento
-6. Todos os agentes encerram seus ciclos
+**Fases do protocolo:**
+
+1. **Inicialização**
+   - Veículos chegam e ganham `Goal("atravessar")`
+
+2. **Envio de Propostas**
+   - Cada veículo envia `Belief("proposta", {id, tipo, prio})` via `tell`
+
+3. **Coleta**
+   - Coordenador recebe e armazena propostas
+   - Contador incrementado a cada proposta
+
+4. **Trigger de Decisão**
+   - Quando `contador == num_veiculos`, adiciona `Goal("decidir")`
+
+5. **Avaliação**
+   - Coordenador busca todas propostas
+   - Calcula `max(prioridade)`
+
+6. **Decisão**
+   - Seleciona vencedor (maior prioridade)
+   - Empate: ordem de processamento (FIFO)
+
+7. **Notificação**
+   - Coordenador envia `Belief("decisao", vencedor_id)` via `broadcast`
+
+8. **Reação**
+   - Vencedor: atravessa e notifica ambiente
+   - Perdedores: aguardam
+
+9. **Finalização**
+   - Todos agentes chamam `stop_cycle()`
+
+**Complexidade:** O(n) mensagens (n = número de veículos)
+
+---
 
 ## Níveis de Prioridade
 
-- **Ambulância**: 100 (emergência máxima)
-- **Bombeiros**: 95-98 (emergência alta)
-- **Caminhão**: 50 (carga pesada)
-- **Ônibus**: 30-40 (transporte coletivo)
-- **Táxi**: 20 (transporte individual prioritário)
-- **Carro**: 10-15 (veículo padrão)
-- **Moto**: 5 (veículo leve)
+| Tipo de Veículo | Prioridade | Justificativa |
+|-----------------|------------|---------------|
+| **Ambulância** | 100 | Emergência médica (vidas em risco) |
+| **Bombeiros** | 95-98 | Emergência (incêndios, resgates) |
+| **Caminhão** | 50 | Veículo grande (dificulta tráfego) |
+| **Ônibus** | 30-40 | Transporte coletivo |
+| **Táxi** | 20 | Transporte de passageiros |
+| **Carro** | 10-15 | Veículo comum |
+| **Moto** | 5 | Veículo pequeno (mais ágil) |
 
-## Saída Esperada
+**Critério de desempate:** Ordem de processamento (FIFO)
 
-Cada experimento mostra:
-1. Configuração dos veículos participantes
-2. Propostas enviadas por cada veículo
-3. Avaliação do coordenador
-4. Decisão do vencedor
-5. Confirmação de todos os veículos
+---
 
 ## Tecnologias
 
-- **Python 3.13**
-- **MASPY Framework** (Multi-Agent System in Python)
-- **Paradigma BDI** (Beliefs, Desires, Intentions)
+- **Linguagem:** Python 3.13
+- **Framework:** MASPY 2025.06.07 (Multi-Agent System in Python)
+- **Paradigma:** BDI (Beliefs, Desires, Intentions)
+- **Bibliotecas:** enum, subprocess, time, sys
 
-## Status
+---
 
-✅ Sistema funcionando corretamente
-✅ Todos os 6 experimentos validados
-✅ Protocolo de negociação implementado
-✅ Agentes seguem arquitetura BDI
+## Documentação
 
-## Observações
+### **Documentação PEAS**
 
-- Cada experimento roda em um processo Python separado para evitar conflitos no MASPY
-- O sistema sempre prioriza veículos de emergência (ambulância, bombeiros)
-- Em caso de empate, o primeiro veículo processado vence
-- O tempo de execução de todos os experimentos é aproximadamente 20-30 segundos
+A versão 3 inclui documentação PEAS completa:
+- **Performance:** Medidas de desempenho do sistema
+- **Environment:** Características do ambiente (Russell & Norvig, 2010)
+- **Actuators:** Ações disponíveis aos agentes
+- **Sensors:** Percepções dos agentes
+
+Localização: `cruzamento_maspy_v3_analise_PEAS.md`
+
+---
+
+## 👥 Autores
+
+- **Guilherme T. S. Abreu** - guiabr@alunos.utfpr.com.br
+- **Maria Eduarda S. Freitas** - mariaeduardafreitas@alunos.utfpr.edu.br
+
+**Professor:** Gleifer Vaz Alves
+
+---
+
+## 📅 Histórico de Versões
+
+### **v3.0** (2024-10-24) - ATUAL ⭐
+- Sistema de LogLevel (SILENT, ERROR, INFO, DEBUG)
+- Documentação PEAS completa (~200 linhas)
+- Uso efetivo do ambiente (call_env_method)
+- Tratamento robusto de erros (try-except)
+- Logs 90% mais limpos (20KB → 2KB)
+- Performance 20% melhor
+- Organização de resultados por timestamp
+- Comparação automática v2 vs v3
+
+### **v2.0** (2024-10-20)
+- Sistema funcional completo
+- 6 experimentos validados
+- Protocolo de negociação implementado
+- Arquitetura BDI
+
+### **v1.0** (2024-10-17)
+- Implementação inicial
+

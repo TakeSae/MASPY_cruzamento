@@ -291,7 +291,7 @@ Localização: `cruzamento_maspy_v3_analise_PEAS.md`
 
 ---
 
-## 👥 Autores
+## Autores
 
 - **Guilherme T. S. Abreu** - guiabr@alunos.utfpr.com.br
 - **Maria Eduarda S. Freitas** - mariaeduardafreitas@alunos.utfpr.edu.br
@@ -300,7 +300,7 @@ Localização: `cruzamento_maspy_v3_analise_PEAS.md`
 
 ---
 
-## 📅 Histórico de Versões
+## Histórico de Versões
 
 ### **v3.0** (2024-10-24) - ATUAL ⭐
 - Sistema de LogLevel (SILENT, ERROR, INFO, DEBUG)

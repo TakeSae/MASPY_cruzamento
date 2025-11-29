@@ -1,6 +1,6 @@
 # Sistema Multi-Agentes de Negociação em Cruzamento
 
-**Trabalho 1 - Sistemas Multi-Agentes 2025.2**
+**Trabalhos 01 e 02 - Sistemas Multi-Agentes 2025.2**
 **UTFPR - Campus Ponta Grossa - COCIC**
 
 [![Python](https://img.shields.io/badge/Python-3.13-blue.svg)](https://www.python.org/)
@@ -11,15 +11,26 @@
 
 ## Descrição
 
-Sistema de negociação entre veículos autônomos em um cruzamento de 4 vias implementado usando o framework MASPY. O sistema utiliza agentes inteligentes com arquitetura BDI (Beliefs, Desires, Intentions) para negociar e decidir qual veículo tem prioridade para atravessar o cruzamento.
+Sistema multi-agentes que combina negociação e aprendizado por reforço (Q-Learning) para coordenação de veículos autônomos em cruzamento. Implementado com framework MASPY, apresenta duas vertentes principais:
 
-**Características principais:**
+**Trabalho 01 - Sistema de Negociação:**
 - Protocolo de negociação centralizado baseado em prioridades
 - Arquitetura BDI completa (Beliefs, Desires, Intentions)
 - Sistema de logging configurável (SILENT, ERROR, INFO, DEBUG)
-- Documentação PEAS completa integrada ao código
-- Tratamento robusto de erros e validações
+- Documentação PEAS integrada ao código
 - 6 experimentos validados (taxa de sucesso: 100%)
+
+**Trabalho 02 - Sistema de Aprendizado:**
+- Aprendizado por reforço com Q-Learning
+- 2 tipos de agentes (Coordenador + Veículo)
+- 11 instâncias de agentes (1 coordenador + 10 veículos)
+- 10 cenários de teste diferentes
+- Metodologias PEAS e SART documentadas
+- Função de utilidade para avaliação
+- Análise estatística completa (desvio padrão, média móvel)
+- Visualização gráfica com 5 tipos de gráficos
+- Sistema de comparação entre cenários
+- Taxa de sucesso dos testes: 100% (28/28 testes)
 
 ---
 

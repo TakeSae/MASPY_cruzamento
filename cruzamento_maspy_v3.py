@@ -46,6 +46,9 @@ class CruzamentoEnvironment(Environment):
         self.cruzamento_livre = True
         self.veiculo_atravessando = None
 
+    def get_ordem_travessia(self):
+        return self.historico_travessias
+
 
 
 # AGENTE VEICULO
@@ -66,6 +69,7 @@ class VeiculoAgent(Agent):
         self.prioridade = prioridade
         self.coordenador = coordenador
         self.log_level = log_level or GLOBAL_LOG_LEVEL
+        self.ja_atravessei = False
 
         self.add(Goal("atravessar"))
 
@@ -86,6 +90,10 @@ class VeiculoAgent(Agent):
 
     @pl(gain, Goal("atravessar"))
     def enviar_proposta(self, src):
+        # Se já atravessei, não envio mais propostas
+        if self.ja_atravessei:
+            return
+
         try:
             try:
                 self.call_env_method("registrar_chegada",
@@ -119,17 +127,23 @@ class VeiculoAgent(Agent):
         try:
             if vencedor == self.my_name:
                 self.info_print(f">>> VENCI! Atravessando...")
+                self.ja_atravessei = True
 
                 try:
                     self.call_env_method("iniciar_travessia", self.my_name)
                 except AttributeError:
                     self.debug_print("Ambiente não conectado, pulando notificação")
+
+                # Vencedor para seu ciclo
+                self.stop_cycle()
             else:
-                self.debug_print(f"Aguardando (Vencedor: {vencedor})")
+                # Perdedores não param - continuam participando das próximas rodadas
+                self.debug_print(f"Aguardando próxima rodada (Vencedor: {vencedor})")
+                # Re-adicionar o goal para enviar proposta na próxima rodada
+                self.add(Goal("atravessar"))
 
         except Exception as e:
             self.error_print(f"ERRO ao processar decisão: {e}")
-        finally:
             self.stop_cycle()
 
 
@@ -147,6 +161,8 @@ class CoordenadorAgent(Agent):
         self.num_veiculos = num_veiculos
         self.contador_propostas = 0
         self.log_level = log_level or GLOBAL_LOG_LEVEL
+        self.veiculos_que_atravessaram = []
+        self.rodada_atual = 1
 
     def debug_print(self, msg):
         if self.log_level.value >= LogLevel.DEBUG.value:
@@ -171,11 +187,19 @@ class CoordenadorAgent(Agent):
                 if field not in dados:
                     raise KeyError(f"Campo obrigatório '{field}' faltando na proposta")
 
+            # Ignorar propostas de veículos que já atravessaram
+            if dados['id'] in self.veiculos_que_atravessaram:
+                self.debug_print(f"Proposta ignorada de {dados['id']} (já atravessou)")
+                return
+
             self.debug_print(f"Recebi de {src}: tipo={dados['tipo']}, prio={dados['prio']}")
             self.contador_propostas += 1
 
-            if self.contador_propostas >= self.num_veiculos:
-                self.debug_print(f"Todas as {self.num_veiculos} propostas recebidas. Decidindo...")
+            # Calcular quantos veículos ainda precisam atravessar
+            veiculos_restantes = self.num_veiculos - len(self.veiculos_que_atravessaram)
+
+            if self.contador_propostas >= veiculos_restantes:
+                self.debug_print(f"Todas as {veiculos_restantes} propostas recebidas. Decidindo...")
                 self.add(Goal("decidir"))
 
         except (TypeError, KeyError) as e:
@@ -187,7 +211,7 @@ class CoordenadorAgent(Agent):
     def decidir_vencedor(self, src):
         try:
             self.info_print("\n" + "="*50)
-            self.info_print("AVALIANDO PROPOSTAS")
+            self.info_print(f"RODADA {self.rodada_atual} - AVALIANDO PROPOSTAS")
             self.info_print("="*50)
 
             propostas = self.get(Belief("proposta", Any), all=True, ck_src=False)
@@ -198,19 +222,43 @@ class CoordenadorAgent(Agent):
             if len(propostas) == 0:
                 raise ValueError("Lista de propostas vazia")
 
-            if len(propostas) < self.num_veiculos:
-                self.error_print(f"AVISO: Esperava {self.num_veiculos} propostas, " +
-                               f"recebi {len(propostas)}")
+            # Filtrar propostas de veículos que já atravessaram
+            propostas_validas = []
+            self.debug_print(f"Veículos que já atravessaram: {self.veiculos_que_atravessaram}")
 
-            self.info_print(f"\nTotal: {len(propostas)} propostas")
+            for prop in propostas:
+                try:
+                    # Acessar dados da proposta - MASPY usa .values, não .args
+                    dados = prop.values
+
+                    self.debug_print(f"Verificando proposta de {dados['id']}")
+
+                    if dados['id'] not in self.veiculos_que_atravessaram:
+                        propostas_validas.append(prop)
+                        self.debug_print(f"  -> Proposta válida!")
+                    else:
+                        self.debug_print(f"  -> Já atravessou, ignorando")
+
+                except Exception as e:
+                    self.error_print(f"ERRO ao acessar proposta: {e}, tipo: {type(prop)}")
+                    import traceback
+                    traceback.print_exc()
+                    continue
+
+            if len(propostas_validas) == 0:
+                self.info_print("Todos os veículos já atravessaram!")
+                self.stop_cycle()
+                return
+
+            self.info_print(f"\nTotal: {len(propostas_validas)} propostas válidas (de {len(propostas)} recebidas)")
 
             melhor_prioridade = -1
             vencedor_id = None
             vencedor_dados = None
 
-            for i, prop in enumerate(propostas):
+            for i, prop in enumerate(propostas_validas):
                 try:
-                    dados = prop.args
+                    dados = prop.values
 
                     if 'id' not in dados or 'tipo' not in dados or 'prio' not in dados:
                         raise KeyError(f"Proposta {i} com campos faltando: {dados}")
@@ -235,27 +283,42 @@ class CoordenadorAgent(Agent):
             if vencedor_id is None:
                 raise RuntimeError("Nenhum vencedor válido encontrado após avaliar propostas")
 
+            self.veiculos_que_atravessaram.append(vencedor_id)
+
             self.info_print("\n" + "="*50)
-            self.info_print(f">>> VENCEDOR: {vencedor_dados['id']}")
+            self.info_print(f">>> VENCEDOR RODADA {self.rodada_atual}: {vencedor_dados['id']}")
             self.info_print(f"  Tipo: {vencedor_dados['tipo']}")
             self.info_print(f"  Prioridade: {vencedor_dados['prio']}")
             self.info_print("="*50 + "\n")
 
             self.send(broadcast, tell, Belief("decisao", vencedor_id))
 
+            # Preparar próxima rodada se ainda houver veículos
+            if len(self.veiculos_que_atravessaram) < self.num_veiculos:
+                self.rodada_atual += 1
+                self.contador_propostas = 0
+                # Adicionar goal para próxima decisão quando recebermos propostas suficientes
+                self.debug_print(f"Preparando rodada {self.rodada_atual}...")
+            else:
+                self.info_print("\n" + "="*50)
+                self.info_print("TODAS AS RODADAS CONCLUÍDAS!")
+                self.info_print(f"Ordem de travessia: {' -> '.join(self.veiculos_que_atravessaram)}")
+                self.info_print("="*50 + "\n")
+                self.stop_cycle()
+
         except ValueError as e:
             self.error_print(f"ERRO DE VALIDAÇÃO: {e}")
             self.error_print("Sistema não pode decidir vencedor. Encerrando.")
+            self.stop_cycle()
 
         except RuntimeError as e:
             self.error_print(f"ERRO DE EXECUÇÃO: {e}")
             self.error_print("Falha crítica no protocolo de negociação.")
+            self.stop_cycle()
 
         except Exception as e:
             self.error_print(f"ERRO INESPERADO: {type(e).__name__}: {e}")
             self.error_print("Sistema encerrando devido a erro não tratado.")
-
-        finally:
             self.stop_cycle()
 
 

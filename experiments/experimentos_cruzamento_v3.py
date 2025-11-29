@@ -1,7 +1,12 @@
 from maspy import *
 import time
+import sys
+import os
 
-from cruzamento_maspy_v3 import (
+# Adiciona o diretório pai ao path para imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from MASPY_learning.cruzamento_maspy_gui import (
     VeiculoAgent,
     CoordenadorAgent,
     CruzamentoEnvironment,

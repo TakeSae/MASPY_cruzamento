@@ -3,6 +3,6 @@
 *.txt
 !README.txt
 /venv_maspy
-/docs
-/artigo
+**/docs
+**/artigo
 **/gradicos_teste

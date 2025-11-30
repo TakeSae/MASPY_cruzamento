@@ -1,7 +1,8 @@
 /__pycache__
-/resultados/
+**/resultados/
 *.txt
 !README.txt
 /venv_maspy
 /docs
 /artigo
+**/gradicos_teste

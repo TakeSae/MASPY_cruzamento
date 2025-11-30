@@ -1,6 +1,6 @@
 # Relatório de Testes - Sistema Multi-Agentes com Q-Learning
 
-**Data:** 2025-11-29 12:13:24
+**Data:** 2025-11-30 10:02:53
 **Arquivo:** cruzamento_maspy_learning.py
 **Trabalho:** Trabalho 02 - SMA 2025.2 - UTFPR
 
@@ -8,10 +8,10 @@
 
 ## 📊 Resumo Executivo
 
-- **Total de testes:** 28
-- **Sucessos:** 28 ✓
-- **Falhas:** 0 ✗
-- **Taxa de sucesso:** 100.0%
+- **Total de testes:** 27
+- **Sucessos:** 25 ✓
+- **Falhas:** 2 ✗
+- **Taxa de sucesso:** 92.6%
 
 ---
 
@@ -69,11 +69,10 @@
 | 12 | Cenários de experimento (10/10) | ✅ PASS | - |
 | 13 | Criação de arquivo CSV | ✅ PASS | - |
 | 14 | Leitura de arquivo CSV | ✅ PASS | 3 linhas |
-| 15 | Matplotlib disponível | ✅ PASS | v3.10.7 |
-| 16 | Criação de gráfico matplotlib | ✅ PASS | - |
-| 17 | Arquivo cruzamento_maspy_learning.py | ✅ PASS | 77019 bytes |
-| 18 | Arquivo comparar_cenarios.py | ✅ PASS | 6591 bytes |
-| 19 | Arquivo README_MELHORIAS.md | ✅ PASS | 10779 bytes |
+| 15 | Matplotlib disponível | ❌ FAIL | Opcional - instale com: pip install matplotlib |
+| 16 | Arquivo cruzamento_maspy_learning.py | ✅ PASS | 81375 bytes |
+| 17 | Arquivo comparar_cenarios.py | ✅ PASS | 6591 bytes |
+| 18 | Arquivo README_MELHORIAS.md | ❌ FAIL | Não encontrado |
 
 ---
 
@@ -174,25 +173,11 @@ MASPY_learning/
 ### Status Geral: {"✅ APROVADO" if resultados['falhas'] == 0 else "⚠️ APROVADO COM RESSALVAS"}
 
 
-**Todos os testes passaram!** O sistema está completamente funcional e pronto para uso.
+**2 teste(s) falharam**, mas a maioria das funcionalidades está operacional.
 
-### Próximos Passos:
-1. Instalar MASPY: `pip install maspy`
-2. Instalar matplotlib (opcional): `pip install matplotlib numpy`
-3. Executar sistema: `python cruzamento_maspy_learning.py`
-4. Gerar comparações: `python comparar_cenarios.py --cenarios todos`
-
-### Funcionalidades Validadas:
-- ✅ Código sem erros de sintaxe
-- ✅ Sistema de métricas completo
-- ✅ Função de utilidade PEAS
-- ✅ Cálculos estatísticos
-- ✅ Documentação PEAS/SART
-- ✅ 10 cenários de experimento
-- ✅ Exportação CSV
-- ✅ Visualização gráfica
-- ✅ Comparação entre cenários
-
+### Ações Recomendadas:
+- ⚠️ **Matplotlib disponível**: Opcional - instale com: pip install matplotlib
+- ⚠️ **Arquivo README_MELHORIAS.md**: Não encontrado
 
 
 ---

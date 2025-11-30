@@ -5,6 +5,7 @@ import argparse
 import sys
 import signal
 import os
+from datetime import datetime
 
 # Handler para Ctrl+C
 def signal_handler(sig, frame):
@@ -47,9 +48,82 @@ def erro(texto):
 def aviso(texto):
     return cor(texto, Cores.AMARELO)
 
+def info(texto):
+    return cor(texto, Cores.CIANO)
+
 def destaque(texto):
     return cor(texto, Cores.BOLD + Cores.BRANCO)
 
+
+# FUNÇÕES DE ORGANIZAÇÃO DE RESULTADOS POR TIMESTAMP
+
+def criar_diretorio_resultados(nome_experimento="padrao"):
+    """
+    Cria estrutura de diretórios para salvar resultados com timestamp.
+    Similar ao sistema do cruzamento_maspy_v3.
+
+    Estrutura:
+        resultados/
+            YYYYMMDD_HHMMSS/
+                graficos/
+                metricas_aprendizado.csv
+                info_execucao.txt
+
+    Returns:
+        str: Caminho do diretório criado (ex: resultados/20251129_153045)
+    """
+    import os
+    from datetime import datetime
+
+    # Criar timestamp
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    # Criar estrutura de pastas
+    dir_base = "resultados"
+    dir_execucao = os.path.join(dir_base, timestamp)
+    dir_graficos = os.path.join(dir_execucao, "graficos")
+
+    os.makedirs(dir_graficos, exist_ok=True)
+
+    # Criar arquivo de informações da execução
+    info_path = os.path.join(dir_execucao, "info_execucao.txt")
+    with open(info_path, 'w') as f:
+        f.write(f"Execução do Sistema Multi-Agentes com Q-Learning\n")
+        f.write(f"="*60 + "\n\n")
+        f.write(f"Data/Hora: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write(f"Experimento: {nome_experimento}\n")
+        f.write(f"Timestamp: {timestamp}\n")
+
+    print(f"\n{sucesso('✓')} Diretório de resultados criado: {dir_execucao}/")
+
+    # Criar symlink para última execução
+    link_ultima = os.path.join(dir_base, "ultima_execucao")
+    if os.path.islink(link_ultima) or os.path.exists(link_ultima):
+        os.remove(link_ultima)
+    os.symlink(timestamp, link_ultima)
+
+    return dir_execucao
+
+
+def salvar_info_adicional(dir_execucao, info_dict):
+    """
+    Adiciona informações extras ao arquivo info_execucao.txt.
+
+    Args:
+        dir_execucao: Caminho do diretório da execução
+        info_dict: Dicionário com informações adicionais
+    """
+    import os
+
+    info_path = os.path.join(dir_execucao, "info_execucao.txt")
+
+    with open(info_path, 'a') as f:
+        f.write("\n" + "="*60 + "\n")
+        f.write("Informações Adicionais:\n")
+        f.write("="*60 + "\n\n")
+
+        for chave, valor in info_dict.items():
+            f.write(f"{chave}: {valor}\n")
 
 
 # SISTEMA DE LOG LEVELS
@@ -336,6 +410,7 @@ class MetricsCollector:
             "tempo_inicio": None,
             "tempo_fim": None
         }
+        self.dir_execucao = None  # Diretório da execução atual
 
     def registrar_agente(self, nome_agente):
         """Registra um novo agente para coleta de métricas."""
@@ -591,9 +666,20 @@ class MetricsCollector:
 
         return "\n".join(relatorio)
 
-    def exportar_csv(self, caminho="metricas_aprendizado.csv"):
-        """Exporta métricas para arquivo CSV."""
+    def exportar_csv(self, caminho=None):
+        """
+        Exporta métricas para arquivo CSV.
+        Se dir_execucao estiver definido, salva no diretório timestampado.
+        """
         import csv
+        import os
+
+        # Determinar caminho do CSV
+        if caminho is None:
+            if self.dir_execucao:
+                caminho = os.path.join(self.dir_execucao, "metricas_aprendizado.csv")
+            else:
+                caminho = "metricas_aprendizado.csv"
 
         with open(caminho, 'w', newline='') as f:
             writer = csv.writer(f)
@@ -614,21 +700,33 @@ class MetricsCollector:
 
         print(f"\n{sucesso('✓')} Métricas exportadas para: {caminho}")
 
-    def gerar_graficos(self, diretorio="graficos"):
+    def gerar_graficos(self, diretorio=None):
         """
         Gera gráficos de visualização das métricas de aprendizado.
         Cria múltiplos gráficos para análise detalhada.
+        Se dir_execucao estiver definido, salva no diretório timestampado.
         """
         try:
             import matplotlib.pyplot as plt
             import numpy as np
             import os
 
+            # Determinar diretório dos gráficos
+            if diretorio is None:
+                if self.dir_execucao:
+                    diretorio = os.path.join(self.dir_execucao, "graficos")
+                else:
+                    diretorio = "graficos"
+
             # Criar diretório se não existir
             if not os.path.exists(diretorio):
                 os.makedirs(diretorio)
 
+            print(f"\n{info('i')} Gerando gráficos de visualização (5 gráficos)...")
+            print(f"{info('i')} Diretório: {diretorio}")
+
             # Gráfico 1: Recompensa por Episódio (todos os agentes)
+            print(f"{info('>')} [1/5] Gerando gráfico de recompensa por episódio...")
             plt.figure(figsize=(12, 6))
             for nome_agente, metricas in self.metricas_por_agente.items():
                 if metricas["recompensas_por_episodio"]:
@@ -644,9 +742,10 @@ class MetricsCollector:
             caminho_grafico1 = os.path.join(diretorio, 'recompensa_por_episodio.png')
             plt.savefig(caminho_grafico1, dpi=300, bbox_inches='tight')
             plt.close()
-            print(f"{sucesso('✓')} Gráfico 1 salvo: {caminho_grafico1}")
+            print(f"{sucesso('✓')} [1/5] Gráfico salvo: recompensa_por_episodio.png")
 
             # Gráfico 2: Recompensa Acumulada
+            print(f"{info('>')} [2/5] Gerando gráfico de recompensa acumulada...")
             plt.figure(figsize=(12, 6))
             for nome_agente, metricas in self.metricas_por_agente.items():
                 if metricas["recompensas_por_episodio"]:
@@ -662,9 +761,10 @@ class MetricsCollector:
             caminho_grafico2 = os.path.join(diretorio, 'recompensa_acumulada.png')
             plt.savefig(caminho_grafico2, dpi=300, bbox_inches='tight')
             plt.close()
-            print(f"{sucesso('✓')} Gráfico 2 salvo: {caminho_grafico2}")
+            print(f"{sucesso('✓')} [2/5] Gráfico salvo: recompensa_acumulada.png")
 
             # Gráfico 3: Média Móvel (janela=5)
+            print(f"{info('>')} [3/5] Gerando gráfico de média móvel...")
             plt.figure(figsize=(12, 6))
             for nome_agente, metricas in self.metricas_por_agente.items():
                 if metricas["recompensas_por_episodio"] and len(metricas["recompensas_por_episodio"]) >= 5:
@@ -686,20 +786,24 @@ class MetricsCollector:
             caminho_grafico3 = os.path.join(diretorio, 'media_movel.png')
             plt.savefig(caminho_grafico3, dpi=300, bbox_inches='tight')
             plt.close()
-            print(f"{sucesso('✓')} Gráfico 3 salvo: {caminho_grafico3}")
+            print(f"{sucesso('✓')} [3/5] Gráfico salvo: media_movel.png")
 
             # Gráfico 4: Comparação de Desempenho (barras)
+            print(f"{info('>')} [4/5] Gerando gráfico de comparação de desempenho...")
             plt.figure(figsize=(10, 6))
             nomes = []
             recompensas_medias = []
             taxas_acerto = []
 
+            # Filtrar apenas agentes que realmente tomam ações (coordenadores)
             for nome_agente, metricas in self.metricas_por_agente.items():
-                nomes.append(nome_agente.replace('_', '\n'))
-                recompensas_medias.append(metricas["recompensa_media"])
                 total = metricas["acoes_corretas"] + metricas["acoes_incorretas"]
-                taxa = (metricas["acoes_corretas"] / total * 100) if total > 0 else 0
-                taxas_acerto.append(taxa)
+                # Só incluir agentes que fizeram pelo menos uma ação
+                if total > 0 or "Coordenador" in nome_agente:
+                    nomes.append(nome_agente.replace('_', '\n'))
+                    recompensas_medias.append(metricas["recompensa_media"])
+                    taxa = (metricas["acoes_corretas"] / total * 100) if total > 0 else 0
+                    taxas_acerto.append(taxa)
 
             x = np.arange(len(nomes))
             width = 0.35
@@ -725,9 +829,10 @@ class MetricsCollector:
             caminho_grafico4 = os.path.join(diretorio, 'comparacao_desempenho.png')
             plt.savefig(caminho_grafico4, dpi=300, bbox_inches='tight')
             plt.close()
-            print(f"{sucesso('✓')} Gráfico 4 salvo: {caminho_grafico4}")
+            print(f"{sucesso('✓')} [4/5] Gráfico salvo: comparacao_desempenho.png")
 
             # Gráfico 5: Convergência (se houver dados suficientes)
+            print(f"{info('>')} [5/5] Gerando gráfico de análise de convergência...")
             plt.figure(figsize=(12, 6))
             for nome_agente, metricas in self.metricas_por_agente.items():
                 if metricas["recompensas_por_episodio"] and len(metricas["recompensas_por_episodio"]) >= 10:
@@ -755,9 +860,10 @@ class MetricsCollector:
             caminho_grafico5 = os.path.join(diretorio, 'analise_convergencia.png')
             plt.savefig(caminho_grafico5, dpi=300, bbox_inches='tight')
             plt.close()
-            print(f"{sucesso('✓')} Gráfico 5 salvo: {caminho_grafico5}")
+            print(f"{sucesso('✓')} [5/5] Gráfico salvo: analise_convergencia.png")
 
-            print(f"\n{sucesso('✓')} Todos os gráficos salvos em: {diretorio}/")
+            print(f"\n{sucesso('✓')} Todos os 5 gráficos foram salvos com sucesso!")
+            print(f"{info('i')} Localização: {diretorio}/")
 
         except ImportError:
             print(f"\n{aviso('⚠')} matplotlib não está instalado. Pulando geração de gráficos.")
@@ -1281,6 +1387,14 @@ class CoordenadorLearningAgent(LoggableAgent):
                     melhor_veiculo = max(veiculos_disponiveis,
                                         key=lambda v: env.prioridades[v])
 
+                    # Verificar se é a escolha ótima (maior prioridade disponível)
+                    prioridade_escolhida = env.prioridades[melhor_veiculo]
+                    melhor_prioridade = max(env.prioridades[v] for v in veiculos_disponiveis)
+                    escolha_correta = (prioridade_escolhida == melhor_prioridade)
+
+                    # Registrar ação
+                    METRICS_COLLECTOR.registrar_acao(self.my_name, escolha_correta)
+
                     # Simular recompensa
                     estado_teste[env.veiculo_map[melhor_veiculo]] = 1
                     recompensa_episodio += CruzamentoLearningEnvironment._reward_correto
@@ -1393,6 +1507,12 @@ class VeiculoLearningAgent(LoggableAgent):
         Monitora o estado do ambiente e aprende com as experiências.
         Este agente observa passivamente o aprendizado do coordenador.
         """
+        # Verificar se o treinamento foi concluído
+        if not CruzamentoLearningEnvironment._em_treinamento:
+            self._update_belief("status", "concluido")
+            self.stop_cycle()
+            return
+
         self._update_belief("status", "observando")
 
         self.debug_print(f"[{self.my_name}] Veículo {self.veiculo_id} (prioridade={self.prioridade}) observando cruzamento...")
@@ -1400,7 +1520,7 @@ class VeiculoLearningAgent(LoggableAgent):
         # Registrar que o veículo está ativo
         tentativas = self.get(Belief("tentativas", Any))
         if tentativas:
-            self._update_belief("tentativas", tentativas.args[0] + 1)
+            self._update_belief("tentativas", tentativas.values + 1)
 
     def registrar_resultado(self, escolhido, recompensa):
         """
@@ -1421,12 +1541,12 @@ class VeiculoLearningAgent(LoggableAgent):
             # Atualizar beliefs
             sucessos = self.get(Belief("sucessos", Any))
             if recompensa > 0:
-                novo_valor = (sucessos.args[0] if sucessos else 0) + 1
+                novo_valor = (sucessos.values if sucessos else 0) + 1
                 self._update_belief("sucessos", novo_valor)
                 METRICS_COLLECTOR.registrar_acao(self.my_name, True)
             else:
                 falhas = self.get(Belief("falhas", Any))
-                novo_valor = (falhas.args[0] if falhas else 0) + 1
+                novo_valor = (falhas.values if falhas else 0) + 1
                 self._update_belief("falhas", novo_valor)
                 METRICS_COLLECTOR.registrar_acao(self.my_name, False)
 
@@ -1439,9 +1559,9 @@ class VeiculoLearningAgent(LoggableAgent):
         return {
             "veiculo_id": self.veiculo_id,
             "prioridade": self.prioridade,
-            "tentativas": tentativas.args[0] if tentativas else 0,
-            "sucessos": sucessos.args[0] if sucessos else 0,
-            "falhas": falhas.args[0] if falhas else 0,
+            "tentativas": tentativas.values if tentativas else 0,
+            "sucessos": sucessos.values if sucessos else 0,
+            "falhas": falhas.values if falhas else 0,
             "recompensa_acumulada": self.recompensa_acumulada,
             "total_acoes": len(self.historico_acoes)
         }
@@ -1722,6 +1842,13 @@ if __name__ == "__main__":
         if NUM_VEICULOS < 2:
             raise ValueError("Sistema requer pelo menos 2 veículos")
 
+        # Criar diretório de resultados com timestamp
+        exp_nome = args.experimento if len(sys.argv) > 1 else config.get('experimento', 'customizado')
+        dir_resultados = criar_diretorio_resultados(exp_nome)
+
+        # Definir diretório no MetricsCollector global
+        METRICS_COLLECTOR.dir_execucao = dir_resultados
+
         # Inicializar Admin
         Admin()
 
@@ -1779,18 +1906,40 @@ if __name__ == "__main__":
         print(f"{titulo('Iniciando sistema multi-agentes...')}\n")
         Admin().start_system()
 
+        # AGUARDAR CONFIRMAÇÃO DO USUÁRIO PARA CONTINUAR
+        print("\n" + "="*70)
+        print(aviso("Treinamento MASPY concluído!"))
+        print(info("Pressione ENTER para continuar com a geração de gráficos e relatórios..."))
+        print("="*70)
+        try:
+            input()
+        except (EOFError, KeyboardInterrupt):
+            print("\nContinuando automaticamente...")
+
         # Registrar tempo de fim
         METRICS_COLLECTOR.metricas_globais["tempo_fim"] = time.time()
 
         # Gerar e exibir relatório de métricas
         print(METRICS_COLLECTOR.gerar_relatorio())
 
-        # Exportar métricas para CSV
-        METRICS_COLLECTOR.exportar_csv("metricas_aprendizado.csv")
+        # Exportar métricas para CSV (usa diretório timestampado automaticamente)
+        METRICS_COLLECTOR.exportar_csv()
 
-        # Gerar gráficos de visualização
+        # Gerar gráficos de visualização (usa diretório timestampado automaticamente)
         print(f"\n{titulo('Gerando gráficos de visualização...')}")
-        METRICS_COLLECTOR.gerar_graficos("graficos")
+        METRICS_COLLECTOR.gerar_graficos()
+
+        # Salvar informações adicionais da execução
+        tempo_total = METRICS_COLLECTOR.metricas_globais["tempo_fim"] - METRICS_COLLECTOR.metricas_globais["tempo_inicio"]
+        info_adicional = {
+            "Número de episódios": episodios,
+            "Número de veículos": NUM_VEICULOS,
+            "Tempo total de execução (s)": f"{tempo_total:.2f}",
+            "Recompensa por escolha correta": reward,
+            "Multiplicador de penalidade": penalidade,
+            "Log level": log_level.name
+        }
+        salvar_info_adicional(dir_resultados, info_adicional)
 
         # Mostrar estatísticas dos veículos
         print("\n" + titulo("ESTATÍSTICAS DOS AGENTES DE VEÍCULOS"))
@@ -1818,10 +1967,15 @@ if __name__ == "__main__":
         print("\n" + "="*70)
         print(sucesso("SISTEMA ENCERRADO COM SUCESSO"))
         print("="*70)
+        print(f"\n{destaque('Resultados salvos em:')} {dir_resultados}/")
         print(f"\n{destaque('Arquivos gerados:')}")
         print(f"  • metricas_aprendizado.csv - Dados de métricas")
-        print(f"  • graficos/ - Visualizações gráficas")
+        print(f"  • graficos/ - Visualizações gráficas (5 gráficos)")
+        print(f"  • info_execucao.txt - Informações da execução")
+        print(f"\n{destaque('Acesso rápido:')}")
+        print(f"  • resultados/ultima_execucao/ - Symlink para esta execução")
         print(f"\n{aviso('Dica:')} Execute múltiplos cenários para gerar comparações automáticas!")
+        print(f"          python comparar_cenarios.py --cenarios todos")
 
     except ValueError as e:
         print(f"\n[ERRO DE CONFIGURAÇÃO] {e}")

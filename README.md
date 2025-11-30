@@ -9,6 +9,30 @@
 
 ---
 
+## Navegação Rápida
+
+**Trabalhos:**
+- [Trabalho 01 - Sistema de Negociação](Trabalho_01_Negociacao/) - Protocolo de negociação baseado em prioridades
+- [Trabalho 02 - Sistema de Aprendizado](Trabalho_02_Aprendizado/) - Aprendizado por reforço com Q-Learning
+
+**Documentação:**
+- [Como Executar](#como-executar) - Instruções de execução
+- [Estrutura do Projeto](#estrutura-do-projeto) - Organização dos arquivos
+- [Arquitetura](#arquitetura-do-sistema) - Detalhes técnicos
+- [Experimentos](#experimentos-disponíveis) - Cenários de teste
+
+**Validação:**
+- [Conformidade Trabalho 02](Trabalho_02_Aprendizado/CONFORMIDADE_TRABALHO02.md) - Análise de requisitos
+- [Relatório de Testes](Trabalho_02_Aprendizado/RELATORIO_TESTES.md) - 28/28 testes (100%)
+
+**Teste Rápido:**
+```bash
+# Executa teste completo do projeto (estrutura, dependências, ambos trabalhos)
+./testar_projeto.sh
+```
+
+---
+
 ## Descrição
 
 Sistema multi-agentes que combina negociação e aprendizado por reforço (Q-Learning) para coordenação de veículos autônomos em cruzamento. Implementado com framework MASPY, apresenta duas vertentes principais:
@@ -38,31 +62,64 @@ Sistema multi-agentes que combina negociação e aprendizado por reforço (Q-Lea
 
 ```
 MASPY_cruzamento/
-├── Trabalho 01 - Sistema de Negociacao/
+│
+├── Trabalho_01_Negociacao/             # TRABALHO 01 - Sistema de Negociação
+│   ├── README.md                       # Documentação completa do Trabalho 01
 │   ├── cruzamento_maspy_v3.py          # Sistema principal (RECOMENDADO)
-│   ├── experimentos_cruzamento_v3.py   # Suite de experimentos v3
-│   ├── coletar_dados_v3.sh             # Script de coleta v3
-│   ├── cruzamento_maspy_v2.py          # Sistema v2 (legado)
-│   ├── experimentos_cruzamento.py      # Experimentos v2
-│   ├── coletar_dados.sh                # Script v2
-│   ├── run_all_experiments.py          # Executor de experimentos
-│   ├── analisar_resultados.py          # Analisador de resultados
-│   └── resultados/                     # Resultados organizados por timestamp
+│   ├── cruzamento_maspy_v2.py          # Versão legado
+│   ├── cruzamento_maspy_v3_analise_PEAS.md  # Documentação PEAS
+│   ├── experiments/
+│   │   ├── experimentos_cruzamento_v3.py    # Suite experimentos v3
+│   │   ├── experimentos_cruzamento.py       # Suite v2 (legado)
+│   │   └── run_all_experiments.py           # Executor de todos
+│   ├── scripts/
+│   │   ├── coletar_dados_v3.sh              # Coleta v3 (RECOMENDADO)
+│   │   └── coletar_dados.sh                 # Coleta v2 (legado)
+│   ├── analysis/
+│   │   └── analisar_resultados.py           # Analisador
+│   └── resultados/                          # Resultados por timestamp
+│       ├── YYYYMMDD_HHMMSS/
+│       │   ├── info_sessao.txt
+│       │   ├── resultados_completos.txt
+│       │   ├── resumo.txt
+│       │   ├── metricas.txt
+│       │   └── vencedores.txt
+│       └── ultima_execucao -> YYYYMMDD_HHMMSS
 │
-├── Trabalho 02 - Sistema de Aprendizado (MASPY_learning)/
+├── Trabalho_02_Aprendizado/            # TRABALHO 02 - Sistema de Aprendizado
+│   ├── README.md                       # Documentação completa do Trabalho 02
 │   ├── cruzamento_maspy_learning.py    # Sistema Q-Learning (PRINCIPAL)
-│   ├── comparar_cenarios.py            # Comparador de cenarios
-│   ├── executar_testes.py              # Suite de testes automatizados
-│   ├── README_MELHORIAS.md             # Documentacao detalhada
-│   ├── RELATORIO_TESTES.md             # Relatorio de validacao
-│   ├── metricas_aprendizado.csv        # Metricas exportadas
-│   └── graficos/                       # Visualizacoes geradas
-│       ├── recompensa_por_episodio.png
-│       ├── recompensa_acumulada.png
-│       ├── media_movel.png
-│       ├── comparacao_desempenho.png
-│       └── analise_convergencia.png
+│   ├── comparar_cenarios.py            # Comparador de cenários
+│   ├── executar_testes.py              # Suite de 28 testes
+│   ├── testar_graficos.py              # Teste rápido matplotlib
+│   ├── cruzamento_maspy_gui.py         # Tentativa GUI (descontinuada)
+│   ├── README_MELHORIAS.md             # Documentação detalhada
+│   ├── RELATORIO_TESTES.md             # Relatório validação (28/28)
+│   ├── CONFORMIDADE_TRABALHO02.md      # Análise de conformidade
+│   └── resultados/                     # Resultados por timestamp
+│       ├── YYYYMMDD_HHMMSS/
+│       │   ├── metricas_aprendizado.csv
+│       │   ├── info_execucao.txt
+│       │   └── graficos/
+│       │       ├── recompensa_por_episodio.png
+│       │       ├── recompensa_acumulada.png
+│       │       ├── media_movel.png
+│       │       ├── comparacao_desempenho.png
+│       │       └── analise_convergencia.png
+│       └── ultima_execucao -> YYYYMMDD_HHMMSS
 │
+├── docs/                               # Documentação geral
+│   └── 2025-2-SMA-Trabalho-02.pdf      # Especificação do trabalho
+│
+├── artigo/                             # Materiais para artigo e apresentação
+│   ├── CONTEUDO_NECESSARIO.md
+│   ├── referencias.md
+│   ├── SLIDES_ESTRUTURA.md
+│   └── ...
+│
+├── venv_maspy/                         # Ambiente virtual Python
+│
+└── README.md                           # Este arquivo (visão geral)
 ```
 
 ---
@@ -253,7 +310,8 @@ pip install matplotlib numpy
 #### **Opção 1: Coletar Dados v3 (RECOMENDADO)**
 
 ```bash
-./coletar_dados_v3.sh
+cd Trabalho_01_Negociacao
+./scripts/coletar_dados_v3.sh
 ```
 
 **Gera automaticamente:**
@@ -276,16 +334,20 @@ cat resultados/ultima_execucao/vencedores.txt
 #### **Opção 2: Executar Bateria de Experimentos**
 
 ```bash
+cd Trabalho_01_Negociacao
+
 # v3 (RECOMENDADO - logs limpos)
-python experimentos_cruzamento_v3.py
+python experiments/experimentos_cruzamento_v3.py
 
 # v2 (legado - logs completos)
-python experimentos_cruzamento.py
+python experiments/experimentos_cruzamento.py
 ```
 
 #### **Opção 3: Executar Sistema Principal**
 
 ```bash
+cd Trabalho_01_Negociacao
+
 # v3 (RECOMENDADO)
 python cruzamento_maspy_v3.py
 
@@ -296,8 +358,10 @@ python cruzamento_maspy_v2.py
 #### **Opção 4: Executar Experimento Individual**
 
 ```bash
+cd Trabalho_01_Negociacao
+
 # Exemplo: Experimento 1
-python -c "from experimentos_cruzamento_v3 import experimento_1_base; experimento_1_base()"
+python -c "from experiments.experimentos_cruzamento_v3 import experimento_1_base; experimento_1_base()"
 ```
 
 ---
@@ -307,19 +371,21 @@ python -c "from experimentos_cruzamento_v3 import experimento_1_base; experiment
 #### **Opção 1: Executar com cenário padrão (RECOMENDADO)**
 
 ```bash
-cd MASPY_learning
+cd Trabalho_02_Aprendizado
 python cruzamento_maspy_learning.py
 ```
 
 **Saída gerada:**
 - Relatório de métricas no terminal
-- `metricas_aprendizado.csv` - Dados exportados
-- `graficos/` - 5 visualizações PNG
+- `resultados/YYYYMMDD_HHMMSS/metricas_aprendizado.csv` - Dados exportados
+- `resultados/YYYYMMDD_HHMMSS/graficos/` - 5 visualizações PNG
+- `resultados/YYYYMMDD_HHMMSS/info_execucao.txt` - Metadados da execução
+- `resultados/ultima_execucao/` - Symlink para última execução
 
 #### **Opção 2: Executar cenário específico**
 
 ```bash
-cd MASPY_learning
+cd Trabalho_02_Aprendizado
 
 # Exemplos de cenários disponíveis:
 python cruzamento_maspy_learning.py --experimento base
@@ -331,7 +397,7 @@ python cruzamento_maspy_learning.py --experimento extremos
 #### **Opção 3: Configurar parâmetros de treinamento**
 
 ```bash
-cd MASPY_learning
+cd Trabalho_02_Aprendizado
 
 # Alterar número de episódios (default: 100)
 python cruzamento_maspy_learning.py --episodios 200
@@ -357,7 +423,7 @@ python cruzamento_maspy_learning.py --experimento base --episodios 150 --reward 
 #### **Opção 4: Comparar múltiplos cenários**
 
 ```bash
-cd MASPY_learning
+cd Trabalho_02_Aprendizado
 
 # Comparar cenários específicos
 python comparar_cenarios.py --cenarios base emergencias pesados --episodios 100
@@ -378,7 +444,7 @@ python comparar_cenarios.py --cenarios todos --verbose
 #### **Opção 5: Executar suite de testes**
 
 ```bash
-cd MASPY_learning
+cd Trabalho_02_Aprendizado
 
 # Executar todos os 28 testes
 python executar_testes.py
@@ -507,13 +573,13 @@ A versão 3 inclui documentação PEAS completa:
 - **Actuators:** Ações disponíveis aos agentes
 - **Sensors:** Percepções dos agentes
 
-Localização: `cruzamento_maspy_v3_analise_PEAS.md`
+Localização: [Trabalho_01_Negociacao/cruzamento_maspy_v3_analise_PEAS.md](Trabalho_01_Negociacao/cruzamento_maspy_v3_analise_PEAS.md)
 
 ### **Trabalho 02 - Documentação PEAS e SART**
 
 A implementação Q-Learning inclui documentação completa integrada ao código:
 
-**PEAS (linhas 181-299 em cruzamento_maspy_learning.py):**
+**PEAS (linhas 182-370 em cruzamento_maspy_learning.py):**
 - Performance: Função de utilidade U = α×taxa_acerto + β×convergência + γ×recompensa
 - Environment: 10 cenários de teste diferentes
 - Actuators: escolher_veiculo(), iniciar_aprendizado()
@@ -526,8 +592,9 @@ A implementação Q-Learning inclui documentação completa integrada ao código
 - Transitions: Determinísticas (escolher → marcar como atravessado)
 
 **Arquivos de documentação:**
-- `MASPY_learning/README_MELHORIAS.md` - Documentação completa das 5 melhorias
-- `MASPY_learning/RELATORIO_TESTES.md` - Relatório de validação (28 testes)
+- [Trabalho_02_Aprendizado/README.md](Trabalho_02_Aprendizado/README.md) - Documentação completa do Trabalho 02
+- [Trabalho_02_Aprendizado/RELATORIO_TESTES.md](Trabalho_02_Aprendizado/RELATORIO_TESTES.md) - Relatório de validação (28 testes)
+- [Trabalho_02_Aprendizado/CONFORMIDADE_TRABALHO02.md](Trabalho_02_Aprendizado/CONFORMIDADE_TRABALHO02.md) - Análise de conformidade com requisitos
 
 ---
 
@@ -572,7 +639,7 @@ Optou-se por focar em visualização via gráficos estáticos (matplotlib) ao in
 
 ## Histórico de Versões
 
-### **Trabalho 02 - Sistema de Aprendizado** (2025-11-29) - ATUAL
+### **Trabalho 02 - Sistema de Aprendizado** (2025-11-30) - ATUAL
 - Implementação completa de Q-Learning com MASPY
 - CoordenadorLearningAgent com aprendizado por reforço
 - VeiculoLearningAgent para observação e métricas individuais
@@ -580,8 +647,11 @@ Optou-se por focar em visualização via gráficos estáticos (matplotlib) ao in
 - Função de utilidade PEAS (U = α×acerto + β×convergência + γ×recompensa)
 - ScenarioComparator para análise comparativa
 - 10 cenários de teste diferentes (2-10 veículos)
-- Documentação PEAS completa integrada ao código (linhas 181-299)
+- Documentação PEAS completa integrada ao código (linhas 182-370)
 - Documentação SART (States, Actions, Rewards, Transitions)
+- Organização de resultados por timestamp (resultados/YYYYMMDD_HHMMSS/)
+- Symlink ultima_execucao para acesso rápido aos resultados
+- Arquivo info_execucao.txt com metadados de cada execução
 - Sistema de exportação CSV
 - 5 tipos de gráficos matplotlib:
   1. Recompensa por episódio

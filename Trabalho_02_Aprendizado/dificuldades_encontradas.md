@@ -225,9 +225,11 @@ novo_valor = (sucessos.values if sucessos else 0) + 1
    - Campos `acoes_corretas` e `acoes_incorretas` permaneciam em 0
    - Cálculo: `taxa = (0 / 0) = 0%`
 
-3. **Possível cache ou execuções sobrepostas:**
+3. **Acúmulo de dados entre execuções:**
    - Visualizando gráficos de timestamp errado
    - Diretório 20251130_103740 era experimento "padrao", não "dois_veiculos"
+   - MetricsCollector é um singleton global que mantém estado entre execuções
+   - Sem reset explícito, métricas antigas se misturam com novas
 
 **Solução Implementada:**
 
@@ -271,11 +273,43 @@ for ep in range(min(20, self.num_episodes)):
     # ... resto do código ...
 ```
 
+**3. Reset automático de métricas no início de cada execução:**
+
+Para evitar acúmulo de dados de execuções anteriores, implementado reset automático:
+
+```python
+# Adicionado método reset() na classe MetricsCollector (linha 415-427)
+def reset(self):
+    """
+    Reseta todas as métricas para uma nova execução.
+    IMPORTANTE: Deve ser chamado no início de cada execução para evitar
+    acúmulo de dados de execuções anteriores.
+    """
+    self.metricas_por_agente.clear()
+    self.metricas_globais = {
+        "episodios_totais": 0,
+        "tempo_inicio": None,
+        "tempo_fim": None
+    }
+    self.dir_execucao = None
+
+# Chamado no início do main (linha 1859-1861)
+if __name__ == "__main__":
+    # ... validações ...
+
+    # RESET: Limpar métricas de execuções anteriores
+    # Isso garante que cada execução tenha dados limpos
+    METRICS_COLLECTOR.reset()
+
+    # ... resto da execução ...
+```
+
 **Resultado Esperado:**
 - Gráfico de comparação mostra apenas CoordenadorLearning (agente que aprende)
 - Taxa de acerto próxima de 100% (se aprendizado converge)
 - Veículos observadores não aparecem no gráfico (evita confusão visual)
 - Métricas precisas refletindo desempenho real do aprendizado
+- **Cada execução tem dados limpos, sem contaminação de execuções anteriores**
 
 **Observações:**
 
@@ -323,14 +357,75 @@ matplotlib>=3.10.0  # Obrigatório para gerar os 5 tipos de gráficos no Trabalh
 
 ---
 
-## Próximos Passos
+## 8. Gráficos Mostrando Apenas 20 Episódios e Limitações Conhecidas
 
-1. Testar se a solução de `stop_cycle()` nos veículos resolve o travamento
-2. Verificar se indicadores de progresso aparecem corretamente
-3. Executar suite completa de 28 testes novamente
-4. Testar com cenários maiores (10 veículos, 100 episódios)
-5. Documentar outras dificuldades que surgirem
+**Problema:** Gráficos mostravam apenas 20 episódios, independente de quantos foram solicitados (ex: 100 episódios).
+
+**Sintomas:**
+- Usuário executa com 100 episódios
+- Gráficos mostram apenas episódios 1-20
+- Dados truncados, não representam execução completa
+
+**Causa:**
+Código limitava coleta de métricas a no máximo 20 episódios:
+```python
+for ep in range(min(20, self.num_episodes)):  # Limitação artificial
+```
+
+**Solução:**
+Removida limitação, agora usa todos os episódios solicitados:
+```python
+num_episodios_teste = self.num_episodes
+for ep in range(num_episodios_teste):
+```
+
+**Melhorias Adicionais nos Gráficos:**
+
+1. **Títulos mais precisos:**
+   - Deixam claro que são "Validação Pós-Treinamento"
+   - Evita confusão sobre quando os dados foram coletados
+
+2. **Eixo X renomeado:**
+   - De "Episódio" para "Episódio de Validação"
+   - Mais transparente sobre a natureza dos dados
+
+**Limitações Conhecidas (não resolvidas):**
+
+1. **Recompensa sempre constante:**
+   - Episódios de validação usam política ótima (max por prioridade)
+   - Todas as escolhas são perfeitas → recompensa = 1000 sempre
+   - Gráficos são linhas horizontais sem variação
+   - **Não é bug:** Mostra que aprendizado funcionou perfeitamente
+   - **Limitação:** Não mostra o progresso DURANTE o treinamento
+
+2. **Gráfico de média móvel sem utilidade:**
+   - Com recompensas constantes, média móvel também é constante
+   - Poderia ser removido se considerado desnecessário
+
+3. **Convergência marcada artificialmente:**
+   - Mostra convergência no episódio 10
+   - Mas todas as recompensas são perfeitas desde episódio 1
+   - Apenas confirma consistência da política aprendida
+
+**Contexto Técnico:**
+Os gráficos mostram episódios de VALIDAÇÃO (pós-treinamento), não episódios de TREINAMENTO. Durante validação, o agente usa a política já aprendida, que é ótima, então sempre escolhe corretamente. Para ver a evolução do aprendizado, seria necessário capturar métricas DURANTE o `model.learn()`, o que o MASPY não expõe facilmente.
+
+**Status:** PARCIALMENTE RESOLVIDO ✓
+- ✅ Limite de 20 episódios removido
+- ✅ Títulos e labels melhorados
+- ⚠️ Limitações conhecidas documentadas (não são bugs)
 
 ---
 
-**Última atualização:** 2025-11-30
+## Próximos Passos
+
+1. ✅ ~~Testar se a solução de `stop_cycle()` nos veículos resolve o travamento~~ - Resolvido com prompt input()
+2. ✅ ~~Verificar se indicadores de progresso aparecem corretamente~~ - Funcionando
+3. ✅ ~~Remover limite de 20 episódios nos gráficos~~ - Resolvido
+4. Executar suite completa de testes novamente
+5. Testar com cenários maiores (10 veículos, 100+ episódios)
+6. (Opcional) Implementar captura de métricas durante treinamento para gráficos mais informativos
+
+---
+
+**Última atualização:** 2025-12-04

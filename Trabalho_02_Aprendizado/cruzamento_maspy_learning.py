@@ -412,6 +412,20 @@ class MetricsCollector:
         }
         self.dir_execucao = None  # Diretório da execução atual
 
+    def reset(self):
+        """
+        Reseta todas as métricas para uma nova execução.
+        IMPORTANTE: Deve ser chamado no início de cada execução para evitar
+        acúmulo de dados de execuções anteriores.
+        """
+        self.metricas_por_agente.clear()
+        self.metricas_globais = {
+            "episodios_totais": 0,
+            "tempo_inicio": None,
+            "tempo_fim": None
+        }
+        self.dir_execucao = None
+
     def registrar_agente(self, nome_agente):
         """Registra um novo agente para coleta de métricas."""
         if nome_agente not in self.metricas_por_agente:
@@ -734,9 +748,9 @@ class MetricsCollector:
                     recompensas = [ep["recompensa"] for ep in metricas["recompensas_por_episodio"]]
                     plt.plot(episodios, recompensas, marker='o', label=nome_agente, linewidth=2)
 
-            plt.xlabel('Episódio', fontsize=12)
+            plt.xlabel('Episódio de Validação', fontsize=12)
             plt.ylabel('Recompensa', fontsize=12)
-            plt.title('Recompensa por Episódio - Todos os Agentes', fontsize=14, fontweight='bold')
+            plt.title('Recompensa por Episódio - Validação Pós-Treinamento', fontsize=14, fontweight='bold')
             plt.legend()
             plt.grid(True, alpha=0.3)
             caminho_grafico1 = os.path.join(diretorio, 'recompensa_por_episodio.png')
@@ -753,9 +767,9 @@ class MetricsCollector:
                     recompensas_acum = np.cumsum([ep["recompensa"] for ep in metricas["recompensas_por_episodio"]])
                     plt.plot(episodios, recompensas_acum, marker='o', label=nome_agente, linewidth=2)
 
-            plt.xlabel('Episódio', fontsize=12)
+            plt.xlabel('Episódio de Validação', fontsize=12)
             plt.ylabel('Recompensa Acumulada', fontsize=12)
-            plt.title('Recompensa Acumulada - Progresso de Aprendizado', fontsize=14, fontweight='bold')
+            plt.title('Recompensa Acumulada - Validação Pós-Treinamento', fontsize=14, fontweight='bold')
             plt.legend()
             plt.grid(True, alpha=0.3)
             caminho_grafico2 = os.path.join(diretorio, 'recompensa_acumulada.png')
@@ -778,9 +792,9 @@ class MetricsCollector:
 
                     plt.plot(episodios_mm, media_movel, marker='o', label=f'{nome_agente} (MM)', linewidth=2)
 
-            plt.xlabel('Episódio', fontsize=12)
+            plt.xlabel('Episódio de Validação', fontsize=12)
             plt.ylabel('Recompensa (Média Móvel)', fontsize=12)
-            plt.title('Média Móvel da Recompensa (janela=5) - Tendência de Aprendizado', fontsize=14, fontweight='bold')
+            plt.title('Média Móvel da Recompensa (janela=5) - Validação', fontsize=14, fontweight='bold')
             plt.legend()
             plt.grid(True, alpha=0.3)
             caminho_grafico3 = os.path.join(diretorio, 'media_movel.png')
@@ -852,9 +866,9 @@ class MetricsCollector:
                         plt.axvline(x=ep_conv, color='red', linestyle='--', alpha=0.5,
                                    label=f'Convergência {nome_agente} (ep {ep_conv})')
 
-            plt.xlabel('Episódio', fontsize=12)
+            plt.xlabel('Episódio de Validação', fontsize=12)
             plt.ylabel('Recompensa', fontsize=12)
-            plt.title('Análise de Convergência - Tendência de Aprendizado', fontsize=14, fontweight='bold')
+            plt.title('Análise de Convergência - Validação (Política Aprendida)', fontsize=14, fontweight='bold')
             plt.legend()
             plt.grid(True, alpha=0.3)
             caminho_grafico5 = os.path.join(diretorio, 'analise_convergencia.png')
@@ -1364,10 +1378,12 @@ class CoordenadorLearningAgent(LoggableAgent):
             model.learn(qlearning, num_episodes=self.num_episodes)
 
             # Simular coleta de métricas pós-treinamento
-            # Executar alguns episódios de teste para coletar recompensas
+            # Executar episódios de teste para validar o aprendizado
             self.info_print("\nColetando métricas de desempenho...")
 
-            for ep in range(min(20, self.num_episodes)):  # Coletar métricas de até 20 episódios
+            # Usar todos os episódios solicitados para ter dados completos nos gráficos
+            num_episodios_teste = self.num_episodes
+            for ep in range(num_episodios_teste):
                 recompensa_episodio = 0
                 estado_teste = env.possible_starts.copy()
 
@@ -1841,6 +1857,10 @@ if __name__ == "__main__":
         NUM_VEICULOS = len(veiculos_config)
         if NUM_VEICULOS < 2:
             raise ValueError("Sistema requer pelo menos 2 veículos")
+
+        # RESET: Limpar métricas de execuções anteriores
+        # Isso garante que cada execução tenha dados limpos
+        METRICS_COLLECTOR.reset()
 
         # Criar diretório de resultados com timestamp
         exp_nome = args.experimento if len(sys.argv) > 1 else config.get('experimento', 'customizado')

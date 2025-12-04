@@ -3,6 +3,7 @@
 *.txt
 !README.txt
 /venv_maspy
-**/docs
+/docs
 **/artigo
 **/gradicos_teste
+/Trabalho_02_Aprendizado/docs/ARTIGO_SBC.md

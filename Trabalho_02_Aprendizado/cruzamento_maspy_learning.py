@@ -162,73 +162,147 @@ EXPERIMENTOS = {
         "veiculos": VEICULOS_CONFIG
     },
     "base": {
-        "titulo": "Cenário Base",
+        "titulo": "Cenário Base (10 veículos)",
         "descricao": "Ambulância deve vencer contra veículos normais",
         "veiculos": [
-            {"nome": "Carro1", "tipo": "carro", "prioridade": 10},
             {"nome": "Ambulancia", "tipo": "ambulancia", "prioridade": 100},
+            {"nome": "Onibus1", "tipo": "onibus", "prioridade": 40},
+            {"nome": "Taxi1", "tipo": "taxi", "prioridade": 25},
+            {"nome": "Carro1", "tipo": "carro", "prioridade": 10},
+            {"nome": "Carro2", "tipo": "carro", "prioridade": 10},
+            {"nome": "Carro3", "tipo": "carro", "prioridade": 10},
             {"nome": "Moto1", "tipo": "moto", "prioridade": 5},
-            {"nome": "Onibus1", "tipo": "onibus", "prioridade": 30},
+            {"nome": "Moto2", "tipo": "moto", "prioridade": 5},
+            {"nome": "Moto3", "tipo": "moto", "prioridade": 5},
+            {"nome": "Moto4", "tipo": "moto", "prioridade": 5},
         ]
     },
     "emergencias": {
-        "titulo": "Múltiplas Emergências",
+        "titulo": "Múltiplas Emergências (10 veículos)",
         "descricao": "Ambulância1 (prio=100) deve vencer entre emergências",
         "veiculos": [
             {"nome": "Ambulancia1", "tipo": "ambulancia", "prioridade": 100},
-            {"nome": "Ambulancia2", "tipo": "ambulancia", "prioridade": 95},
             {"nome": "Bombeiros", "tipo": "bombeiros", "prioridade": 98},
+            {"nome": "Ambulancia2", "tipo": "ambulancia", "prioridade": 95},
+            {"nome": "Policia", "tipo": "policia", "prioridade": 93},
+            {"nome": "Caminhao1", "tipo": "caminhao", "prioridade": 50},
+            {"nome": "Onibus1", "tipo": "onibus", "prioridade": 40},
+            {"nome": "Taxi1", "tipo": "taxi", "prioridade": 25},
             {"nome": "Carro1", "tipo": "carro", "prioridade": 10},
+            {"nome": "Carro2", "tipo": "carro", "prioridade": 10},
+            {"nome": "Moto1", "tipo": "moto", "prioridade": 5},
         ]
     },
     "iguais": {
-        "titulo": "Prioridades Iguais",
+        "titulo": "Prioridades Iguais (10 veículos)",
         "descricao": "Todos com mesma prioridade - ordem de processamento",
         "veiculos": [
             {"nome": "Carro1", "tipo": "carro", "prioridade": 10},
             {"nome": "Carro2", "tipo": "carro", "prioridade": 10},
             {"nome": "Carro3", "tipo": "carro", "prioridade": 10},
             {"nome": "Carro4", "tipo": "carro", "prioridade": 10},
+            {"nome": "Carro5", "tipo": "carro", "prioridade": 10},
+            {"nome": "Carro6", "tipo": "carro", "prioridade": 10},
+            {"nome": "Carro7", "tipo": "carro", "prioridade": 10},
+            {"nome": "Carro8", "tipo": "carro", "prioridade": 10},
+            {"nome": "Carro9", "tipo": "carro", "prioridade": 10},
+            {"nome": "Carro10", "tipo": "carro", "prioridade": 10},
         ]
     },
     "pesados": {
-        "titulo": "Cargas Pesadas",
+        "titulo": "Cargas Pesadas (10 veículos)",
         "descricao": "Caminhão (prio=50) deve vencer",
         "veiculos": [
             {"nome": "Caminhao1", "tipo": "caminhao", "prioridade": 50},
+            {"nome": "Caminhao2", "tipo": "caminhao", "prioridade": 50},
             {"nome": "Onibus1", "tipo": "onibus", "prioridade": 40},
-            {"nome": "Moto1", "tipo": "moto", "prioridade": 5},
+            {"nome": "Onibus2", "tipo": "onibus", "prioridade": 40},
+            {"nome": "Taxi1", "tipo": "taxi", "prioridade": 25},
             {"nome": "Carro1", "tipo": "carro", "prioridade": 10},
+            {"nome": "Carro2", "tipo": "carro", "prioridade": 10},
+            {"nome": "Moto1", "tipo": "moto", "prioridade": 5},
+            {"nome": "Moto2", "tipo": "moto", "prioridade": 5},
+            {"nome": "Moto3", "tipo": "moto", "prioridade": 5},
         ]
     },
     "transporte_publico": {
-        "titulo": "Transporte Público",
+        "titulo": "Transporte Público (10 veículos)",
         "descricao": "Ônibus vs Táxi vs veículos particulares",
         "veiculos": [
             {"nome": "Onibus1", "tipo": "onibus", "prioridade": 40},
+            {"nome": "Onibus2", "tipo": "onibus", "prioridade": 40},
             {"nome": "Taxi1", "tipo": "taxi", "prioridade": 25},
+            {"nome": "Taxi2", "tipo": "taxi", "prioridade": 25},
             {"nome": "Carro1", "tipo": "carro", "prioridade": 10},
+            {"nome": "Carro2", "tipo": "carro", "prioridade": 10},
+            {"nome": "Carro3", "tipo": "carro", "prioridade": 10},
             {"nome": "Moto1", "tipo": "moto", "prioridade": 5},
+            {"nome": "Moto2", "tipo": "moto", "prioridade": 5},
+            {"nome": "Moto3", "tipo": "moto", "prioridade": 5},
         ]
     },
     "prioridades_proximas": {
-        "titulo": "Prioridades Próximas",
+        "titulo": "Prioridades Próximas (10 veículos)",
         "descricao": "Diferenças pequenas de prioridade (desafio para Q-Learning)",
         "veiculos": [
-            {"nome": "Veiculo1", "tipo": "carro", "prioridade": 50},
-            {"nome": "Veiculo2", "tipo": "carro", "prioridade": 48},
-            {"nome": "Veiculo3", "tipo": "carro", "prioridade": 46},
-            {"nome": "Veiculo4", "tipo": "carro", "prioridade": 44},
+            {"nome": "Veiculo1", "tipo": "carro", "prioridade": 55},
+            {"nome": "Veiculo2", "tipo": "carro", "prioridade": 53},
+            {"nome": "Veiculo3", "tipo": "carro", "prioridade": 51},
+            {"nome": "Veiculo4", "tipo": "carro", "prioridade": 49},
+            {"nome": "Veiculo5", "tipo": "carro", "prioridade": 47},
+            {"nome": "Veiculo6", "tipo": "carro", "prioridade": 45},
+            {"nome": "Veiculo7", "tipo": "carro", "prioridade": 43},
+            {"nome": "Veiculo8", "tipo": "carro", "prioridade": 41},
+            {"nome": "Veiculo9", "tipo": "carro", "prioridade": 39},
+            {"nome": "Veiculo10", "tipo": "carro", "prioridade": 37},
         ]
     },
     "extremos": {
-        "titulo": "Prioridades Extremas",
+        "titulo": "Prioridades Extremas (10 veículos)",
         "descricao": "Grande diferença entre prioridades (1 vs 100)",
         "veiculos": [
-            {"nome": "Emergencia", "tipo": "ambulancia", "prioridade": 100},
-            {"nome": "Importante", "tipo": "onibus", "prioridade": 50},
-            {"nome": "Normal", "tipo": "carro", "prioridade": 10},
-            {"nome": "Baixa", "tipo": "moto", "prioridade": 1},
+            {"nome": "Emergencia1", "tipo": "ambulancia", "prioridade": 100},
+            {"nome": "Emergencia2", "tipo": "bombeiros", "prioridade": 98},
+            {"nome": "Importante1", "tipo": "caminhao", "prioridade": 50},
+            {"nome": "Importante2", "tipo": "onibus", "prioridade": 40},
+            {"nome": "Normal1", "tipo": "taxi", "prioridade": 25},
+            {"nome": "Normal2", "tipo": "carro", "prioridade": 10},
+            {"nome": "Normal3", "tipo": "carro", "prioridade": 10},
+            {"nome": "Baixa1", "tipo": "moto", "prioridade": 5},
+            {"nome": "Baixa2", "tipo": "moto", "prioridade": 3},
+            {"nome": "Baixa3", "tipo": "moto", "prioridade": 1},
+        ]
+    },
+    "escalonado": {
+        "titulo": "Prioridades Escalonadas (10 veículos)",
+        "descricao": "Escala uniforme de 10 até 100 de 10 em 10",
+        "veiculos": [
+            {"nome": "V100", "tipo": "ambulancia", "prioridade": 100},
+            {"nome": "V90", "tipo": "bombeiros", "prioridade": 90},
+            {"nome": "V80", "tipo": "policia", "prioridade": 80},
+            {"nome": "V70", "tipo": "caminhao", "prioridade": 70},
+            {"nome": "V60", "tipo": "caminhao", "prioridade": 60},
+            {"nome": "V50", "tipo": "onibus", "prioridade": 50},
+            {"nome": "V40", "tipo": "onibus", "prioridade": 40},
+            {"nome": "V30", "tipo": "taxi", "prioridade": 30},
+            {"nome": "V20", "tipo": "carro", "prioridade": 20},
+            {"nome": "V10", "tipo": "moto", "prioridade": 10},
+        ]
+    },
+    "misto_complexo": {
+        "titulo": "Cenário Misto Complexo (10 veículos)",
+        "descricao": "Mix de todos os tipos com prioridades variadas",
+        "veiculos": [
+            {"nome": "Ambulancia", "tipo": "ambulancia", "prioridade": 100},
+            {"nome": "Caminhao_Carga", "tipo": "caminhao", "prioridade": 55},
+            {"nome": "Onibus_Escolar", "tipo": "onibus", "prioridade": 45},
+            {"nome": "Policia_Patrulha", "tipo": "policia", "prioridade": 92},
+            {"nome": "Taxi_Corrida", "tipo": "taxi", "prioridade": 20},
+            {"nome": "Carro_Executivo", "tipo": "carro", "prioridade": 35},
+            {"nome": "Moto_Entrega", "tipo": "moto", "prioridade": 15},
+            {"nome": "Caminhao_Lixo", "tipo": "caminhao", "prioridade": 30},
+            {"nome": "Carro_Particular", "tipo": "carro", "prioridade": 8},
+            {"nome": "Bombeiros_Resgate", "tipo": "bombeiros", "prioridade": 99},
         ]
     },
     "dois_veiculos": {
@@ -252,124 +326,20 @@ EXPERIMENTOS = {
 
 
 
-# METODOLOGIA PEAS - PERFORMANCE, ENVIRONMENT, ACTUATORS, SENSORS
-#
-# Esta seção documenta a aplicação da metodologia PEAS ao sistema de aprendizado
-# de cruzamento multi-agentes com Q-Learning.
-#
 # ==================================================================================
-# PERFORMANCE (Medida de Desempenho)
+# METODOLOGIAS
 # ==================================================================================
-# A performance dos agentes é medida através de:
+# Este sistema é documentado usando as metodologias PEAS e SART:
 #
-# 1. RECOMPENSA ACUMULADA: Soma total de recompensas obtidas durante o aprendizado
-#    - Recompensa positiva (+100) por escolher veículo com maior prioridade
-#    - Penalidade proporcional (-diferença × multiplicador) por escolha incorreta
+# - PEAS (Performance, Environment, Actuators, Sensors):
+#   Especificação completa dos agentes e suas interações
+#   Documentação: docs/PEAS.md
 #
-# 2. TAXA DE CONVERGÊNCIA: Velocidade com que o agente aprende a política ótima
-#    - Número de episódios até atingir 95% de acerto consistente
-#    - Estabilidade da política aprendida (variância das últimas N recompensas)
+# - SART (Situation, Agent, Reinforcement learning, Task):
+#   Framework para sistemas multi-agentes com aprendizado por reforço
+#   Documentação: docs/SART.md
 #
-# 3. TAXA DE ACERTO: Percentual de decisões corretas sobre total de decisões
-#    - Meta: ≥ 95% de escolhas ótimas após convergência
-#
-# 4. EFICIÊNCIA TEMPORAL: Tempo total de execução do aprendizado
-#    - Mede escalabilidade do sistema com diferentes números de veículos
-#
-# 5. FUNÇÃO DE UTILIDADE: Avalia qualidade geral da solução aprendida
-#    - U(s) = α × taxa_acerto + β × (1/episodios_convergencia) + γ × recompensa_media
-#    - Onde α, β, γ são pesos configuráveis (default: 0.5, 0.3, 0.2)
-#
-# ==================================================================================
-# ENVIRONMENT (Ambiente)
-# ==================================================================================
-# O ambiente é composto por:
-#
-# 1. CRUZAMENTO VIRTUAL: Interseção onde veículos competem por passagem
-#    - Estado: Conjunto de veículos que ainda não atravessaram
-#    - Dinâmica: Determinística (escolha um veículo → ele atravessa)
-#
-# 2. VEÍCULOS COM PRIORIDADES: Conjunto de 2 a 10 veículos
-#    - Cada veículo tem: ID, tipo, prioridade (1-100)
-#    - Tipos: ambulância (emergência), bombeiros, polícia, caminhão, ônibus, etc.
-#
-# 3. SISTEMA DE RECOMPENSAS: Feedback do ambiente às ações dos agentes
-#    - Recompensa baseada em correção da escolha vs prioridades
-#    - Proporcional à gravidade do erro (diferença de prioridade)
-#
-# 4. ESTADOS OBSERVÁVEIS:
-#    - v{N}_passou: Boolean indicando se veículo N já atravessou (N=1..10)
-#    - Configuração inicial: todos veículos aguardando (v{N}_passou = 0)
-#    - Estado terminal: todos atravessaram (v{N}_passou = 1 para todos)
-#
-# 5. CENÁRIOS DE TESTE: 10 configurações diferentes de veículos
-#    - Prioridades iguais, extremas, próximas, múltiplas emergências, etc.
-#    - Permite avaliar generalização do aprendizado
-#
-# ==================================================================================
-# ACTUATORS (Atuadores)
-# ==================================================================================
-# Os agentes podem executar as seguintes ações:
-#
-# 1. COORDENADOR (CoordenadorLearningAgent):
-#    - escolher_veiculo(veiculo_id): Seleciona qual veículo atravessa
-#      * Parâmetros: veiculo_id ∈ {Veiculo1, ..., Veiculo10}
-#      * Efeito: Atualiza estado v{N}_passou para 1
-#      * Retorna: Recompensa baseada na correção da escolha
-#
-#    - iniciar_aprendizado(): Executa processo de Q-Learning
-#      * Cria modelo do ambiente (EnvModel)
-#      * Executa N episódios de treinamento
-#      * Coleta métricas de desempenho
-#
-# 2. VEÍCULO (VeiculoLearningAgent):
-#    - observar_cruzamento(): Monitora estado do ambiente passivamente
-#      * Não modifica o ambiente
-#      * Coleta dados para análise posterior
-#
-#    - registrar_resultado(escolhido, recompensa): Aprende com experiência
-#      * Atualiza beliefs (sucessos, falhas)
-#      * Registra no coletor de métricas
-#
-# ==================================================================================
-# SENSORS (Sensores)
-# ==================================================================================
-# Os agentes percebem o ambiente através de:
-#
-# 1. PERCEPTS DO AMBIENTE:
-#    - Percept(v{N}_passou, (0,1)): Estado de travessia de cada veículo
-#    - Lido através de: env.get(Percept(estado_key, Any))
-#
-# 2. BELIEFS DOS AGENTES:
-#    - Coordenador: status, episodio_atual, recompensa_total
-#    - Veículo: veiculo_id, prioridade, status, tentativas, sucessos, falhas
-#
-# 3. INFORMAÇÕES GLOBAIS (via variáveis de classe):
-#    - Configuração de veículos (IDs, prioridades, nomes originais)
-#    - Parâmetros de aprendizado (reward, penalidade, verbose)
-#    - Estado de treinamento (_em_treinamento, _episodio_atual)
-#
-# 4. MÉTRICAS COLETADAS (via MetricsCollector):
-#    - Recompensas por episódio de cada agente
-#    - Contadores de ações corretas/incorretas
-#    - Detecção de convergência
-#    - Estatísticas agregadas (média, melhor, pior episódio)
-#
-# 5. FEEDBACK DO Q-LEARNING:
-#    - Q-table aprendida (implícita no EnvModel)
-#    - Política ótima derivada (max Q-value para cada estado)
-#
-# ==================================================================================
-# INTEGRAÇÃO PEAS COM SART (States, Actions, Rewards, Transitions)
-# ==================================================================================
-#
-# O sistema usa PEAS para design geral e SART para aprendizado por reforço:
-#
-# - States (SART) = Estados observáveis via Sensors (PEAS)
-# - Actions (SART) = Atuadores disponíveis (PEAS)
-# - Rewards (SART) = Componente da Performance (PEAS)
-# - Transitions (SART) = Dinâmica do Environment (PEAS)
-#
+# Consulte os documentos para detalhes completos sobre design e especificação.
 # ==================================================================================
 
 
@@ -525,7 +495,7 @@ class MetricsCollector:
         """
         Calcula a função de utilidade para um agente.
 
-        Função de Utilidade (conforme metodologia PEAS):
+        Função de Utilidade (ver docs/PEAS.md para detalhes):
         U(agente) = α × taxa_acerto + β × fator_convergencia + γ × fator_recompensa
 
         Parâmetros:
@@ -632,10 +602,10 @@ class MetricsCollector:
                 relatorio.append(f"    Status: {aviso('NÃO CONVERGIU')}")
                 relatorio.append(f"    (Threshold requerido: {conv['threshold']*100:.0f}%)")
 
-            # Função de Utilidade (PEAS)
+            # Função de Utilidade (ver docs/PEAS.md)
             if "utilidade" in metricas:
                 util = metricas["utilidade"]
-                relatorio.append(f"\n  {destaque('Função de Utilidade (PEAS):')}")
+                relatorio.append(f"\n  {destaque('Função de Utilidade:')}")
                 relatorio.append(f"    Utilidade Total: {sucesso(f'{util["total"]:.4f}')} (0-1 scale)")
                 relatorio.append(f"    Componentes:")
                 relatorio.append(f"      • Taxa de Acerto: {util['taxa_acerto']:.4f} (peso α={util['pesos']['alpha']})")
@@ -1112,13 +1082,15 @@ SCENARIO_COMPARATOR = ScenarioComparator()
 
 
 # AMBIENTE DE APRENDIZADO - CRUZAMENTO
-# SART: States, Actions, Rewards, Transitions
 
 class CruzamentoLearningEnvironment(Environment):
     """
     Ambiente de aprendizado para o problema de cruzamento.
 
-    SART Methodology:
+    Implementa aprendizado por reforço (Q-Learning) para ordenação de veículos.
+    Ver docs/SART.md para especificação completa da metodologia.
+
+    Resumo:
     - States: Combinação de veículos disponíveis para atravessar
     - Actions: Escolher qual veículo passa
     - Rewards: +100 se prioridade correta, -penalidade proporcional se errado

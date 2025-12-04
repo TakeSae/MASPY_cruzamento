@@ -19,12 +19,17 @@ Sistema multi-agentes com aprendizado por reforço (Q-Learning) para otimizaçã
 ```
 Trabalho_02_Aprendizado/
 ├── cruzamento_maspy_learning.py    # Sistema principal Q-Learning
+├── executar_todos_cenarios.py      # Executa todos os cenários automaticamente
 ├── comparar_cenarios.py            # Comparador de múltiplos cenários
 ├── executar_testes.py              # Suite de 28 testes automatizados
 ├── testar_graficos.py              # Teste rápido de matplotlib
 ├── cruzamento_maspy_gui.py         # Tentativa de GUI (descontinuada)
-├── RELATORIO_TESTES.md             # Relatório de validação (28/28 testes)
-├── CONFORMIDADE_TRABALHO02.md      # Análise de conformidade com requisitos
+├── docs/                           # Documentação
+│   ├── PEAS.md                     # Metodologia PEAS completa
+│   ├── SART.md                     # Metodologia SART completa
+│   ├── RELATORIO_TESTES.md         # Relatório de validação (28/28 testes)
+│   ├── CONFORMIDADE_TRABALHO02.md  # Análise de conformidade com requisitos
+│   └── dificuldades_encontradas.md # Registro de problemas e soluções
 └── resultados/                     # Resultados organizados por timestamp
     ├── YYYYMMDD_HHMMSS/
     │   ├── metricas_aprendizado.csv
@@ -118,16 +123,18 @@ Sistema para comparação entre cenários.
 
 | # | Nome | Descrição | Veículos |
 |---|------|-----------|----------|
-| 1 | padrao | 10 veículos diversos | 10 |
-| 2 | base | Ambulância vs normais | 4 |
-| 3 | emergencias | Múltiplas emergências | 4 |
-| 4 | iguais | Prioridades iguais | 4 |
-| 5 | pesados | Cargas pesadas | 4 |
-| 6 | transporte_publico | Ônibus, táxi | 6 |
-| 7 | prioridades_proximas | Diferenças pequenas | 5 |
-| 8 | extremos | 1 vs 100 | 2 |
-| 9 | dois_veiculos | Caso mínimo | 2 |
-| 10 | tres_veiculos | Caso intermediário | 3 |
+| 1 | padrao | Cenário padrão com 10 veículos diversos | 10 |
+| 2 | base | Ambulância contra veículos normais | 10 |
+| 3 | emergencias | Múltiplas emergências | 10 |
+| 4 | iguais | Todas as prioridades iguais | 10 |
+| 5 | pesados | Cargas pesadas variadas | 10 |
+| 6 | transporte_publico | Ônibus e táxis | 10 |
+| 7 | prioridades_proximas | Diferenças pequenas entre prioridades | 10 |
+| 8 | extremos | Prioridades extremas (10 e 100) | 10 |
+| 9 | escalonado | Escala uniforme de 10 até 100 | 10 |
+| 10 | misto_complexo | Mix de todos os tipos | 10 |
+
+**Nota:** Todos os cenários têm 10 veículos para garantir comparabilidade.
 
 ---
 
@@ -223,33 +230,23 @@ python executar_testes.py
 
 ### PEAS (Performance, Environment, Actuators, Sensors)
 
-Documentação integrada ao código (linhas 182-370).
+Documentação completa em **[docs/PEAS.md](docs/PEAS.md)**
 
-**Performance:**
-- Função de utilidade: U = 0.5×taxa_acerto + 0.3×convergência + 0.2×recompensa
-- Recompensa acumulada
-- Taxa de convergência
-- Eficiência temporal
+**Resumo:**
+- **Performance:** Função de utilidade, recompensa acumulada, taxa de convergência
+- **Environment:** Cruzamento determinístico, totalmente observável, multi-agente
+- **Actuators:** escolher_veiculo(), atualizar_q(), exploração vs exploitação
+- **Sensors:** Estados dos veículos, prioridades, recompensas, Q-table
 
-**Environment:**
-- 10 cenários de teste
-- Veículos com prioridades (1-100)
-- Sistema de recompensas proporcional
+### SART (Situation, Agent, Reinforcement learning, Task)
 
-**Actuators:**
-- escolher_veiculo(id)
-- iniciar_aprendizado()
+Documentação completa em **[docs/SART.md](docs/SART.md)**
 
-**Sensors:**
-- v{N}_passou (estados booleanos)
-- Métricas coletadas
-
-### SART (States, Actions, Rewards, Transitions)
-
-**States:** Configuração de veículos que não atravessaram
-**Actions:** Escolha de qual veículo atravessa
-**Rewards:** +100 ótimo, penalidade proporcional
-**Transitions:** Determinísticas (escolher → atravessado)
+**Resumo:**
+- **Situation:** Gerenciamento de cruzamento sem protocolo fixo
+- **Agent:** Coordenador (aprendiz) + Veículos (observadores) + Ambiente
+- **Reinforcement Learning:** Q-Learning com equação de Bellman
+- **Task:** Aprender política ótima com ≥95% de acerto
 
 ---
 
@@ -291,9 +288,26 @@ Documentação integrada ao código (linhas 182-370).
 
 ## Documentação Adicional
 
-- [README_MELHORIAS.md](README_MELHORIAS.md) - Documentação detalhada das 5 melhorias
-- [RELATORIO_TESTES.md](RELATORIO_TESTES.md) - Relatório de validação (28 testes)
-- [CONFORMIDADE_TRABALHO02.md](CONFORMIDADE_TRABALHO02.md) - Análise de conformidade
+Toda a documentação está organizada na pasta **[docs/](docs/)**:
+
+### Metodologias
+- **[docs/PEAS.md](docs/PEAS.md)** - Metodologia PEAS completa (Performance, Environment, Actuators, Sensors)
+- **[docs/SART.md](docs/SART.md)** - Metodologia SART completa (Situation, Agent, Reinforcement learning, Task)
+
+### Análises e Comparações
+- **[docs/DIAGRAMAS_UML.md](docs/DIAGRAMAS_UML.md)** - 8 diagramas UML (classes, sequência, estados, componentes, deployment)
+- **[docs/COMPARACAO_TRABALHO1_VS_TRABALHO2.md](docs/COMPARACAO_TRABALHO1_VS_TRABALHO2.md)** - Análise comparativa detalhada entre negociação e aprendizado
+
+### Validação e Conformidade
+- **[docs/RELATORIO_TESTES.md](docs/RELATORIO_TESTES.md)** - Relatório de validação (28/28 testes passaram)
+- **[docs/CONFORMIDADE_TRABALHO02.md](docs/CONFORMIDADE_TRABALHO02.md)** - Checklist de conformidade com requisitos do trabalho
+
+### Documentação Acadêmica
+- **[docs/ARTIGO_SBC.md](docs/ARTIGO_SBC.md)** - Artigo em formato SBC (template para LaTeX)
+- **[docs/APRESENTACAO_SLIDES.md](docs/APRESENTACAO_SLIDES.md)** - Apresentação de slides (30 slides, conversível para Marp/reveal.js)
+
+### Desenvolvimento
+- **[docs/dificuldades_encontradas.md](docs/dificuldades_encontradas.md)** - Registro de problemas encontrados e soluções implementadas
 
 ---
 

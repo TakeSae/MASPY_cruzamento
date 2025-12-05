@@ -1,4 +1,4 @@
-# Sistema Multi-Agentes - Cruzamento Viário
+# Sistema Multi-Agentes com Aprendizado por Reforço para Gerenciamento de Travessias em Cruzamentos Viários
 
 **Trabalhos 01 e 02 - Sistemas Multi-Agentes 2025.2**
 **UTFPR - Campus Ponta Grossa - COCIC**

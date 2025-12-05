@@ -12,6 +12,18 @@ Sistema multi-agentes com aprendizado por reforço (Q-Learning) para otimizaçã
 
 **Extensão do Trabalho 01:** Mantém o domínio (cruzamento de veículos) mas substitui negociação direta por aprendizado de política ótima.
 
+## Recursos Principais
+
+- **Q-Learning com MASPY:** Integração completa de aprendizado por reforço com framework BDI
+- **10 Cenários Pré-configurados:** Diferentes situações de tráfego (emergências, cargas, prioridades)
+- **Sistema de Análise Avançada:** Consolidação automática de métricas com visualizações comparativas
+- **Organização por Timestamp:** Resultados individuais preservados com symlink para última execução
+- **11 Tipos de Gráficos:** 5 individuais + 6 comparativos (incluindo heatmap)
+- **Relatórios Automatizados:** Markdown, CSV e JSON para análise posterior
+- **Metodologias Documentadas:** PEAS e SART completas com diagramas UML
+- **Testes Automatizados:** Suite de validação em test_scripts/
+- **Análise Estatística:** Convergência, quartis, regressão linear, distribuição
+
 ---
 
 ## Estrutura de Arquivos
@@ -21,26 +33,46 @@ Trabalho_02_Aprendizado/
 ├── cruzamento_maspy_learning.py    # Sistema principal Q-Learning
 ├── executar_todos_cenarios.py      # Executa todos os cenários automaticamente
 ├── comparar_cenarios.py            # Comparador de múltiplos cenários
-├── executar_testes.py              # Suite de 28 testes automatizados
-├── testar_graficos.py              # Teste rápido de matplotlib
+├── analisar_comparacao.py          # Análise comparativa avançada
+├── testar_analise.py               # Script de teste do sistema de análise
+├── requirements_analise.txt        # Dependências para análise avançada
 ├── cruzamento_maspy_gui.py         # Tentativa de GUI (descontinuada)
+├── README_ANALISE_COMPARATIVA.md   # Documentação do sistema de análise
 ├── docs/                           # Documentação
 │   ├── PEAS.md                     # Metodologia PEAS completa
 │   ├── SART.md                     # Metodologia SART completa
 │   ├── RELATORIO_TESTES.md         # Relatório de validação (28/28 testes)
 │   ├── CONFORMIDADE_TRABALHO02.md  # Análise de conformidade com requisitos
+│   ├── DIAGRAMAS_UML.md            # 8 diagramas UML
+│   ├── COMPARACAO_TRABALHO1_VS_TRABALHO2.md  # Comparação entre trabalhos
+│   ├── ARTIGO_SBC.md               # Artigo em formato SBC
+│   ├── APRESENTACAO_SLIDES.md      # Apresentação de slides (30 slides)
 │   └── dificuldades_encontradas.md # Registro de problemas e soluções
-└── resultados/                     # Resultados organizados por timestamp
-    ├── YYYYMMDD_HHMMSS/
-    │   ├── metricas_aprendizado.csv
-    │   ├── info_execucao.txt
-    │   └── graficos/
-    │       ├── recompensa_por_episodio.png
-    │       ├── recompensa_acumulada.png
-    │       ├── media_movel.png
-    │       ├── comparacao_desempenho.png
-    │       └── analise_convergencia.png
-    └── ultima_execucao -> YYYYMMDD_HHMMSS
+├── resultados/                     # Resultados organizados por timestamp
+│   ├── YYYYMMDD_HHMMSS/
+│   │   ├── metricas_aprendizado.csv
+│   │   ├── info_execucao.txt
+│   │   └── graficos/
+│   │       ├── recompensa_por_episodio.png
+│   │       ├── recompensa_acumulada.png
+│   │       ├── media_movel.png
+│   │       ├── comparacao_desempenho.png
+│   │       └── analise_convergencia.png
+│   └── ultima_execucao -> YYYYMMDD_HHMMSS
+├── analise_comparativa/            # Análise consolidada de todos os cenários
+│   ├── RELATORIO_COMPARATIVO.md    # Relatório principal
+│   ├── metricas_consolidadas.csv   # Todas as métricas em CSV
+│   ├── ranking_cenarios.json       # Ranking detalhado
+│   └── graficos/                   # 6 visualizações comparativas
+│       ├── 1_recompensa_media_por_cenario.png
+│       ├── 2_evolucao_aprendizado_comparada.png
+│       ├── 3_distribuicao_recompensas.png
+│       ├── 4_taxa_convergencia.png
+│       ├── 5_heatmap_metricas.png
+│       └── 6_tempo_execucao.png
+└── test_scripts/                   # Scripts de teste
+    ├── executar_testes.py          # Suite de 28 testes automatizados
+    └── testar_graficos.py          # Teste rápido de matplotlib
 ```
 
 ---
@@ -117,6 +149,17 @@ Sistema para comparação entre cenários.
 - Identifica melhor configuração
 - Gera relatórios e gráficos comparativos
 
+### AnalisadorComparativo
+Sistema de análise comparativa avançada (analisar_comparacao.py).
+
+**Funcionalidades:**
+- Consolida métricas de múltiplas execuções
+- Calcula estatísticas avançadas (média, desvio, convergência)
+- Gera 6 tipos de visualizações comparativas
+- Cria relatório markdown detalhado
+- Exporta ranking JSON e CSV consolidado
+- Análise de heatmap de métricas normalizadas
+
 ---
 
 ## Experimentos (10 cenários)
@@ -138,6 +181,28 @@ Sistema para comparação entre cenários.
 
 ---
 
+## Fluxo de Trabalho Recomendado
+
+### Para Análise Completa (Recomendado)
+1. Execute todos os cenários: `python executar_todos_cenarios.py`
+2. Sistema executa automaticamente:
+   - 10 cenários com 1000 episódios cada
+   - Salva resultados individuais em resultados/TIMESTAMP/
+   - Gera análise comparativa em analise_comparativa/
+3. Consulte o relatório: `analise_comparativa/RELATORIO_COMPARATIVO.md`
+4. Visualize gráficos comparativos em `analise_comparativa/graficos/`
+
+### Para Teste Rápido
+1. Execute cenário individual: `python cruzamento_maspy_learning.py --episodios 100`
+2. Verifique resultados em `resultados/ultima_execucao/`
+
+### Para Desenvolvimento
+1. Execute testes: `cd test_scripts && python executar_testes.py`
+2. Teste análise: `python testar_analise.py`
+3. Execute cenário específico: `python cruzamento_maspy_learning.py --experimento base --episodios 100`
+
+---
+
 ## Como Executar
 
 ### Pré-requisitos
@@ -146,8 +211,12 @@ Sistema para comparação entre cenários.
 # Ativar ambiente virtual
 source ../venv_maspy/bin/activate
 
-# Instalar matplotlib (opcional para gráficos)
+# Instalar dependências básicas (opcional para gráficos)
 pip install matplotlib numpy
+
+# Instalar dependências para análise avançada (opcional)
+pip install -r requirements_analise.txt
+# ou manualmente: pip install numpy matplotlib seaborn
 ```
 
 ### Opção 1: Executar com Cenário Padrão (RECOMENDADO)
@@ -206,10 +275,32 @@ python comparar_cenarios.py --cenarios todos --episodios 100
 python comparar_cenarios.py --cenarios todos --verbose
 ```
 
-### Opção 5: Executar Suite de Testes
+### Opção 5: Análise Comparativa Avançada
 
 ```bash
-# Executar todos os 28 testes
+# Executar todos os cenários E análise comparativa automática
+python executar_todos_cenarios.py
+
+# Análise de resultados existentes
+python analisar_comparacao.py --resultados resultados/20251204_* --output minha_analise
+
+# Testar sistema de análise
+python testar_analise.py
+```
+
+**Saída gerada em analise_comparativa/:**
+- RELATORIO_COMPARATIVO.md: Relatório detalhado
+- metricas_consolidadas.csv: Todas as métricas
+- ranking_cenarios.json: Ranking estruturado
+- graficos/: 6 visualizações comparativas
+
+**Documentação completa:** [README_ANALISE_COMPARATIVA.md](README_ANALISE_COMPARATIVA.md)
+
+### Opção 6: Executar Suite de Testes
+
+```bash
+# Executar todos os testes
+cd test_scripts
 python executar_testes.py
 ```
 
@@ -250,13 +341,26 @@ Documentação completa em **[docs/SART.md](docs/SART.md)**
 
 ---
 
-## Visualizações (5 tipos de gráficos)
+## Visualizações
+
+### Gráficos Individuais (5 tipos)
+Por execução em resultados/TIMESTAMP/graficos/:
 
 1. Recompensa por episódio (linha)
 2. Recompensa acumulada (crescimento)
 3. Média móvel (tendência - janela=5)
 4. Comparação de desempenho (barras duplas)
 5. Análise de convergência (regressão linear)
+
+### Gráficos Comparativos (6 tipos)
+Análise consolidada em analise_comparativa/graficos/:
+
+1. Recompensa média por cenário (barras ordenadas)
+2. Evolução de aprendizado comparada (curvas múltiplas)
+3. Distribuição de recompensas (boxplot)
+4. Taxa de convergência (barras)
+5. Heatmap de métricas normalizadas
+6. Tempo de execução (barras horizontais)
 
 ---
 
@@ -268,9 +372,15 @@ Documentação completa em **[docs/SART.md](docs/SART.md)**
 - Arquivo info_execucao.txt com metadados completos
 
 ### Taxa de Sucesso dos Testes
-- 28/28 testes passaram (100% sucesso)
-- Relatório completo: RELATORIO_TESTES.md
-- Conformidade com requisitos: CONFORMIDADE_TRABALHO02.md
+- Testes automatizados disponíveis em test_scripts/
+- Relatório completo: [docs/RELATORIO_TESTES.md](docs/RELATORIO_TESTES.md)
+- Conformidade com requisitos: [docs/CONFORMIDADE_TRABALHO02.md](docs/CONFORMIDADE_TRABALHO02.md)
+
+### Análise Comparativa
+- Sistema completo de análise em analisar_comparacao.py
+- Consolida resultados de múltiplas execuções
+- Gera relatórios e visualizações avançadas
+- Documentação: [README_ANALISE_COMPARATIVA.md](README_ANALISE_COMPARATIVA.md)
 
 ---
 
@@ -280,9 +390,10 @@ Documentação completa em **[docs/SART.md](docs/SART.md)**
 - Framework: MASPY 2025.06.07 com Q-Learning
 - Paradigma: BDI + Aprendizado por Reforço
 - Bibliotecas:
-  - Core: argparse, sys, signal, os, enum
+  - Core: argparse, sys, signal, os, enum, datetime
   - Visualização: matplotlib, numpy (opcional)
-  - Análise: csv
+  - Análise avançada: seaborn (opcional)
+  - Dados: csv, json
 
 ---
 
@@ -321,21 +432,33 @@ Toda a documentação está organizada na pasta **[docs/](docs/)**:
 | Decisão | Baseada em prioridades | Aprendida via reforço |
 | Cenários | 6 cenários | 10 cenários |
 | Métricas | Vencedores, tempo | 15+ métricas, função utilidade |
-| Visualização | Logs textuais | 5 tipos de gráficos matplotlib |
+| Visualização | Logs textuais | 11 tipos de gráficos (5 individuais + 6 comparativos) |
+| Análise | Manual | Sistema automatizado de análise comparativa |
+| Resultados | Pasta única | Organizados por timestamp + análise consolidada |
 
 ---
 
 ## Histórico de Versões
 
-### v1.0 (2025-11-30) - ATUAL
+### v1.1 (2025-12-05) - ATUAL
+- Sistema de análise comparativa avançada (AnalisadorComparativo)
+- 6 novos tipos de gráficos comparativos
+- Heatmap de métricas normalizadas
+- Relatório comparativo automatizado
+- Exportação de ranking JSON e CSV consolidado
+- Documentação README_ANALISE_COMPARATIVA.md
+- Script de teste do sistema de análise
+- Requirements separado para análise avançada
+
+### v1.0 (2025-11-30)
 - Implementação completa de Q-Learning
 - 10 cenários de teste
 - Função de utilidade PEAS
 - Metodologia SART documentada
 - Sistema de organização por timestamp
 - 5 tipos de gráficos matplotlib
-- 28 testes automatizados (100% sucesso)
-- ScenarioComparator para análise
+- Testes automatizados
+- ScenarioComparator para análise básica
 
 ---
 

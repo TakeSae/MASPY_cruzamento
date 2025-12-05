@@ -62,14 +62,80 @@ Removemos a limitação. Agora usa todos os episódios solicitados.
 
 ---
 
-## Limitações Conhecidas
+## 6. Gráficos Mostrando Dados de Validação ao Invés de Treinamento
 
-**Recompensas constantes nos gráficos:**
-Os episódios de validação usam a política já aprendida, que é ótima. Todas as escolhas são perfeitas, então a recompensa é sempre 1000. Os gráficos ficam como linhas horizontais.
+Problema crítico descoberto: os gráficos estavam mostrando dados PERFEITOS - linhas horizontais com recompensa 1000 em todos os episódios. Não havia curva de aprendizado, oscilações, ou convergência gradual. Parecia fake.
 
-Isso não é bug - mostra que o aprendizado funcionou. Mas não mostra o progresso DURANTE o treinamento, apenas APÓS. Para ver a evolução real, precisaríamos capturar métricas dentro do `model.learn()`, o que o MASPY não expõe facilmente.
+**Causa raiz:**
+O código chamava `model.learn(qlearning, num_episodes=100)` do MASPY, que roda o Q-Learning internamente. Mas não tínhamos acesso aos dados DURANTE o treinamento. Depois do `model.learn()` terminar, o código simulava episódios de teste usando a política já aprendida (ótima). Como a política estava perfeita, todas as escolhas eram corretas - recompensa máxima sempre.
 
-Decidimos deixar assim mesmo. Os gráficos confirmam que a política aprendida está correta.
+Os gráficos mostravam esses dados de VALIDAÇÃO, não de TREINAMENTO. Por isso eram lineares.
+
+**Tentativas que não funcionaram:**
+
+1. **Tentar usar callbacks do MASPY:** A API `EnvModel.learn()` não expõe callbacks ou hooks para capturar métricas durante o treinamento.
+
+2. **Interceptar a Q-table:** Tentamos acessar `model.q_table` após cada episódio, mas o objeto é interno e não acessível externamente.
+
+3. **Modificar o MASPY:** Cogitamos fazer fork e adicionar logging, mas seria muita manutenção.
+
+**Solução final: Implementar Q-Learning manualmente**
+
+Substituímos o `model.learn()` por nossa própria implementação do algoritmo Q-Learning. Assim temos controle total sobre cada episódio e podemos coletar métricas em tempo real.
+
+Implementação (linhas 1350-1468):
+
+```python
+# Parâmetros Q-Learning padrão
+alpha = 0.1        # Taxa de aprendizado
+gamma = 0.9        # Fator de desconto
+epsilon = 1.0      # Exploração inicial (100%)
+epsilon_decay = 0.995
+epsilon_min = 0.01
+
+# Q-table manual
+q_table = defaultdict(float)
+
+for ep in range(num_episodes):
+    estado = env.possible_starts.copy()
+    recompensa_total = 0
+
+    while not terminado:
+        # Epsilon-greedy: explorar ou exploitar
+        if random.random() < epsilon:
+            acao = random.choice(veiculos_disponiveis)  # Exploração
+        else:
+            acao = argmax(q_table[estado, :])  # Exploitação
+
+        # Executar ação
+        novo_estado, recompensa, terminado = env.transicao(estado, acao)
+
+        # Bellman equation: Q(s,a) ← Q(s,a) + α[R + γ max Q(s',a') - Q(s,a)]
+        q_table[estado, acao] += alpha * (
+            recompensa + gamma * max(q_table[novo_estado, :]) - q_table[estado, acao]
+        )
+
+        # Registrar métricas em tempo real
+        METRICS_COLLECTOR.adicionar_recompensa_episodio(ep, recompensa)
+        METRICS_COLLECTOR.registrar_acao(escolha_foi_correta)
+
+        estado = novo_estado
+
+    # Decair epsilon (menos exploração ao longo do tempo)
+    epsilon = max(epsilon_min, epsilon * epsilon_decay)
+```
+
+**Resultado:**
+
+Agora os gráficos mostram a curva REAL de aprendizado:
+- Episódios iniciais: recompensas negativas (explorando aleatoriamente, errando muito)
+- Episódios intermediários: recompensas melhorando gradualmente (aprendendo)
+- Episódios finais: recompensas próximas do ótimo (convergência)
+- Desvio padrão alto no início, baixo no final
+- Taxa de acerto cresce de ~10% para ~90-100%
+
+**Trade-off:**
+Perdemos a otimização interna do MASPY, mas ganhamos visibilidade completa do processo. Para este trabalho acadêmico, onde precisamos DEMONSTRAR o aprendizado, vale muito a pena.
 
 ---
 
@@ -83,4 +149,4 @@ Decidimos deixar assim mesmo. Os gráficos confirmam que a política aprendida e
 
 ---
 
-**Última atualização:** 04/12/2025
+**Última atualização:** 05/12/2025

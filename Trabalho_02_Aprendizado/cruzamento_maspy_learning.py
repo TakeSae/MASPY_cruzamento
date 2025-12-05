@@ -718,9 +718,9 @@ class MetricsCollector:
                     recompensas = [ep["recompensa"] for ep in metricas["recompensas_por_episodio"]]
                     plt.plot(episodios, recompensas, marker='o', label=nome_agente, linewidth=2)
 
-            plt.xlabel('Episódio de Validação', fontsize=12)
+            plt.xlabel('Episódio de Treinamento', fontsize=12)
             plt.ylabel('Recompensa', fontsize=12)
-            plt.title('Recompensa por Episódio - Validação Pós-Treinamento', fontsize=14, fontweight='bold')
+            plt.title('Recompensa por Episódio - Treinamento Q-Learning', fontsize=14, fontweight='bold')
             plt.legend()
             plt.grid(True, alpha=0.3)
             caminho_grafico1 = os.path.join(diretorio, 'recompensa_por_episodio.png')
@@ -737,9 +737,9 @@ class MetricsCollector:
                     recompensas_acum = np.cumsum([ep["recompensa"] for ep in metricas["recompensas_por_episodio"]])
                     plt.plot(episodios, recompensas_acum, marker='o', label=nome_agente, linewidth=2)
 
-            plt.xlabel('Episódio de Validação', fontsize=12)
+            plt.xlabel('Episódio de Treinamento', fontsize=12)
             plt.ylabel('Recompensa Acumulada', fontsize=12)
-            plt.title('Recompensa Acumulada - Validação Pós-Treinamento', fontsize=14, fontweight='bold')
+            plt.title('Recompensa Acumulada - Treinamento Q-Learning', fontsize=14, fontweight='bold')
             plt.legend()
             plt.grid(True, alpha=0.3)
             caminho_grafico2 = os.path.join(diretorio, 'recompensa_acumulada.png')
@@ -1343,60 +1343,130 @@ class CoordenadorLearningAgent(LoggableAgent):
             # Variáveis para coleta de métricas durante o treinamento
             recompensas_por_episodio = []
 
-            # Wrapper customizado para capturar métricas do Q-Learning
-            # Como MASPY não permite hooks diretos, vamos simular episódios e coletar métricas
+            # Wrapper para capturar métricas DURANTE o treinamento do Q-Learning
+            # Vamos executar episódios manualmente e treinar com os dados coletados
+            self.info_print("\nExecutando treinamento com coleta de métricas...")
 
-            # Executar Q-Learning
-            model.learn(qlearning, num_episodes=self.num_episodes)
+            # Inicializar Q-table manualmente
+            import random
+            from collections import defaultdict
 
-            # Simular coleta de métricas pós-treinamento
-            # Executar episódios de teste para validar o aprendizado
-            self.info_print("\nColetando métricas de desempenho...")
+            # Parâmetros Q-Learning
+            alpha = 0.1  # Taxa de aprendizado
+            gamma = 0.9  # Fator de desconto
+            epsilon = 1.0  # Exploração inicial
+            epsilon_decay = 0.995
+            epsilon_min = 0.01
 
-            # Usar todos os episódios solicitados para ter dados completos nos gráficos
-            num_episodios_teste = self.num_episodes
-            for ep in range(num_episodios_teste):
-                recompensa_episodio = 0
-                estado_teste = env.possible_starts.copy()
+            # Q-table: dict de (state_tuple, action) -> valor
+            q_table = defaultdict(float)
 
-                # Simular episódio completo
-                for _ in range(len(env.veiculos_ids)):
-                    # Escolher melhor ação baseada na Q-table aprendida
-                    # (aqui assumimos que o agente já aprendeu)
+            def estado_para_tupla(estado_dict):
+                """Converte estado dict para tupla ordenada (hashable)."""
+                return tuple(estado_dict[env.veiculo_map[v]] for v in env.veiculos_ids)
+
+            def escolher_acao_epsilon_greedy(estado_tupla, veiculos_disponiveis, epsilon):
+                """Escolhe ação usando estratégia epsilon-greedy."""
+                if random.random() < epsilon:
+                    # Exploração: ação aleatória
+                    return random.choice(veiculos_disponiveis)
+                else:
+                    # Exploitação: melhor ação conhecida
+                    q_values = {v: q_table[(estado_tupla, v)] for v in veiculos_disponiveis}
+                    max_q = max(q_values.values())
+                    # Escolher entre as ações com Q máximo (pode haver empate)
+                    melhores = [v for v, q in q_values.items() if q == max_q]
+                    return random.choice(melhores)
+
+            # Treinar por num_episodes episódios
+            for ep in range(self.num_episodes):
+                estado = env.possible_starts.copy()
+                estado_tupla = estado_para_tupla(estado)
+                recompensa_total = 0
+                acoes_corretas = 0
+                acoes_total = 0
+
+                # Executar episódio completo
+                while True:
+                    # Identificar veículos disponíveis
                     veiculos_disponiveis = [
                         v for v in env.veiculos_ids
-                        if estado_teste.get(env.veiculo_map[v], 0) == 0
+                        if estado[env.veiculo_map[v]] == 0
                     ]
 
                     if not veiculos_disponiveis:
                         break
 
-                    # Escolher veículo com maior prioridade (política ótima)
-                    melhor_veiculo = max(veiculos_disponiveis,
-                                        key=lambda v: env.prioridades[v])
+                    # Escolher ação
+                    veiculo_escolhido = escolher_acao_epsilon_greedy(
+                        estado_tupla, veiculos_disponiveis, epsilon
+                    )
 
-                    # Verificar se é a escolha ótima (maior prioridade disponível)
-                    prioridade_escolhida = env.prioridades[melhor_veiculo]
+                    # Executar transição e obter recompensa
+                    novo_estado, recompensa, terminado = env.transicao_escolher(
+                        estado, veiculo_escolhido
+                    )
+                    novo_estado_tupla = estado_para_tupla(novo_estado)
+
+                    # Verificar se foi escolha ótima
                     melhor_prioridade = max(env.prioridades[v] for v in veiculos_disponiveis)
-                    escolha_correta = (prioridade_escolhida == melhor_prioridade)
+                    escolha_correta = (env.prioridades[veiculo_escolhido] == melhor_prioridade)
+                    if escolha_correta:
+                        acoes_corretas += 1
+                    acoes_total += 1
 
-                    # Registrar ação
-                    METRICS_COLLECTOR.registrar_acao(self.my_name, escolha_correta)
+                    # Atualizar Q-table (Bellman equation)
+                    if terminado:
+                        # Estado terminal: Q(s,a) = R
+                        target = recompensa
+                    else:
+                        # Q(s,a) = R + γ * max(Q(s',a'))
+                        proximos_disponiveis = [
+                            v for v in env.veiculos_ids
+                            if novo_estado[env.veiculo_map[v]] == 0
+                        ]
+                        max_q_proximo = max(
+                            q_table[(novo_estado_tupla, v)] for v in proximos_disponiveis
+                        ) if proximos_disponiveis else 0
+                        target = recompensa + gamma * max_q_proximo
 
-                    # Simular recompensa
-                    estado_teste[env.veiculo_map[melhor_veiculo]] = 1
-                    recompensa_episodio += CruzamentoLearningEnvironment._reward_correto
+                    # Atualização Q-Learning
+                    q_atual = q_table[(estado_tupla, veiculo_escolhido)]
+                    q_table[(estado_tupla, veiculo_escolhido)] = q_atual + alpha * (target - q_atual)
 
-                recompensas_por_episodio.append(recompensa_episodio)
+                    # Acumular recompensa
+                    recompensa_total += recompensa
+
+                    # Avançar para próximo estado
+                    estado = novo_estado
+                    estado_tupla = novo_estado_tupla
+
+                    if terminado:
+                        break
+
+                # Registrar métricas do episódio
+                recompensas_por_episodio.append(recompensa_total)
                 METRICS_COLLECTOR.adicionar_recompensa_episodio(
                     self.my_name,
                     ep + 1,
-                    recompensa_episodio
+                    recompensa_total
                 )
 
-                # Verificar convergência
-                if METRICS_COLLECTOR.verificar_convergencia(self.my_name, janela=10):
-                    self.info_print(f"Convergência detectada no episódio {ep + 1}!")
+                # Registrar ações
+                for _ in range(acoes_corretas):
+                    METRICS_COLLECTOR.registrar_acao(self.my_name, True)
+                for _ in range(acoes_total - acoes_corretas):
+                    METRICS_COLLECTOR.registrar_acao(self.my_name, False)
+
+                # Decair epsilon
+                epsilon = max(epsilon_min, epsilon * epsilon_decay)
+
+                # Verificar convergência a cada 10 episódios
+                if (ep + 1) % 10 == 0:
+                    if METRICS_COLLECTOR.verificar_convergencia(self.my_name, janela=10):
+                        self.info_print(f"Convergência detectada no episódio {ep + 1}!")
+
+            self.info_print(f"Treinamento concluído com {self.num_episodes} episódios.")
 
             # Desativar flag
             CruzamentoLearningEnvironment._em_treinamento = False

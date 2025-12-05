@@ -126,7 +126,7 @@ Agora os gráficos mostram a curva REAL de aprendizado:
 - Taxa de acerto cresce de ~10% para ~90-100%
 
 **Trade-off:**
-Perdemos a otimização interna do MASPY, mas ganhamos visibilidade completa do processo. Para este trabalho acadêmico, onde precisamos DEMONSTRAR o aprendizado, vale muito a pena.
+Perdemos a otimização interna do MASPY, mas ganhamos visibilidade completa do processo. Para este trabalho acadêmico, onde precisamos DEMONSTRAR o aprendizado, vpareceu ser uma boa troca.
 
 ---
 

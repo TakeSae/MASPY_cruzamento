@@ -56,7 +56,7 @@ CENARIOS = [
     "misto_complexo"
 ]
 
-EPISODIOS_CONFIGS = [50, 100, 200]  # Diferentes números de episódios
+EPISODIOS_CONFIGS = [1000]  # Mínimo de 1000 episódios para aprendizado adequado
 
 def executar_cenario(cenario, episodios):
     """
@@ -231,6 +231,7 @@ def main():
     """)
 
     resultados = []
+    diretorios_resultados = []  # Para análise comparativa avançada
     total_execucoes = len(CENARIOS) * len(EPISODIOS_CONFIGS)
     execucao_atual = 0
 
@@ -252,13 +253,14 @@ def main():
             if sucesso and diretorio:
                 metricas = coletar_metricas(diretorio)
                 resultados.append(metricas)
+                diretorios_resultados.append(diretorio)
                 print(f"Concluído em {tempo:.2f}s")
             else:
                 print(f"Falhou após {tempo:.2f}s")
 
     tempo_total = time.time() - inicio_total
 
-    # Gerar outputs
+    # Gerar outputs básicos
     gerar_tabela_comparativa(resultados)
     imprimir_resumo(resultados)
 
@@ -268,6 +270,32 @@ def main():
     print(f"Tempo total: {tempo_total/60:.1f} minutos ({tempo_total:.1f}s)")
     print(f"Execuções bem-sucedidas: {len(resultados)}/{total_execucoes}")
     print(f"{'='*70}\n")
+
+    # Executar análise comparativa avançada
+    if diretorios_resultados:
+        print("\n" + "="*70)
+        print("INICIANDO ANÁLISE COMPARATIVA AVANÇADA")
+        print("="*70 + "\n")
+
+        try:
+            from analisar_comparacao import AnalisadorComparativo
+
+            # Criar analisador e executar análise completa
+            analisador = AnalisadorComparativo(
+                resultados_dirs=diretorios_resultados,
+                output_dir="analise_comparativa"
+            )
+            analisador.executar_analise_completa()
+
+        except ImportError as e:
+            print(f"⚠ Módulo de análise avançada não encontrado: {e}")
+            print("Execute: pip install numpy matplotlib seaborn")
+        except Exception as e:
+            print(f"⚠ Erro na análise comparativa avançada: {e}")
+            import traceback
+            traceback.print_exc()
+    else:
+        print("\n⚠ Nenhum resultado disponível para análise comparativa avançada\n")
 
 
 if __name__ == "__main__":

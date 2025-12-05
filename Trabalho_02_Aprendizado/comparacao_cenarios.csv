@@ -1,0 +1,11 @@
+experimento,episodios,num_veiculos,tempo_execucao,recompensa_media,recompensa_total,recompensa_min,recompensa_max,recompensa_correta
+padrao,1000,10,1.0,659.942,659942.0,-459.0,1000.0,100
+base,1000,10,1.0,772.65,772650.0,-685.0,1000.0,100
+emergencias,1000,10,1.0,741.728,741728.0,-374.0,1000.0,100
+iguais,1000,10,1.0,1000.0,1000000.0,1000.0,1000.0,100
+pesados,1000,10,1.0,796.805,796805.0,-60.0,1000.0,100
+transporte_publico,1000,10,1.0,815.66,815660.0,-25.0,1000.0,100
+prioridades_proximas,1000,10,1.0,669.578,669578.0,10.0,892.0,100
+extremos,1000,10,1.0,671.944,671944.0,-558.0,1000.0,100
+escalonado,1000,10,1.0,737.25,737250.0,-350.0,1000.0,100
+misto_complexo,1000,10,1.0,728.924,728924.0,-401.0,1000.0,100

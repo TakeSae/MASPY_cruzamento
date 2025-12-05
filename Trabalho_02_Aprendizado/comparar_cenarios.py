@@ -121,8 +121,8 @@ def main():
     parser.add_argument(
         '--episodios',
         type=int,
-        default=100,
-        help='Número de episódios de treinamento para cada cenário (padrão: 100)'
+        default=1000,
+        help='Número de episódios de treinamento para cada cenário (padrão: 1000)'
     )
 
     parser.add_argument(

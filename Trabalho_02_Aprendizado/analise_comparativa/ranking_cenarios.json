@@ -1,0 +1,82 @@
+[
+  {
+    "cenario": "escalonado",
+    "score_total": 1540.4238085106383,
+    "recompensa_media": 737.25,
+    "taxa_convergencia": 3408.156028368794,
+    "melhoria": 746.76,
+    "num_execucoes": 1
+  },
+  {
+    "cenario": "pesados",
+    "score_total": 622.7115702156952,
+    "recompensa_media": 796.805,
+    "taxa_convergencia": 356.3102340523176,
+    "melhoria": 587.0799999999999,
+    "num_execucoes": 1
+  },
+  {
+    "cenario": "transporte_publico",
+    "score_total": 602.271409674235,
+    "recompensa_media": 815.66,
+    "taxa_convergencia": 293.4846989141165,
+    "melhoria": 531.98,
+    "num_execucoes": 1
+  },
+  {
+    "cenario": "iguais",
+    "score_total": 500.0,
+    "recompensa_media": 1000.0,
+    "taxa_convergencia": 0.0,
+    "melhoria": 0.0,
+    "num_execucoes": 1
+  },
+  {
+    "cenario": "prioridades_proximas",
+    "score_total": 462.85969593039573,
+    "recompensa_media": 669.578,
+    "taxa_convergencia": 176.9716531013191,
+    "melhoria": 374.896,
+    "num_execucoes": 1
+  },
+  {
+    "cenario": "extremos",
+    "score_total": 26.21099092194129,
+    "recompensa_media": 671.944,
+    "taxa_convergencia": -1492.5553635935291,
+    "melhoria": 690.028,
+    "num_execucoes": 1
+  },
+  {
+    "cenario": "emergencias",
+    "score_total": -202.3650064636131,
+    "recompensa_media": 741.728,
+    "taxa_convergencia": -2425.0406882120437,
+    "melhoria": 771.416,
+    "num_execucoes": 1
+  },
+  {
+    "cenario": "padrao",
+    "score_total": -315.6763965556829,
+    "recompensa_media": 659.942,
+    "taxa_convergencia": -2630.309988518943,
+    "melhoria": 717.2280000000001,
+    "num_execucoes": 1
+  },
+  {
+    "cenario": "misto_complexo",
+    "score_total": -680.9093121200159,
+    "recompensa_media": 728.924,
+    "taxa_convergencia": -4020.17370706672,
+    "melhoria": 803.404,
+    "num_execucoes": 1
+  },
+  {
+    "cenario": "base",
+    "score_total": -743.6746770186335,
+    "recompensa_media": 772.65,
+    "taxa_convergencia": -4236.438923395445,
+    "melhoria": 704.6600000000001,
+    "num_execucoes": 1
+  }
+]

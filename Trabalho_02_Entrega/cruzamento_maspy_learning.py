@@ -324,25 +324,6 @@ EXPERIMENTOS = {
     },
 }
 
-
-
-# ==================================================================================
-# METODOLOGIAS
-# ==================================================================================
-# Este sistema é documentado usando as metodologias PEAS e SART:
-#
-# - PEAS (Performance, Environment, Actuators, Sensors):
-#   Especificação completa dos agentes e suas interações
-#   Documentação: docs/PEAS.md
-#
-# - SART (Situation, Agent, Reinforcement learning, Task):
-#   Framework para sistemas multi-agentes com aprendizado por reforço
-#   Documentação: docs/SART.md
-#
-# Consulte os documentos para detalhes completos sobre design e especificação.
-# ==================================================================================
-
-
 # CLASSE BASE COM LOGGING
 
 class LoggableAgent(Agent):
@@ -517,7 +498,6 @@ class MetricsCollector:
         taxa_acerto = (metricas["acoes_corretas"] / total_acoes) if total_acoes > 0 else 0.0
 
         # 2. Fator de convergência (0-1)
-        # Quanto mais rápido convergir, maior o fator
         if metricas["convergencia"]["convergiu"]:
             ep_conv = metricas["convergencia"]["episodio_convergencia"]
             # Normalizar: convergência em episódio 1 = 1.0, episódio 100 = 0.01
@@ -1344,7 +1324,6 @@ class CoordenadorLearningAgent(LoggableAgent):
             recompensas_por_episodio = []
 
             # Wrapper para capturar métricas DURANTE o treinamento do Q-Learning
-            # Vamos executar episódios manualmente e treinar com os dados coletados
             self.info_print("\nExecutando treinamento com coleta de métricas...")
 
             # Inicializar Q-table manualmente

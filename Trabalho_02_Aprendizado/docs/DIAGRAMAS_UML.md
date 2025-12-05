@@ -557,6 +557,150 @@ classDiagram
 
 ---
 
+## 9. Autômato SART - Sistema de Cruzamento (Exemplo com 3 veículos)
+
+### Especificação SART Completa
+
+**S - States (Estados):**
+- Representação: tupla (v1_passou, v2_passou, v3_passou) onde cada elemento ∈ {0,1}
+- Estado inicial: (0,0,0) - todos os veículos aguardando
+- Estados intermediários: (1,0,0), (0,1,0), etc. - alguns veículos atravessaram
+- Estado terminal: (1,1,1) - todos os veículos atravessaram
+- Total de estados possíveis: 2^3 = 8 estados
+
+**A - Actions (Ações):**
+- escolher_veiculo1: Seleciona veículo 1 para atravessar (só disponível se v1_passou=0)
+- escolher_veiculo2: Seleciona veículo 2 para atravessar (só disponível se v2_passou=0)
+- escolher_veiculo3: Seleciona veículo 3 para atravessar (só disponível se v3_passou=0)
+- Ações disponíveis variam conforme estado atual
+
+**R - Rewards (Recompensas):**
+- Escolha ótima (maior prioridade entre disponíveis): +100
+- Escolha subótima: -Δp × 0.2, onde Δp = diferença de prioridade
+
+**T - Transitions (Transições):**
+- Determinísticas: escolher_veiculo(i) leva de (v1,...,vi=0,...,vN) para (v1,...,vi=1,...,vN)
+- Exemplo: escolher_veiculo2 em estado (0,0,1) → (0,1,1)
+
+### Autômato Visual
+
+```
+Configuração do Exemplo:
+- Veículo 1: Prioridade = 50 (Carro comum)
+- Veículo 2: Prioridade = 100 (Ambulância)
+- Veículo 3: Prioridade = 30 (Carro comum)
+
+Legenda:
+→ : Transição com ação e recompensa
+◎ : Estado terminal (duplo círculo)
+○ : Estado intermediário
+▸ : Estado inicial
+
+
+                            ┌────────────────────────────────────┐
+                            │                                    │
+                            │    Estados do Cruzamento           │
+                            │    (v1_passou, v2_passou, v3_passou)│
+                            └────────────────────────────────────┘
+
+
+                                  ▸ (0,0,0)
+                                     │
+                    ┌────────────────┼────────────────┐
+                    │                │                │
+         escolher_v1│           escolher_v2      escolher_v3
+             <-10>  │             <+100>             <-14>
+                    │                │                │
+                    ↓                ↓                ↓
+                 (1,0,0)          (0,1,0)          (0,0,1)
+                    │                │                │
+              ┌─────┴─────┐    ┌─────┴─────┐    ┌─────┴─────┐
+              │           │    │           │    │           │
+    escolher_v2  escolher_v3  escolher_v1  escolher_v3  escolher_v1  escolher_v2
+       <+100>      <-4>       <-10>        <-14>       <-4>        <+100>
+              │           │    │           │    │           │
+              ↓           ↓    ↓           ↓    ↓           ↓
+           (1,1,0)     (1,0,1) (1,1,0)   (0,1,1) (1,0,1)   (0,1,1)
+              │           │    │           │    │           │
+              │           │    │           │    │           │
+      escolher_v3  escolher_v2  escolher_v3  escolher_v1  escolher_v2  escolher_v1
+         <+100>      <+100>      <+100>      <+100>      <+100>      <+100>
+              │           │    │           │    │           │
+              └───────┬───┴────┴─────┬─────┴────┴───────────┘
+                      │              │
+                      ↓              ↓
+                   ◎ (1,1,1)      ◎ (1,1,1)
+
+
+Análise de Recompensas:
+- escolher_v1 <-10>: V1 tem prioridade 50, V2 tem 100 → Δp=50 → -50×0.2 = -10
+- escolher_v2 <+100>: V2 tem maior prioridade (100)
+- escolher_v3 <-14>: V3 tem prioridade 30, V2 tem 100 → Δp=70 → -70×0.2 = -14
+- escolher_v2 <+100>: V2 ainda tem maior prioridade entre {V1,V2}
+- escolher_v3 <-4>: V3 tem prioridade 30, V1 tem 50 → Δp=20 → -20×0.2 = -4
+- No estado final, última escolha sempre recebe +100 (única opção disponível)
+
+
+Caminho Ótimo Aprendido:
+┌─────────────────────────────────────────────────────────────┐
+│  (0,0,0) ──[escolher_v2 <+100>]──▶ (0,1,0)                  │
+│                                        │                     │
+│                            [escolher_v1 <+100>]              │
+│                                        │                     │
+│                                        ↓                     │
+│                                     (1,1,0)                  │
+│                                        │                     │
+│                            [escolher_v3 <+100>]              │
+│                                        │                     │
+│                                        ↓                     │
+│                                    ◎ (1,1,1)                 │
+│                                                              │
+│  Recompensa Total: +300 (máximo possível)                   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Q-Table Convergida (Exemplo Simplificado)
+
+Para o estado inicial (0,0,0):
+
+| Estado | Ação | Q-valor | Explicação |
+|--------|------|---------|------------|
+| (0,0,0) | escolher_v1 | ~280 | Subótimo: -10 + 100 + 100 + γ × futuro |
+| (0,0,0) | escolher_v2 | ~300 | Ótimo: +100 + 100 + 100 + γ × futuro |
+| (0,0,0) | escolher_v3 | ~276 | Subótimo: -14 + 100 + 100 + γ × futuro |
+
+Após convergência, o agente sempre escolhe escolher_v2 (maior Q-valor).
+
+### Escalabilidade para N Veículos
+
+Para o sistema real com N=10 veículos:
+- Estados possíveis: 2^10 = 1024 estados
+- Ações máximas por estado: 10 (todas no estado inicial)
+- Complexidade da Q-table: O(2^N × N)
+- Espaço de busca: Exponencial, mas Q-Learning converge eficientemente
+
+### Propriedades do Autômato
+
+**Tipo:** Autômato Finito Determinístico (AFD) com recompensas
+**Características:**
+- Determinístico: cada ação leva a exatamente um próximo estado
+- Totalmente observável: agente sempre conhece estado atual completo
+- Episódico: cada episódio termina em estado (1,1,...,1)
+- Recompensas imediatas: feedback instantâneo após cada ação
+
+**Política Ótima (π*):**
+Em qualquer estado s, escolher o veículo com maior prioridade entre os disponíveis:
+```
+π*(s) = argmax prioridade(i) para todo i tal que vi_passou = 0
+```
+
+**Valor Ótimo (V*):**
+```
+V*((0,0,...,0)) = N × 100 = recompensa máxima possível
+```
+
+---
+
 ## Convenções e Notas
 
 ### Padrões de Nomenclatura

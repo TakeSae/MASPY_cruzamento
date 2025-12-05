@@ -1,60 +1,37 @@
-# Sistema Multi-Agentes de Negociação em Cruzamento
+# Sistema Multi-Agentes - Cruzamento Viário
 
 **Trabalhos 01 e 02 - Sistemas Multi-Agentes 2025.2**
 **UTFPR - Campus Ponta Grossa - COCIC**
 
 [![Python](https://img.shields.io/badge/Python-3.13-blue.svg)](https://www.python.org/)
-[![MASPY](https://img.shields.io/badge/MASPY-2025.06.07-green.svg)](https://github.com/laca-is/MASPY)
+[![MASPY](https://img.shields.io/badge/MASPY-2025.11.9-green.svg)](https://github.com/laca-is/MASPY)
 [![Status](https://img.shields.io/badge/Status-Completo-success.svg)]()
-
----
-
-## Navegação Rápida
-
-**Trabalhos:**
-- [Trabalho 01 - Sistema de Negociação](Trabalho_01_Negociacao/) - Protocolo de negociação baseado em prioridades
-- [Trabalho 02 - Sistema de Aprendizado](Trabalho_02_Aprendizado/) - Aprendizado por reforço com Q-Learning
-
-**Documentação:**
-- [Como Executar](#como-executar) - Instruções de execução
-- [Estrutura do Projeto](#estrutura-do-projeto) - Organização dos arquivos
-- [Arquitetura](#arquitetura-do-sistema) - Detalhes técnicos
-- [Experimentos](#experimentos-disponíveis) - Cenários de teste
-
-**Validação:**
-- [Conformidade Trabalho 02](Trabalho_02_Aprendizado/CONFORMIDADE_TRABALHO02.md) - Análise de requisitos
-- [Relatório de Testes](Trabalho_02_Aprendizado/RELATORIO_TESTES.md) - 28/28 testes (100%)
-
-**Teste Rápido:**
-```bash
-# Executa teste completo do projeto (estrutura, dependências, ambos trabalhos)
-./testar_projeto.sh
-```
 
 ---
 
 ## Descrição
 
-Sistema multi-agentes que combina negociação e aprendizado por reforço (Q-Learning) para coordenação de veículos autônomos em cruzamento. Implementado com framework MASPY, apresenta duas vertentes principais:
+Sistema multi-agentes para coordenação de veículos em cruzamento implementado com MASPY, apresentando duas abordagens:
 
-**Trabalho 01 - Sistema de Negociação:**
-- Protocolo de negociação centralizado baseado em prioridades
-- Arquitetura BDI completa (Beliefs, Desires, Intentions)
-- Sistema de logging configurável (SILENT, ERROR, INFO, DEBUG)
-- Documentação PEAS integrada ao código
-- 6 experimentos validados (taxa de sucesso: 100%)
+**Trabalho 01 - Negociação:** Protocolo de negociação baseado em prioridades com arquitetura BDI.
 
-**Trabalho 02 - Sistema de Aprendizado:**
-- Aprendizado por reforço com Q-Learning
-- 2 tipos de agentes (Coordenador + Veículo)
-- 11 instâncias de agentes (1 coordenador + 10 veículos)
-- 10 cenários de teste diferentes
-- Metodologias PEAS e SART documentadas
-- Função de utilidade para avaliação
-- Análise estatística completa (desvio padrão, média móvel)
-- Visualização gráfica com 5 tipos de gráficos
-- Sistema de comparação entre cenários
-- Taxa de sucesso dos testes: 100% (28/28 testes)
+**Trabalho 02 - Aprendizado:** Q-Learning para aprender política ótima de travessia.
+
+---
+
+## Navegação Rápida
+
+### Trabalhos
+- **[Trabalho 01 - Negociação](Trabalho_01_Negociacao/)** - Sistema de negociação BDI
+- **[Trabalho 02 - Q-Learning](Trabalho_02_Aprendizado/)** - Sistema de aprendizado por reforço
+
+### Documentação Trabalho 02
+- [PEAS](Trabalho_02_Aprendizado/docs/PEAS.md) - Metodologia PEAS completa
+- [SART](Trabalho_02_Aprendizado/docs/SART.md) - Metodologia SART completa
+- [Diagramas UML](Trabalho_02_Aprendizado/docs/DIAGRAMAS_UML.md) - 9 diagramas + autômato
+- [Comparação T1 vs T2](Trabalho_02_Aprendizado/docs/COMPARACAO_TRABALHO1_VS_TRABALHO2.md) - Análise comparativa
+- [Relatório de Testes](Trabalho_02_Aprendizado/docs/RELATORIO_TESTES.md) - 28/28 testes passaram
+- [Dificuldades Encontradas](Trabalho_02_Aprendizado/docs/dificuldades_encontradas.md) - Problemas e soluções
 
 ---
 
@@ -62,569 +39,187 @@ Sistema multi-agentes que combina negociação e aprendizado por reforço (Q-Lea
 
 ```
 MASPY_cruzamento/
+├── Trabalho_01_Negociacao/         # Trabalho 01 - Negociação
+│   ├── cruzamento_maspy_v3.py      # Sistema principal (RECOMENDADO)
+│   ├── experiments/                # Suite de experimentos
+│   └── resultados/                 # Resultados por timestamp
 │
-├── Trabalho_01_Negociacao/             # TRABALHO 01 - Sistema de Negociação
-│   ├── README.md                       # Documentação completa do Trabalho 01
-│   ├── cruzamento_maspy_v3.py          # Sistema principal (RECOMENDADO)
-│   ├── cruzamento_maspy_v2.py          # Versão legado
-│   ├── cruzamento_maspy_v3_analise_PEAS.md  # Documentação PEAS
-│   ├── experiments/
-│   │   ├── experimentos_cruzamento_v3.py    # Suite experimentos v3
-│   │   ├── experimentos_cruzamento.py       # Suite v2 (legado)
-│   │   └── run_all_experiments.py           # Executor de todos
-│   ├── scripts/
-│   │   ├── coletar_dados_v3.sh              # Coleta v3 (RECOMENDADO)
-│   │   └── coletar_dados.sh                 # Coleta v2 (legado)
-│   ├── analysis/
-│   │   └── analisar_resultados.py           # Analisador
-│   └── resultados/                          # Resultados por timestamp
-│       ├── YYYYMMDD_HHMMSS/
-│       │   ├── info_sessao.txt
-│       │   ├── resultados_completos.txt
-│       │   ├── resumo.txt
-│       │   ├── metricas.txt
-│       │   └── vencedores.txt
-│       └── ultima_execucao -> YYYYMMDD_HHMMSS
+├── Trabalho_02_Aprendizado/        # Trabalho 02 - Q-Learning
+│   ├── cruzamento_maspy_learning.py   # Sistema principal
+│   ├── executar_todos_cenarios.py     # Executor batch
+│   ├── comparar_cenarios.py           # Comparador
+│   ├── executar_testes.py             # Suite de 28 testes
+│   ├── docs/                          # Documentação completa
+│   └── resultados/                    # Resultados + gráficos
 │
-├── Trabalho_02_Aprendizado/            # TRABALHO 02 - Sistema de Aprendizado
-│   ├── README.md                       # Documentação completa do Trabalho 02
-│   ├── cruzamento_maspy_learning.py    # Sistema Q-Learning (PRINCIPAL)
-│   ├── comparar_cenarios.py            # Comparador de cenários
-│   ├── executar_testes.py              # Suite de 28 testes
-│   ├── testar_graficos.py              # Teste rápido matplotlib
-│   ├── cruzamento_maspy_gui.py         # Tentativa GUI (descontinuada)
-│   ├── README_MELHORIAS.md             # Documentação detalhada
-│   ├── RELATORIO_TESTES.md             # Relatório validação (28/28)
-│   ├── CONFORMIDADE_TRABALHO02.md      # Análise de conformidade
-│   └── resultados/                     # Resultados por timestamp
-│       ├── YYYYMMDD_HHMMSS/
-│       │   ├── metricas_aprendizado.csv
-│       │   ├── info_execucao.txt
-│       │   └── graficos/
-│       │       ├── recompensa_por_episodio.png
-│       │       ├── recompensa_acumulada.png
-│       │       ├── media_movel.png
-│       │       ├── comparacao_desempenho.png
-│       │       └── analise_convergencia.png
-│       └── ultima_execucao -> YYYYMMDD_HHMMSS
-│
-├── docs/                               # Documentação geral
-│   └── 2025-2-SMA-Trabalho-02.pdf      # Especificação do trabalho
-│
-├── artigo/                             # Materiais para artigo e apresentação
-│   ├── CONTEUDO_NECESSARIO.md
-│   ├── referencias.md
-│   ├── SLIDES_ESTRUTURA.md
-│   └── ...
-│
-├── venv_maspy/                         # Ambiente virtual Python
-│
-└── README.md                           # Este arquivo (visão geral)
+└── venv_maspy/                     # Ambiente virtual
 ```
 
 ---
 
-## Arquitetura do Sistema
+## Experimentos
 
-### **Trabalho 01 - Sistema de Negociacao**
+### Trabalho 01 - Negociação (6 cenários)
 
-#### **Agentes**
+| Cenário | Veículos | Objetivo |
+|---------|----------|----------|
+| Base | 4 | Validar priorização de emergência |
+| Múltiplas Emergências | 4 | Desempate entre emergências |
+| Prioridades Iguais | 4 | Comportamento em empate |
+| Cargas Pesadas | 4 | Priorização de veículos grandes |
+| Misto | 6 | Teste com diversidade |
+| Estresse | 10 | Avaliar escalabilidade |
 
-**1. VeiculoAgent** (Agente Veículo)
-Representa um veículo que participa da negociação.
+### Trabalho 02 - Aprendizado (10 cenários)
 
-**Arquitetura BDI:**
-- **Beliefs (Crenças):** `tipo`, `prioridade`, `Belief("decisao", vencedor)`
-- **Desires/Goals (Objetivos):** `Goal("atravessar")`
-- **Intentions/Plans (Planos):**
-  - `enviar_proposta()` - Envia proposta ao coordenador
-  - `receber_decisao()` - Processa resultado da negociação
-
-**Atributos:**
-- `tipo`: String (carro, ambulancia, onibus, moto, caminhao, etc.)
-- `prioridade`: Int (0-100, quanto maior mais urgente)
-- `coordenador`: String (nome do agente coordenador)
-- `log_level`: LogLevel (SILENT, ERROR, INFO, DEBUG)
-
-**2. CoordenadorAgent** (Agente Coordenador)
-Gerencia o processo de negociação.
-
-**Arquitetura BDI:**
-- **Beliefs (Crenças):** `Belief("proposta", dados)` (múltiplas instâncias)
-- **Desires/Goals (Objetivos):** `Goal("decidir")`
-- **Intentions/Plans (Planos):**
-  - `coletar_propostas()` - Recebe e armazena propostas
-  - `decidir_vencedor()` - Avalia prioridades e decide
-
-**Algoritmo de decisão:**
-```python
-vencedor = max(propostas, key=lambda p: p['prio'])
-```
-Em caso de empate: ordem de processamento (FIFO)
-
-#### **Ambiente**
-
-**CruzamentoEnvironment**
-Representa o cruzamento físico de 4 vias.
-
-**Estado:**
-- `cruzamento_livre`: Boolean (indica disponibilidade)
-- `veiculos_aguardando`: List[Dict] (fila de veículos)
-- `veiculo_atravessando`: String (ID do veículo atual)
-- `historico_travessias`: List[String] (histórico completo)
-
-**Métodos:**
-- `registrar_chegada()` - Registra veículo no cruzamento
-- `iniciar_travessia()` - Marca início da travessia
-- `finalizar_travessia()` - Libera o cruzamento
-
----
-
-### **Trabalho 02 - Sistema de Aprendizado**
-
-#### **Agentes**
-
-**1. CoordenadorLearningAgent** (Agente Coordenador com Q-Learning)
-Agente que aprende a política ótima de escolha de veículos usando Q-Learning.
-
-**Arquitetura BDI:**
-- **Beliefs:** `status`, `episodio_atual`, `recompensa_total`
-- **Goals:** `Goal("aprender")`
-- **Plans:** `iniciar_aprendizado()` - Executa Q-Learning via EnvModel
-
-**Parâmetros de Aprendizado:**
-- `num_episodes`: Número de episódios de treinamento (default: 100)
-- `reward_correto`: Recompensa por escolha ótima (+100)
-- `penalidade_multiplicador`: Fator de penalização por erro (1.5)
-
-**2. VeiculoLearningAgent** (Agente Veículo que Aprende)
-Observa o processo de aprendizado e registra estatísticas.
-
-**Arquitetura BDI:**
-- **Beliefs:** `veiculo_id`, `prioridade`, `status`, `tentativas`, `sucessos`, `falhas`
-- **Goals:** `Goal("observar_cruzamento")`
-- **Plans:** `monitorar_ambiente()` - Observa passivamente
-
-**Métricas Coletadas:**
-- Histórico de ações (escolhido/não escolhido)
-- Recompensa acumulada individual
-- Taxa de sucesso/falha
-
-#### **Ambiente**
-
-**CruzamentoLearningEnvironment**
-Ambiente de aprendizado por reforço (SART).
-
-**Estados (States):**
-- `v{N}_passou`: Boolean para cada veículo (1-10)
-- Estado inicial: todos em 0 (aguardando)
-- Estado terminal: todos em 1 (atravessaram)
-
-**Ações (Actions):**
-- `escolher_veiculo(id)`: Seleciona veículo para atravessar
-
-**Recompensas (Rewards):**
-- Escolha ótima (maior prioridade): +100
-- Escolha subótima: penalidade proporcional à diferença
-
-**Transições (Transitions):**
-- Determinísticas: escolher veículo → marca como atravessado
-
-#### **Sistemas de Suporte**
-
-**MetricsCollector**
-Sistema centralizado para coleta de métricas de aprendizado.
-
-**Funcionalidades:**
-- Registra recompensas por episódio
-- Calcula função de utilidade (PEAS)
-- Detecta convergência automaticamente
-- Gera relatórios estatísticos completos
-- Exporta dados para CSV
-- Cria 5 tipos de gráficos matplotlib
-
-**ScenarioComparator**
-Sistema para comparação entre cenários de teste.
-
-**Funcionalidades:**
-- Compara múltiplos cenários simultaneamente
-- Identifica melhor configuração
-- Gera relatórios comparativos
-- Exporta comparações para CSV
-- Cria gráficos comparativos
-
----
-
-## Experimentos Disponíveis
-
-### **Trabalho 01 - Negociacao (6 cenarios)**
-
-| # | Nome | Veículos | Objetivo | Tempo Médio |
-|---|------|----------|----------|-------------|
-| 1 | Cenário Base | 4 | Validar priorização de emergência | 1.368s |
-| 2 | Múltiplas Emergências | 4 | Desempate entre emergências | 1.367s |
-| 3 | Prioridades Iguais | 4 | Comportamento em empate | 1.367s |
-| 4 | Cargas Pesadas | 4 | Priorização de veículos grandes | 1.318s |
-| 5 | Cenário Misto | 6 | Teste com diversidade | 1.370s |
-| 6 | Teste de Estresse | 10 | Avaliar escalabilidade | 1.372s |
-
-### **Trabalho 02 - Aprendizado (10 cenarios)**
-
-| # | Nome | Descrição | Veículos |
-|---|------|-----------|----------|
-| 1 | padrao | 10 veículos diversos | 10 |
-| 2 | base | Ambulância vs veículos normais | 4 |
-| 3 | emergencias | Múltiplas emergências (ambulância, bombeiros, polícia) | 4 |
-| 4 | iguais | Prioridades iguais (desempate) | 4 |
-| 5 | pesados | Cargas pesadas (caminhões) | 4 |
-| 6 | transporte_publico | Ônibus, táxi, van | 6 |
-| 7 | prioridades_proximas | Diferenças pequenas (10-20) | 5 |
-| 8 | extremos | Diferenças grandes (1 vs 100) | 2 |
-| 9 | dois_veiculos | Caso mínimo | 2 |
-| 10 | tres_veiculos | Caso intermediário | 3 |
+| Cenário | Veículos | Descrição |
+|---------|----------|-----------|
+| padrao | 10 | Veículos diversos |
+| base | 10 | Ambulância vs normais |
+| emergencias | 10 | Múltiplas emergências |
+| iguais | 10 | Prioridades iguais |
+| pesados | 10 | Cargas pesadas |
+| transporte_publico | 10 | Ônibus e táxis |
+| prioridades_proximas | 10 | Diferenças pequenas |
+| extremos | 10 | Prioridades extremas (10 e 100) |
+| escalonado | 10 | Escala uniforme 10-100 |
+| misto_complexo | 10 | Mix de todos os tipos |
 
 ---
 
 ## Como Executar
 
-### **Pré-requisitos**
+### Pré-requisitos
 
 ```bash
 # Ativar ambiente virtual
 source venv_maspy/bin/activate
 
-# Instalar dependências básicas
-pip install -r requirements.txt
+# Verificar instalação
+python -c "import maspy; print('MASPY OK')"
 
-# Verificar instalação do MASPY
-python -c "import maspy; print('MASPY instalado')"
-
-# Instalar dependências opcionais para visualização (Trabalho 02)
+# Instalar dependências opcionais (Trabalho 02)
 pip install matplotlib numpy
 ```
 
----
-
-### **Trabalho 01 - Sistema de Negociacao**
-
-#### **Opção 1: Coletar Dados v3 (RECOMENDADO)**
+### Trabalho 01 - Negociação
 
 ```bash
 cd Trabalho_01_Negociacao
+
+# Coletar dados (RECOMENDADO)
 ./scripts/coletar_dados_v3.sh
-```
 
-**Gera automaticamente:**
-- Pasta `resultados/YYYYMMDD_HHMMSS/` organizada
-- `info_sessao.txt` - Metadados da sessão
-- `resultados_completos.txt` - Log completo (90% mais limpo que v2)
-- `resumo.txt` - Resumo dos experimentos
-- `vencedores.txt` - Lista de vencedores
-- `metricas.txt` - Tempos de execução
-- `analise.txt` - Análise estatística
-- `comparacao_v2_v3.txt` - Comparação de performance
-
-**Visualizar resultados:**
-```bash
-cat resultados/ultima_execucao/resumo.txt
-cat resultados/ultima_execucao/metricas.txt
-cat resultados/ultima_execucao/vencedores.txt
-```
-
-#### **Opção 2: Executar Bateria de Experimentos**
-
-```bash
-cd Trabalho_01_Negociacao
-
-# v3 (RECOMENDADO - logs limpos)
+# Ou executar experimentos
 python experiments/experimentos_cruzamento_v3.py
 
-# v2 (legado - logs completos)
-python experiments/experimentos_cruzamento.py
-```
-
-#### **Opção 3: Executar Sistema Principal**
-
-```bash
-cd Trabalho_01_Negociacao
-
-# v3 (RECOMENDADO)
+# Ou executar sistema principal
 python cruzamento_maspy_v3.py
-
-# v2 (legado)
-python cruzamento_maspy_v2.py
 ```
 
-#### **Opção 4: Executar Experimento Individual**
-
-```bash
-cd Trabalho_01_Negociacao
-
-# Exemplo: Experimento 1
-python -c "from experiments.experimentos_cruzamento_v3 import experimento_1_base; experimento_1_base()"
-```
-
----
-
-### **Trabalho 02 - Sistema de Aprendizado Q-Learning**
-
-#### **Opção 1: Executar com cenário padrão (RECOMENDADO)**
+### Trabalho 02 - Aprendizado
 
 ```bash
 cd Trabalho_02_Aprendizado
+
+# Execução padrão
 python cruzamento_maspy_learning.py
-```
 
-**Saída gerada:**
-- Relatório de métricas no terminal
-- `resultados/YYYYMMDD_HHMMSS/metricas_aprendizado.csv` - Dados exportados
-- `resultados/YYYYMMDD_HHMMSS/graficos/` - 5 visualizações PNG
-- `resultados/YYYYMMDD_HHMMSS/info_execucao.txt` - Metadados da execução
-- `resultados/ultima_execucao/` - Symlink para última execução
-
-#### **Opção 2: Executar cenário específico**
-
-```bash
-cd Trabalho_02_Aprendizado
-
-# Exemplos de cenários disponíveis:
+# Cenário específico
 python cruzamento_maspy_learning.py --experimento base
-python cruzamento_maspy_learning.py --experimento emergencias
-python cruzamento_maspy_learning.py --experimento pesados
-python cruzamento_maspy_learning.py --experimento extremos
-```
 
-#### **Opção 3: Configurar parâmetros de treinamento**
+# Configurar parâmetros
+python cruzamento_maspy_learning.py --episodios 200 --quiet
 
-```bash
-cd Trabalho_02_Aprendizado
+# Comparar cenários
+python comparar_cenarios.py --cenarios base emergencias pesados
 
-# Alterar número de episódios (default: 100)
-python cruzamento_maspy_learning.py --episodios 200
-
-# Modo silencioso (sem logs detalhados)
-python cruzamento_maspy_learning.py --quiet
-
-# Modo step-by-step (para debugging)
-python cruzamento_maspy_learning.py --step
-
-# Combinação de parâmetros
-python cruzamento_maspy_learning.py --experimento base --episodios 150 --reward 200
-```
-
-**Parâmetros disponíveis:**
-- `--experimento`: Nome do cenário (padrao, base, emergencias, etc.)
-- `--episodios`: Número de episódios de treinamento (default: 100)
-- `--reward`: Recompensa por escolha correta (default: 100)
-- `--penalidade`: Multiplicador de penalidade (default: 1.5)
-- `--quiet`: Modo silencioso (sem logs verbose)
-- `--step`: Modo step-by-step para debugging
-
-#### **Opção 4: Comparar múltiplos cenários**
-
-```bash
-cd Trabalho_02_Aprendizado
-
-# Comparar cenários específicos
-python comparar_cenarios.py --cenarios base emergencias pesados --episodios 100
-
-# Comparar TODOS os cenários
-python comparar_cenarios.py --cenarios todos --episodios 100
-
-# Modo verbose (mostrar logs detalhados)
-python comparar_cenarios.py --cenarios todos --verbose
-```
-
-**Saída gerada pelo comparador:**
-- Relatórios individuais de cada cenário
-- Relatório comparativo final
-- Métricas agregadas em CSV
-- Gráficos comparativos
-
-#### **Opção 5: Executar suite de testes**
-
-```bash
-cd Trabalho_02_Aprendizado
-
-# Executar todos os 28 testes
+# Executar testes
 python executar_testes.py
 ```
 
-**Validações realizadas:**
-- Sintaxe Python
-- Imports e dependências
-- MetricsCollector
-- Função de utilidade
-- Cálculos estatísticos
-- Documentação PEAS/SART
-- Cenários de experimento
-- Exportação CSV
-- Matplotlib (se disponível)
+**Parâmetros disponíveis (Trabalho 02):**
+- `--experimento` - Nome do cenário
+- `--episodios` - Número de episódios (default: 100)
+- `--reward` - Recompensa por acerto (default: 100)
+- `--penalidade` - Multiplicador de penalidade (default: 1.5)
+- `--quiet` - Modo silencioso
+- `--step` - Modo step-by-step
 
 ---
 
-## Sistema de Logging (v3)
+## Arquitetura
 
-A v3 introduz níveis de verbosidade configuráveis:
+### Trabalho 01 - Negociação
 
-```python
-from cruzamento_maspy_v3 import LogLevel
+**Agentes:**
+- **VeiculoAgent:** Envia proposta com prioridade
+- **CoordenadorAgent:** Decide vencedor (maior prioridade)
 
-# Níveis disponíveis:
-LogLevel.SILENT  # Sem output (benchmarks)
-LogLevel.ERROR   # Apenas erros
-LogLevel.INFO    # Informações importantes (RECOMENDADO)
-LogLevel.DEBUG   # Tudo (modo v2)
-```
+**Ambiente:**
+- **CruzamentoEnvironment:** Gerencia estado do cruzamento
 
-**Configurar no código:**
-```python
-GLOBAL_LOG_LEVEL = LogLevel.INFO  # Linha 147
-```
+**Protocolo:**
+1. Veículos enviam propostas
+2. Coordenador coleta todas
+3. Decide por maior prioridade (FIFO em empate)
+4. Notifica vencedor e perdedores
 
-**Impacto:**
-- Tamanho dos logs: 20KB → 2KB (90% menor)
-- Tempo de execução: ~20% mais rápido
-- Resultados mais legíveis
+### Trabalho 02 - Aprendizado
 
----
+**Agentes:**
+- **CoordenadorLearningAgent:** Aprende política ótima via Q-Learning
+- **VeiculoLearningAgent:** Observa e registra estatísticas
 
-## Protocolo de Negociação
+**Ambiente:**
+- **CruzamentoLearningEnvironment:** SART (States, Actions, Rewards, Transitions)
 
-**Fases do protocolo:**
+**Sistemas de Suporte:**
+- **MetricsCollector:** Coleta 15+ métricas, detecta convergência, gera 5 gráficos
+- **ScenarioComparator:** Compara cenários e identifica melhor configuração
 
-1. **Inicialização**
-   - Veículos chegam e ganham `Goal("atravessar")`
-
-2. **Envio de Propostas**
-   - Cada veículo envia `Belief("proposta", {id, tipo, prio})` via `tell`
-
-3. **Coleta**
-   - Coordenador recebe e armazena propostas
-   - Contador incrementado a cada proposta
-
-4. **Trigger de Decisão**
-   - Quando `contador == num_veiculos`, adiciona `Goal("decidir")`
-
-5. **Avaliação**
-   - Coordenador busca todas propostas
-   - Calcula `max(prioridade)`
-
-6. **Decisão**
-   - Seleciona vencedor (maior prioridade)
-   - Empate: ordem de processamento (FIFO)
-
-7. **Notificação**
-   - Coordenador envia `Belief("decisao", vencedor_id)` via `broadcast`
-
-8. **Reação**
-   - Vencedor: atravessa e notifica ambiente
-   - Perdedores: aguardam
-
-9. **Finalização**
-   - Todos agentes chamam `stop_cycle()`
-
-**Complexidade:** O(n) mensagens (n = número de veículos)
-
----
-
-## Níveis de Prioridade
-
-| Tipo de Veículo | Prioridade | Justificativa |
-|-----------------|------------|---------------|
-| **Ambulância** | 100 | Emergência médica (vidas em risco) |
-| **Bombeiros** | 95-98 | Emergência (incêndios, resgates) |
-| **Caminhão** | 50 | Veículo grande (dificulta tráfego) |
-| **Ônibus** | 30-40 | Transporte coletivo |
-| **Táxi** | 20 | Transporte de passageiros |
-| **Carro** | 10-15 | Veículo comum |
-| **Moto** | 5 | Veículo pequeno (mais ágil) |
-
-**Critério de desempate:** Ordem de processamento (FIFO)
+**Metodologias:**
+- **PEAS:** Performance, Environment, Actuators, Sensors
+- **SART:** States, Actions, Rewards, Transitions
 
 ---
 
 ## Tecnologias
 
-### **Trabalho 01 - Negociacao**
 - **Linguagem:** Python 3.13
-- **Framework:** MASPY 2025.06.07 (Multi-Agent System in Python)
-- **Paradigma:** BDI (Beliefs, Desires, Intentions)
-- **Bibliotecas:** enum, subprocess, time, sys
-
-### **Trabalho 02 - Aprendizado**
-- **Linguagem:** Python 3.13
-- **Framework:** MASPY 2025.06.07 com Q-Learning
-- **Paradigma:** BDI + Aprendizado por Reforço
-- **Bibliotecas:**
-  - Core: argparse, sys, signal, os, enum
-  - Visualização: matplotlib, numpy (opcional)
-  - Análise: csv (exportação de dados)
+- **Framework:** MASPY 2025.11.9
+- **Paradigma:** BDI (Trabalho 01) / BDI + Reinforcement Learning (Trabalho 02)
+- **Bibliotecas:** matplotlib, numpy (opcional), csv, argparse
 
 ---
 
-## Documentação
+## Níveis de Prioridade
 
-### **Trabalho 01 - Documentação PEAS**
-
-A versão 3 inclui documentação PEAS completa:
-- **Performance:** Medidas de desempenho do sistema
-- **Environment:** Características do ambiente (Russell & Norvig, 2010)
-- **Actuators:** Ações disponíveis aos agentes
-- **Sensors:** Percepções dos agentes
-
-Localização: [Trabalho_01_Negociacao/cruzamento_maspy_v3_analise_PEAS.md](Trabalho_01_Negociacao/cruzamento_maspy_v3_analise_PEAS.md)
-
-### **Trabalho 02 - Documentação PEAS e SART**
-
-A implementação Q-Learning inclui documentação completa integrada ao código:
-
-**PEAS (linhas 182-370 em cruzamento_maspy_learning.py):**
-- Performance: Função de utilidade U = α×taxa_acerto + β×convergência + γ×recompensa
-- Environment: 10 cenários de teste diferentes
-- Actuators: escolher_veiculo(), iniciar_aprendizado()
-- Sensors: v{N}_passou (estados observáveis), métricas coletadas
-
-**SART (metodologia de RL):**
-- States: Configuração de veículos que ainda não atravessaram
-- Actions: Escolha de qual veículo atravessa
-- Rewards: +100 por escolha ótima, penalidade proporcional por erro
-- Transitions: Determinísticas (escolher → marcar como atravessado)
-
-**Arquivos de documentação:**
-- [Trabalho_02_Aprendizado/README.md](Trabalho_02_Aprendizado/README.md) - Documentação completa do Trabalho 02
-- [Trabalho_02_Aprendizado/RELATORIO_TESTES.md](Trabalho_02_Aprendizado/RELATORIO_TESTES.md) - Relatório de validação (28 testes)
-- [Trabalho_02_Aprendizado/CONFORMIDADE_TRABALHO02.md](Trabalho_02_Aprendizado/CONFORMIDADE_TRABALHO02.md) - Análise de conformidade com requisitos
+| Tipo | Prioridade | Justificativa |
+|------|------------|---------------|
+| Ambulância | 100 | Emergência médica |
+| Bombeiros | 95-98 | Emergência (incêndio/resgate) |
+| Caminhão | 50 | Veículo grande |
+| Ônibus | 30-40 | Transporte coletivo |
+| Táxi | 20 | Transporte de passageiros |
+| Carro | 10-15 | Veículo comum |
+| Moto | 5 | Veículo ágil |
 
 ---
 
-## Tentativas de Interface Gráfica
+## Validação
 
-Durante o desenvolvimento do projeto, foram realizadas tentativas de implementação de interface gráfica para visualização do sistema multi-agentes em tempo real.
+**Trabalho 01:**
+- 6/6 experimentos validados (100%)
+- Sistema de logging configurável (SILENT, ERROR, INFO, DEBUG)
+- Logs 90% mais limpos que v2
 
-**Bibliotecas testadas:**
-- **Pygame:** Tentativa de criar visualização 2D do cruzamento com veículos animados
-- **Tkinter:** Interface básica para controle de parâmetros e visualização de logs
-
-**Problemas encontrados:**
-- Conflito entre loop do MASPY e loop de renderização gráfica
-- Dificuldade de sincronização entre ciclos de agentes e frames de animação
-- Performance degradada ao adicionar camada gráfica
-- Complexidade de manter estado consistente entre agentes e visualização
-
-**Decisão final:**
-Optou-se por focar em visualização via gráficos estáticos (matplotlib) ao invés de animação em tempo real, priorizando:
-- Análise estatística robusta
-- Exportação de dados estruturados (CSV)
-- Gráficos de alta qualidade para relatórios
-- Melhor performance do sistema de aprendizado
-
-**Visualizações implementadas (Trabalho 02):**
-1. Recompensa por episódio (linhas)
-2. Recompensa acumulada (crescimento)
-3. Média móvel (tendência)
-4. Comparação de desempenho (barras)
-5. Análise de convergência (regressão linear)
+**Trabalho 02:**
+- 28/28 testes automatizados (100%)
+- Função de utilidade PEAS implementada
+- Detecção automática de convergência
+- 5 tipos de gráficos matplotlib
+- Exportação CSV estruturada
 
 ---
 
@@ -634,55 +229,4 @@ Optou-se por focar em visualização via gráficos estáticos (matplotlib) ao in
 - **Maria Eduarda S. Freitas** - mariaeduardafreitas@alunos.utfpr.edu.br
 
 **Professor:** Gleifer Vaz Alves
-
----
-
-## Histórico de Versões
-
-### **Trabalho 02 - Sistema de Aprendizado** (2025-11-30) - ATUAL
-- Implementação completa de Q-Learning com MASPY
-- CoordenadorLearningAgent com aprendizado por reforço
-- VeiculoLearningAgent para observação e métricas individuais
-- MetricsCollector com 15+ métricas de desempenho
-- Função de utilidade PEAS (U = α×acerto + β×convergência + γ×recompensa)
-- ScenarioComparator para análise comparativa
-- 10 cenários de teste diferentes (2-10 veículos)
-- Documentação PEAS completa integrada ao código (linhas 182-370)
-- Documentação SART (States, Actions, Rewards, Transitions)
-- Organização de resultados por timestamp (resultados/YYYYMMDD_HHMMSS/)
-- Symlink ultima_execucao para acesso rápido aos resultados
-- Arquivo info_execucao.txt com metadados de cada execução
-- Sistema de exportação CSV
-- 5 tipos de gráficos matplotlib:
-  1. Recompensa por episódio
-  2. Recompensa acumulada
-  3. Média móvel (janela=5)
-  4. Comparação de desempenho (barras duplas)
-  5. Análise de convergência (regressão linear)
-- Análise estatística (desvio padrão, média móvel)
-- Detecção automática de convergência
-- Comparador de múltiplos cenários (comparar_cenarios.py)
-- Suite de 28 testes automatizados (100% sucesso)
-- Relatório de validação completo (RELATORIO_TESTES.md)
-- Argumentos de linha de comando configuráveis
-- Modos de execução: padrão, quiet, step-by-step
-
-### **Trabalho 01 - v3.0** (2024-10-24)
-- Sistema de LogLevel (SILENT, ERROR, INFO, DEBUG)
-- Documentação PEAS completa (~200 linhas)
-- Uso efetivo do ambiente (call_env_method)
-- Tratamento robusto de erros (try-except)
-- Logs 90% mais limpos (20KB → 2KB)
-- Performance 20% melhor
-- Organização de resultados por timestamp
-- Comparação automática v2 vs v3
-
-### **Trabalho 01 - v2.0** (2024-10-20)
-- Sistema funcional completo
-- 6 experimentos validados
-- Protocolo de negociação implementado
-- Arquitetura BDI
-
-### **Trabalho 01 - v1.0** (2024-10-17)
-- Implementação inicial
-
+**Disciplina:** Sistemas Multiagentes - 2025.2 - UTFPR

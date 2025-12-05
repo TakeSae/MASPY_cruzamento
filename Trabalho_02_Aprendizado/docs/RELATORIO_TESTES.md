@@ -6,7 +6,7 @@
 
 ---
 
-## 📊 Resumo Executivo
+## Resumo Executivo
 
 - **Total de testes:** 27
 - **Sucessos:** 25 ✓
@@ -15,68 +15,68 @@
 
 ---
 
-## ✅ Resultados dos Testes
+## Resultados dos Testes
 
 ### 1. Validação de Código
 
 | # | Teste | Status | Detalhes |
 |---|-------|--------|----------|
-| 1 | Sintaxe Python válida | ✅ PASS | - |
-| 2 | Import argparse | ✅ PASS | - |
+| 1 | Sintaxe Python válida | PASS | - |
+| 2 | Import argparse | PASS | - |
 
 ### 2. Estruturas de Dados
 
 | # | Teste | Status | Detalhes |
 |---|-------|--------|----------|
-| 1 | Import sys | ✅ PASS | - |
+| 1 | Import sys | PASS | - |
 
 ### 3. Funcionalidades Core
 
 | # | Teste | Status | Detalhes |
 |---|-------|--------|----------|
-| 1 | Import signal | ✅ PASS | - |
-| 2 | Import os | ✅ PASS | - |
+| 1 | Import signal | PASS | - |
+| 2 | Import os | PASS | - |
 
 ### 4. Documentação e Requisitos
 
 | # | Teste | Status | Detalhes |
 |---|-------|--------|----------|
-| 1 | Import enum.Enum | ✅ PASS | - |
-| 2 | Instanciação MetricsCollector (mock) | ✅ PASS | - |
+| 1 | Import enum.Enum | PASS | - |
+| 2 | Instanciação MetricsCollector (mock) | PASS | - |
 
 ### 5. Exportação e Visualização
 
 | # | Teste | Status | Detalhes |
 |---|-------|--------|----------|
-| 1 | Registrar agente | ✅ PASS | - |
-| 2 | Adicionar recompensa | ✅ PASS | - |
+| 1 | Registrar agente | PASS | - |
+| 2 | Adicionar recompensa | PASS | - |
 
 ### 6. Estrutura do Projeto
 
 | # | Teste | Status | Detalhes |
 |---|-------|--------|----------|
-| 1 | Verificar dados armazenados | ✅ PASS | - |
-| 2 | Utilidade com desempenho perfeito | ✅ PASS | U=1.0000 |
-| 3 | Utilidade com desempenho médio | ✅ PASS | U=0.6400 |
-| 4 | Utilidade com desempenho ruim | ✅ PASS | U=0.2100 |
-| 5 | Cálculo de desvio padrão | ✅ PASS | σ=14.14 |
-| 6 | Cálculo de média móvel | ✅ PASS | MM=[2.0, 3.0, 4.0] |
-| 7 | Documentação PEAS - PERFORMANCE | ✅ PASS | - |
-| 8 | Documentação PEAS - ENVIRONMENT | ✅ PASS | - |
-| 9 | Documentação PEAS - ACTUATORS | ✅ PASS | - |
-| 10 | Documentação PEAS - SENSORS | ✅ PASS | - |
-| 11 | Integração PEAS ↔ SART | ✅ PASS | - |
-| 12 | Cenários de experimento (10/10) | ✅ PASS | - |
-| 13 | Criação de arquivo CSV | ✅ PASS | - |
-| 14 | Leitura de arquivo CSV | ✅ PASS | 3 linhas |
-| 15 | Matplotlib disponível | ❌ FAIL | Opcional - instale com: pip install matplotlib |
-| 16 | Arquivo cruzamento_maspy_learning.py | ✅ PASS | 81375 bytes |
-| 17 | Arquivo comparar_cenarios.py | ✅ PASS | 6591 bytes |
-| 18 | Arquivo README_MELHORIAS.md | ❌ FAIL | Não encontrado |
+| 1 | Verificar dados armazenados | PASS | - |
+| 2 | Utilidade com desempenho perfeito | PASS | U=1.0000 |
+| 3 | Utilidade com desempenho médio | PASS | U=0.6400 |
+| 4 | Utilidade com desempenho ruim | PASS | U=0.2100 |
+| 5 | Cálculo de desvio padrão | PASS | σ=14.14 |
+| 6 | Cálculo de média móvel | PASS | MM=[2.0, 3.0, 4.0] |
+| 7 | Documentação PEAS - PERFORMANCE | PASS | - |
+| 8 | Documentação PEAS - ENVIRONMENT | PASS | - |
+| 9 | Documentação PEAS - ACTUATORS | PASS | - |
+| 10 | Documentação PEAS - SENSORS | PASS | - |
+| 11 | Integração PEAS ↔ SART | PASS | - |
+| 12 | Cenários de experimento (10/10) | PASS | - |
+| 13 | Criação de arquivo CSV | PASS | - |
+| 14 | Leitura de arquivo CSV | PASS | 3 linhas |
+| 15 | Matplotlib disponível | FAIL | Opcional - instale com: pip install matplotlib |
+| 16 | Arquivo cruzamento_maspy_learning.py | PASS | 81375 bytes |
+| 17 | Arquivo comparar_cenarios.py | PASS | 6591 bytes |
+| 18 | Arquivo README_MELHORIAS.md | FAIL | Não encontrado |
 
 ---
 
-## 🔍 Análise Detalhada
+## Análise Detalhada
 
 ### 1. Validação de Sintaxe
 O código Python foi validado com `py_compile` e não apresenta erros de sintaxe. Todos os imports básicos (argparse, sys, signal, os, enum) funcionam corretamente.
@@ -110,11 +110,11 @@ Validados:
 
 ### 5. Documentação PEAS
 Verificada presença das 4 seções principais:
-- ✅ PERFORMANCE (Medida de Desempenho)
-- ✅ ENVIRONMENT (Ambiente)
-- ✅ ACTUATORS (Atuadores)
-- ✅ SENSORS (Sensores)
-- ✅ INTEGRAÇÃO PEAS ↔ SART
+- PERFORMANCE (Medida de Desempenho)
+- ENVIRONMENT (Ambiente)
+- ACTUATORS (Atuadores)
+- SENSORS (Sensores)
+- INTEGRAÇÃO PEAS ↔ SART
 
 ### 6. Cenários de Experimento
 Confirmados 10 cenários diferentes:
@@ -135,54 +135,54 @@ Confirmados 10 cenários diferentes:
 
 ---
 
-## 📁 Estrutura de Arquivos
+## Estrutura de Arquivos
 
 ```
 MASPY_learning/
-├── cruzamento_maspy_learning.py     (Principal - ✅ OK)
-├── comparar_cenarios.py             (Comparador - ✅ OK)
-├── executar_testes.py               (Este script - ✅ OK)
-├── README_MELHORIAS.md              (Documentação - ✅ OK)
-└── RELATORIO_TESTES.md              (Este relatório - ✅ OK)
+├── cruzamento_maspy_learning.py     (Principal - OK)
+├── comparar_cenarios.py             (Comparador - OK)
+├── executar_testes.py               (Este script - OK)
+├── README_MELHORIAS.md              (Documentação - OK)
+└── RELATORIO_TESTES.md              (Este relatório - OK)
 ```
 
 ---
 
-## ✅ Conformidade com Trabalho 02
+## Conformidade com Trabalho 02
 
 ### Requisitos Atendidos (Tema b):
 
 | Requisito | Status | Evidência |
 |-----------|--------|-----------|
-| Aprendizagem por reforço (MASPY) | ✅ | Q-Learning implementado |
-| ≥2 tipos de agentes | ✅ | Coordenador + Veículo |
-| ≥1 ambiente | ✅ | CruzamentoLearningEnvironment |
-| ≥10 instâncias | ✅ | 11 agentes (1 coord + 10 veículos) |
-| ≥10 cenários | ✅ | 10 cenários confirmados |
-| Metodologia SART | ✅ | Documentada |
-| **Metodologia PEAS** | ✅ | **Completa (4 seções)** |
-| **Função de utilidade** | ✅ | **Implementada e testada** |
-| **Tabelas e gráficos** | ✅ | **5 gráficos + 2 CSVs** |
-| **Análise estatística** | ✅ | **Desvio padrão, média móvel** |
-| **Comparação cenários** | ✅ | **ScenarioComparator** |
+| Aprendizagem por reforço (MASPY) | | Q-Learning implementado |
+| ≥2 tipos de agentes | | Coordenador + Veículo |
+| ≥1 ambiente | | CruzamentoLearningEnvironment |
+| ≥10 instâncias | | 11 agentes (1 coord + 10 veículos) |
+| ≥10 cenários | | 10 cenários confirmados |
+| Metodologia SART | | Documentada |
+| **Metodologia PEAS** | | **Completa (4 seções)** |
+| **Função de utilidade** | | **Implementada e testada** |
+| **Tabelas e gráficos** | | **5 gráficos + 2 CSVs** |
+| **Análise estatística** | | **Desvio padrão, média móvel** |
+| **Comparação cenários** | | **ScenarioComparator** |
 
 ---
 
-## 🎯 Conclusão
+## Conclusão
 
-### Status Geral: {"✅ APROVADO" if resultados['falhas'] == 0 else "⚠️ APROVADO COM RESSALVAS"}
+### Status Geral: {"APROVADO" if resultados['falhas'] == 0 else "APROVADO COM RESSALVAS"}
 
 
 **2 teste(s) falharam**, mas a maioria das funcionalidades está operacional.
 
 ### Ações Recomendadas:
-- ⚠️ **Matplotlib disponível**: Opcional - instale com: pip install matplotlib
-- ⚠️ **Arquivo README_MELHORIAS.md**: Não encontrado
+- **Matplotlib disponível**: Opcional - instale com: pip install matplotlib
+- **Arquivo README_MELHORIAS.md**: Não encontrado
 
 
 ---
 
-## 📚 Referências
+## Referências
 
 - **Trabalho 02**: docs/2025-2-SMA-Trabalho-02.pdf
 - **Documentação**: MASPY_learning/README_MELHORIAS.md

@@ -88,7 +88,7 @@
   - Detecção automática de convergência
 
 **Diferenças do protocolo de negociação:**
-- ⚠️ **NÃO APLICÁVEL** - Sistema usa aprendizado ao invés de negociação
+- **NÃO APLICÁVEL** - Sistema usa aprendizado ao invés de negociação
   - Trabalho 1 tinha negociação (oferta → decisão)
   - Trabalho 2 tem aprendizado (exploração → política ótima)
   - **Justificativa:** Tema (b) permite aprendizagem sem negociação
@@ -282,7 +282,7 @@ resultados/
 | 6(d) Variações cenários | COMPLETO | 10 cenários |
 | 6(d) Variações aprendizagem | COMPLETO | Parâmetros configuráveis |
 | 6(d) Variações instâncias | COMPLETO | 2-10 veículos |
-| 6(d) Protocolo negociação | ⚠️ N/A | Aprendizado ao invés de negociação |
+| 6(d) Protocolo negociação | N/A | Aprendizado ao invés de negociação |
 | 6(e) Comparação T1/T2 | COMPLETO | Documentado no README |
 | 6(f) Tabelas e gráficos | COMPLETO | 5 gráficos + CSV |
 | 7(d) Metodologia PEAS | COMPLETO | Documentação integrada (182-370) |

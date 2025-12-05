@@ -113,14 +113,14 @@ Fluxo de Negociação:
 ```
 
 **Vantagens:**
-- ✅ Transparente (todos veem o processo)
-- ✅ Justo (todas as ofertas são consideradas)
-- ✅ Sempre correto (protocolo implementa regra ótima)
+- Transparente (todos veem o processo)
+- Justo (todas as ofertas são consideradas)
+- Sempre correto (protocolo implementa regra ótima)
 
 **Desvantagens:**
-- ❌ Não adaptativo (protocolo fixo)
-- ❌ Não aprende com experiência
-- ❌ Sobrecarga de comunicação (N mensagens por decisão)
+- Não adaptativo (protocolo fixo)
+- Não aprende com experiência
+- Sobrecarga de comunicação (N mensagens por decisão)
 
 #### Trabalho 2: Aprendizado por Reforço (Q-Learning)
 
@@ -135,15 +135,15 @@ Fluxo de Aprendizado:
 ```
 
 **Vantagens:**
-- ✅ Adaptativo (aprende política ótima)
-- ✅ Generaliza para novos cenários
-- ✅ Sem sobrecarga de comunicação
-- ✅ Descobre soluções não óbvias
+- Adaptativo (aprende política ótima)
+- Generaliza para novos cenários
+- Sem sobrecarga de comunicação
+- Descobre soluções não óbvias
 
 **Desvantagens:**
-- ❌ Período de exploração (inicialmente aleatório)
-- ❌ Pode não convergir (hiperparâmetros incorretos)
-- ❌ Menos transparente (Q-table é opaca)
+- Período de exploração (inicialmente aleatório)
+- Pode não convergir (hiperparâmetros incorretos)
+- Menos transparente (Q-table é opaca)
 
 ---
 
@@ -221,18 +221,18 @@ def escolher_veiculo(estado):
 
 | Cenário | T1: Vencedor | T2: Convergiu? | T2: Episódios |
 |---------|-------------|----------------|---------------|
-| **Base** (Ambulância vs Carro) | Ambulância | ✅ Sim | ~10 |
-| **Emergências** (múltiplas prioridades altas) | Primeiro de maior prioridade | ✅ Sim | ~20 |
-| **Iguais** (todas prioridades iguais) | Qualquer um (empate) | ✅ Sim | ~30 |
+| **Base** (Ambulância vs Carro) | Ambulância | Sim | ~10 |
+| **Emergências** (múltiplas prioridades altas) | Primeiro de maior prioridade | Sim | ~20 |
+| **Iguais** (todas prioridades iguais) | Qualquer um (empate) | Sim | ~30 |
 
 #### Cenários Novos (Trabalho 2)
 
 | Cenário | Descrição | Convergiu? | Episódios | Observações |
 |---------|-----------|------------|-----------|-------------|
-| **Prioridades Próximas** | Diferenças de 1-5 | ✅ Sim | ~50 | Mais difícil de aprender |
-| **Extremos** | Prioridades 10 e 100 | ✅ Sim | ~5 | Muito fácil |
-| **Escalonado** | 10, 20, 30, ..., 100 | ✅ Sim | ~15 | Padrão claro |
-| **Misto Complexo** | Mix de tipos | ✅ Sim | ~25 | Generalização |
+| **Prioridades Próximas** | Diferenças de 1-5 | Sim | ~50 | Mais difícil de aprender |
+| **Extremos** | Prioridades 10 e 100 | Sim | ~5 | Muito fácil |
+| **Escalonado** | 10, 20, 30, ..., 100 | Sim | ~15 | Padrão claro |
+| **Misto Complexo** | Mix de tipos | Sim | ~25 | Generalização |
 
 ---
 
@@ -344,7 +344,7 @@ U(agente) = 0.5 × taxa_acerto + 0.3 × fator_convergencia + 0.2 × fator_recomp
 
 ### 6.1 Trabalho 1: Sistema de Negociação
 
-#### Vantagens ✅
+#### Vantagens
 1. **Garantia de Correção:** Sempre escolhe veículo de maior prioridade
 2. **Transparência:** Processo de decisão é visível
 3. **Justiça:** Todos os veículos participam
@@ -352,7 +352,7 @@ U(agente) = 0.5 × taxa_acerto + 0.3 × fator_convergencia + 0.2 × fator_recomp
 5. **Previsibilidade:** Comportamento determinístico
 6. **Tempo Real:** Decisão imediata
 
-#### Desvantagens ❌
+#### Desvantagens
 1. **Rigidez:** Protocolo fixo, não adaptativo
 2. **Não Aprende:** Não melhora com experiência
 3. **Sobrecarga de Comunicação:** Muitas mensagens
@@ -364,7 +364,7 @@ U(agente) = 0.5 × taxa_acerto + 0.3 × fator_convergencia + 0.2 × fator_recomp
 
 ### 6.2 Trabalho 2: Sistema de Aprendizado
 
-#### Vantagens ✅
+#### Vantagens
 1. **Adaptabilidade:** Aprende política ótima
 2. **Generalização:** Funciona em novos cenários
 3. **Descoberta:** Pode encontrar soluções não óbvias
@@ -372,7 +372,7 @@ U(agente) = 0.5 × taxa_acerto + 0.3 × fator_convergencia + 0.2 × fator_recomp
 5. **Eficiência:** Sem sobrecarga de comunicação
 6. **Flexibilidade:** Fácil mudar recompensas
 
-#### Desvantagens ❌
+#### Desvantagens
 1. **Exploração:** Performance ruim no início
 2. **Convergência:** Não garantida (depende de hiperparâmetros)
 3. **Opacidade:** Q-table é difícil de interpretar
@@ -387,46 +387,46 @@ U(agente) = 0.5 × taxa_acerto + 0.3 × fator_convergencia + 0.2 × fator_recomp
 ### 7.1 Do Trabalho 1 para o Trabalho 2
 
 **O que mantivemos:**
-- ✅ Domínio do problema (cruzamento)
-- ✅ Estrutura de prioridades
-- ✅ Arquitetura BDI básica
-- ✅ Framework MASPY
+- Domínio do problema (cruzamento)
+- Estrutura de prioridades
+- Arquitetura BDI básica
+- Framework MASPY
 
 **O que mudamos:**
-- 🔄 Negociação → Aprendizado por Reforço
-- 🔄 Protocolo fixo → Política aprendida
-- 🔄 Agentes ativos → Coordenador aprendiz + observadores
-- 🔄 Comunicação explícita → Estados/Ações/Recompensas
+- Negociação → Aprendizado por Reforço
+- Protocolo fixo → Política aprendida
+- Agentes ativos → Coordenador aprendiz + observadores
+- Comunicação explícita → Estados/Ações/Recompensas
 
 **O que adicionamos:**
-- ➕ Q-Learning (EnvModel)
-- ➕ Função de utilidade PEAS
-- ➕ Metodologia SART
-- ➕ Sistema de métricas robusto
-- ➕ 5 tipos de gráficos
-- ➕ Análise de convergência
-- ➕ Comparação entre cenários
-- ➕ 10 cenários de teste
+- Q-Learning (EnvModel)
+- Função de utilidade PEAS
+- Metodologia SART
+- Sistema de métricas robusto
+- 5 tipos de gráficos
+- Análise de convergência
+- Comparação entre cenários
+- 10 cenários de teste
 
 ---
 
 ### 7.2 Quando Usar Cada Abordagem
 
 #### Use Trabalho 1 (Negociação) quando:
-- ✅ Regras são conhecidas e fixas
-- ✅ Transparência é crítica
-- ✅ Decisões devem ser imediatas
-- ✅ Não há dados históricos
-- ✅ Ambiente é estático
-- ✅ Stakeholders precisam entender o processo
+- Regras são conhecidas e fixas
+- Transparência é crítica
+- Decisões devem ser imediatas
+- Não há dados históricos
+- Ambiente é estático
+- Stakeholders precisam entender o processo
 
 #### Use Trabalho 2 (Aprendizado) quando:
-- ✅ Regras são desconhecidas ou complexas
-- ✅ Ambiente pode mudar
-- ✅ Há tempo para treinamento
-- ✅ Dados históricos estão disponíveis
-- ✅ Generalização é importante
-- ✅ Descoberta de padrões é valiosa
+- Regras são desconhecidas ou complexas
+- Ambiente pode mudar
+- Há tempo para treinamento
+- Dados históricos estão disponíveis
+- Generalização é importante
+- Descoberta de padrões é valiosa
 
 ---
 
@@ -516,16 +516,16 @@ Observação: Diferenças pequenas tornam aprendizado mais difícil
 ### 9.2 Contribuições de Cada Trabalho
 
 #### Trabalho 1
-- ✅ Demonstrou implementação correta de BDI puro
-- ✅ Aplicou Contract Net Protocol efetivamente
-- ✅ Validou arquitetura multi-agentes clássica
+- Demonstrou implementação correta de BDI puro
+- Aplicou Contract Net Protocol efetivamente
+- Validou arquitetura multi-agentes clássica
 
 #### Trabalho 2
-- ✅ Integrou aprendizado por reforço com BDI
-- ✅ Aplicou Q-Learning em domínio multi-agentes
-- ✅ Desenvolveu metodologia SART para RL
-- ✅ Criou função de utilidade PEAS quantitativa
-- ✅ Implementou sistema robusto de análise e visualização
+- Integrou aprendizado por reforço com BDI
+- Aplicou Q-Learning em domínio multi-agentes
+- Desenvolveu metodologia SART para RL
+- Criou função de utilidade PEAS quantitativa
+- Implementou sistema robusto de análise e visualização
 
 ---
 

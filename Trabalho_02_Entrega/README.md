@@ -174,6 +174,14 @@ resultados/
 
 ---
 
+## Repositório
+
+Todos os códigos dos Trabalhos 01 e 02 estão disponíveis no repositório:
+
+**https://github.com/TakeSae/MASPY_cruzamento**
+
+---
+
 ## Contato
 
 - Guilherme T. S. Abreu - guiabr@alunos.utfpr.com.br

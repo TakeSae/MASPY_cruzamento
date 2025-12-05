@@ -1,0 +1,70 @@
+# Requirements - Sistema Multi-Agentes MASPY
+# Trabalhos 01 e 02 - SMA 2025.2 - UTFPR
+# Autores: Guilherme T. S. Abreu, Maria Eduarda S. Freitas
+
+# ======================================================================
+# DEPENDÊNCIAS PRINCIPAIS (OBRIGATÓRIAS)
+# ======================================================================
+
+# MASPY - Multi-Agent System in Python
+# Framework principal para sistemas multi-agentes com arquitetura BDI
+maspy-ml==2025.11.9
+
+# MASPY GUI - Interface gráfica (usado em tentativas de GUI)
+maspy-gui==2025.11.9.post3
+
+# ======================================================================
+# DEPENDÊNCIAS OBRIGATÓRIAS - ANÁLISE E VISUALIZAÇÃO
+# ======================================================================
+
+# NumPy - Computação numérica
+# Usado para cálculos estatísticos (desvio padrão, média móvel)
+numpy==2.3.4
+
+# Matplotlib - Visualização de dados
+# Obrigatório para gerar os 5 tipos de gráficos no Trabalho 02
+matplotlib>=3.10.0
+
+# ======================================================================
+# DEPENDÊNCIAS DA STDLIB (já incluídas no Python 3.13)
+# ======================================================================
+# As seguintes bibliotecas são parte da biblioteca padrão do Python
+# e não precisam ser instaladas:
+#
+# - argparse      (parsing de argumentos de linha de comando)
+# - sys           (funções e parâmetros do sistema)
+# - signal        (manipulação de sinais do sistema)
+# - os            (interface com sistema operacional)
+# - enum          (enumerações)
+# - csv           (leitura/escrita de arquivos CSV)
+# - datetime      (manipulação de datas e horas)
+# - pathlib       (manipulação de caminhos de arquivos)
+# - subprocess    (execução de processos externos)
+# - time          (medição de tempo)
+
+# ======================================================================
+# INSTALAÇÃO
+# ======================================================================
+#
+# Para instalar todas as dependências:
+#   pip install -r requirements.txt
+#
+# Ou manualmente:
+#   pip install maspy-ml maspy-gui numpy matplotlib
+#
+# ======================================================================
+# NOTAS
+# ======================================================================
+#
+# 1. Python 3.13 ou superior é recomendado
+# 2. Todas as dependências são obrigatórias para funcionamento completo
+# 3. Matplotlib é necessário para geração dos 5 tipos de gráficos
+# 4. NumPy é necessário para cálculos estatísticos (desvio padrão, média móvel)
+# 5. Use um ambiente virtual (venv) para isolar as dependências
+#
+# Criar ambiente virtual:
+#   python -m venv venv_maspy
+#   source venv_maspy/bin/activate  # Linux/Mac
+#   venv_maspy\Scripts\activate     # Windows
+#
+# ======================================================================

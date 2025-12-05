@@ -1,0 +1,3 @@
+maspy-ml>=2025.11.9
+matplotlib>=3.7.0
+numpy>=1.24.0

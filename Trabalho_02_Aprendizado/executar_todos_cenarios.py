@@ -101,19 +101,19 @@ def executar_cenario(cenario, episodios):
             # Extrair diretório de resultados da saída
             for linha in saida.split('\n'):
                 if 'resultados/' in linha and 'Diretório de resultados criado' in linha:
-                    # Exemplo: "✓ Diretório de resultados criado: resultados/20251204_130354/"
+                    # Exemplo: "Diretório de resultados criado: resultados/20251204_130354/"
                     diretorio = linha.split('resultados/')[1].split('/')[0]
                     return True, tempo_total, f"resultados/{diretorio}"
 
             # Se não encontrou, procurar symlink última_execução
             return True, tempo_total, "resultados/ultima_execucao"
         else:
-            print(f"❌ Erro ao executar {cenario}")
+            print(f"Erro ao executar {cenario}")
             print(saida)
             return False, tempo_total, None
 
     except Exception as e:
-        print(f"❌ Exceção ao executar {cenario}: {e}")
+        print(f"Exceção ao executar {cenario}: {e}")
         return False, time.time() - inicio, None
 
 
@@ -198,7 +198,7 @@ def gerar_tabela_comparativa(resultados, arquivo_saida="comparacao_cenarios.csv"
         for resultado in resultados:
             writer.writerow(resultado)
 
-    print(f"✓ Tabela salva em: {arquivo_saida}")
+    print(f"Tabela salva em: {arquivo_saida}")
 
 
 def imprimir_resumo(resultados):
@@ -252,9 +252,9 @@ def main():
             if sucesso and diretorio:
                 metricas = coletar_metricas(diretorio)
                 resultados.append(metricas)
-                print(f"✓ Concluído em {tempo:.2f}s")
+                print(f"Concluído em {tempo:.2f}s")
             else:
-                print(f"❌ Falhou após {tempo:.2f}s")
+                print(f"Falhou após {tempo:.2f}s")
 
     tempo_total = time.time() - inicio_total
 
@@ -274,5 +274,5 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print("\n\n❌ Execução cancelada pelo usuário")
+        print("\n\nExecução cancelada pelo usuário")
         sys.exit(1)

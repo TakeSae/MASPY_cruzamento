@@ -1,13 +1,10 @@
 # Dificuldades Encontradas - Trabalho 02
 
-**Disciplina:** Sistemas Multiagentes - 2025.2 - UTFPR
-**Autores:** Guilherme T. S. Abreu, Maria Eduarda S. Freitas
-
 ---
 
 ## 1. Sistema Travando Após Treinamento
 
-Primeiro grande problema: após o treinamento completar, o sistema exibia "APRENDIZADO CONCLUÍDO COM SUCESSO!" mas não avançava. O processo ficava pendurado, sem gerar gráficos nem terminar.
+Problema: após o treinamento completar, o sistema exibia "APRENDIZADO CONCLUÍDO COM SUCESSO!" mas não avançava. O processo ficava pendurado, sem gerar gráficos nem terminar.
 
 Demorou para identificar a causa. Inicialmente achamos que era o matplotlib que não estava instalado. Depois pensamos que era erro na geração de gráficos. Mas na verdade o código nem chegava nessa parte.
 
@@ -17,13 +14,7 @@ O problema era que `Admin().start_system()` nunca retornava. Os agentes de veíc
 
 ---
 
-## 2. Matplotlib Não Instalado
-
-Simples: estava marcado como opcional no requirements.txt. Instalamos e marcamos como obrigatório. Problema resolvido.
-
----
-
-## 3. Mudança na API do MASPY
+## 2. Mudança na API do MASPY
 
 Ao atualizar o MASPY, vários erros de `AttributeError: 'Belief' object has no attribute 'args'` apareceram. A API mudou de `.args` para `.values` na versão 2025.11.9.
 
@@ -33,7 +24,7 @@ Corrigido em 6 locais do código onde usávamos `.args[0]`.
 
 ---
 
-## 4. Gráficos com Dados Errados
+## 3. Gráficos com Dados Errados
 
 Três problemas aqui:
 
@@ -54,7 +45,7 @@ Solução: filtrar para mostrar apenas agentes que fizeram pelo menos uma ação
 
 ---
 
-## 5. Gráficos Limitados a 20 Episódios
+## 4. Gráficos Limitados a 20 Episódios
 
 Executava com 100 episódios mas os gráficos mostravam apenas 20. Havia um `min(20, self.num_episodes)` no código que limitava artificialmente.
 
@@ -62,7 +53,7 @@ Removemos a limitação. Agora usa todos os episódios solicitados.
 
 ---
 
-## 6. Gráficos Mostrando Dados de Validação ao Invés de Treinamento
+## 5. Gráficos Mostrando Dados de Validação ao Invés de Treinamento
 
 Problema crítico descoberto: os gráficos estavam mostrando dados PERFEITOS - linhas horizontais com recompensa 1000 em todos os episódios. Não havia curva de aprendizado, oscilações, ou convergência gradual. Parecia fake.
 

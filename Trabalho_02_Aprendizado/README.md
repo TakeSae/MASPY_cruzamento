@@ -42,11 +42,7 @@ Trabalho_02_Aprendizado/
 │   ├── PEAS.md                     # Metodologia PEAS completa
 │   ├── SART.md                     # Metodologia SART completa
 │   ├── RELATORIO_TESTES.md         # Relatório de validação (28/28 testes)
-│   ├── CONFORMIDADE_TRABALHO02.md  # Análise de conformidade com requisitos
-│   ├── DIAGRAMAS_UML.md            # 8 diagramas UML
 │   ├── COMPARACAO_TRABALHO1_VS_TRABALHO2.md  # Comparação entre trabalhos
-│   ├── ARTIGO_SBC.md               # Artigo em formato SBC
-│   ├── APRESENTACAO_SLIDES.md      # Apresentação de slides (30 slides)
 │   └── dificuldades_encontradas.md # Registro de problemas e soluções
 ├── resultados/                     # Resultados organizados por timestamp
 │   ├── YYYYMMDD_HHMMSS/
@@ -406,16 +402,10 @@ Toda a documentação está organizada na pasta **[docs/](docs/)**:
 - **[docs/SART.md](docs/SART.md)** - Metodologia SART completa (Situation, Agent, Reinforcement learning, Task)
 
 ### Análises e Comparações
-- **[docs/DIAGRAMAS_UML.md](docs/DIAGRAMAS_UML.md)** - 8 diagramas UML (classes, sequência, estados, componentes, deployment)
 - **[docs/COMPARACAO_TRABALHO1_VS_TRABALHO2.md](docs/COMPARACAO_TRABALHO1_VS_TRABALHO2.md)** - Análise comparativa detalhada entre negociação e aprendizado
 
 ### Validação e Conformidade
 - **[docs/RELATORIO_TESTES.md](docs/RELATORIO_TESTES.md)** - Relatório de validação (28/28 testes passaram)
-- **[docs/CONFORMIDADE_TRABALHO02.md](docs/CONFORMIDADE_TRABALHO02.md)** - Checklist de conformidade com requisitos do trabalho
-
-### Documentação Acadêmica
-- **[docs/ARTIGO_SBC.md](docs/ARTIGO_SBC.md)** - Artigo em formato SBC (template para LaTeX)
-- **[docs/APRESENTACAO_SLIDES.md](docs/APRESENTACAO_SLIDES.md)** - Apresentação de slides (30 slides, conversível para Marp/reveal.js)
 
 ### Desenvolvimento
 - **[docs/dificuldades_encontradas.md](docs/dificuldades_encontradas.md)** - Registro de problemas encontrados e soluções implementadas

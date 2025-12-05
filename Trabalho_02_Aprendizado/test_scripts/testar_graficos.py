@@ -34,7 +34,7 @@ try:
     import matplotlib
     import matplotlib.pyplot as plt
     import numpy as np
-    print(sucesso(f"✓ Matplotlib {matplotlib.__version__} detectado"))
+    print(sucesso(f"Matplotlib {matplotlib.__version__} detectado"))
 except ImportError as e:
     print(f"{aviso('✗')} Erro: {e}")
     print(f"\n{aviso('Solução:')} pip install matplotlib numpy")
@@ -47,7 +47,7 @@ matplotlib.use('Agg')
 test_dir = "graficos_teste"
 if not os.path.exists(test_dir):
     os.makedirs(test_dir)
-    print(sucesso(f"✓ Diretório '{test_dir}/' criado"))
+    print(sucesso(f"Diretório '{test_dir}/' criado"))
 
 # Simular dados de aprendizado
 print(f"\n{titulo('Gerando dados simulados...')}")
@@ -70,7 +70,7 @@ plt.grid(True, alpha=0.3)
 caminho1 = os.path.join(test_dir, 'teste_recompensa_episodio.png')
 plt.savefig(caminho1, dpi=300, bbox_inches='tight')
 plt.close()
-print(sucesso(f"✓ Gráfico 1: {caminho1}"))
+print(sucesso(f"Gráfico 1: {caminho1}"))
 
 # Gráfico 2: Recompensa Acumulada
 plt.figure(figsize=(10, 6))
@@ -82,7 +82,7 @@ plt.grid(True, alpha=0.3)
 caminho2 = os.path.join(test_dir, 'teste_recompensa_acumulada.png')
 plt.savefig(caminho2, dpi=300, bbox_inches='tight')
 plt.close()
-print(sucesso(f"✓ Gráfico 2: {caminho2}"))
+print(sucesso(f"Gráfico 2: {caminho2}"))
 
 # Gráfico 3: Média Móvel
 janela = 5
@@ -100,7 +100,7 @@ plt.grid(True, alpha=0.3)
 caminho3 = os.path.join(test_dir, 'teste_media_movel.png')
 plt.savefig(caminho3, dpi=300, bbox_inches='tight')
 plt.close()
-print(sucesso(f"✓ Gráfico 3: {caminho3}"))
+print(sucesso(f"Gráfico 3: {caminho3}"))
 
 # Gráfico 4: Comparação (barras duplas)
 fig, ax1 = plt.subplots(figsize=(10, 6))
@@ -131,7 +131,7 @@ ax1.grid(True, alpha=0.3, axis='y')
 caminho4 = os.path.join(test_dir, 'teste_comparacao.png')
 plt.savefig(caminho4, dpi=300, bbox_inches='tight')
 plt.close()
-print(sucesso(f"✓ Gráfico 4: {caminho4}"))
+print(sucesso(f"Gráfico 4: {caminho4}"))
 
 # Gráfico 5: Análise de Convergência
 plt.figure(figsize=(10, 6))
@@ -154,13 +154,13 @@ plt.grid(True, alpha=0.3)
 caminho5 = os.path.join(test_dir, 'teste_convergencia.png')
 plt.savefig(caminho5, dpi=300, bbox_inches='tight')
 plt.close()
-print(sucesso(f"✓ Gráfico 5: {caminho5}"))
+print(sucesso(f"Gráfico 5: {caminho5}"))
 
 # Resumo
 print(f"\n{titulo('='*70)}")
 print(titulo("  TESTE CONCLUÍDO COM SUCESSO"))
 print(titulo('='*70))
-print(f"\n{sucesso('✓')} 5 gráficos gerados com sucesso!")
+print(f"\n{sucesso} 5 gráficos gerados com sucesso!")
 print(f"\n{aviso('Localização:')} {os.path.abspath(test_dir)}/")
 print(f"\n{aviso('Arquivos gerados:')}")
 print(f"  1. teste_recompensa_episodio.png")

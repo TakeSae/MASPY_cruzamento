@@ -25,13 +25,13 @@ def cor(texto, cor_code):
     return f"{cor_code}{texto}{Cores.RESET}"
 
 def sucesso(texto):
-    return cor(f"✓ {texto}", Cores.VERDE + Cores.BOLD)
+    return cor(f"{texto}", Cores.VERDE + Cores.BOLD)
 
 def falha(texto):
-    return cor(f"✗ {texto}", Cores.VERMELHO + Cores.BOLD)
+    return cor(f"{texto}", Cores.VERMELHO + Cores.BOLD)
 
 def info(texto):
-    return cor(f"ℹ {texto}", Cores.AZUL)
+    return cor(f"{texto}", Cores.AZUL)
 
 def titulo(texto):
     return cor(texto, Cores.CIANO + Cores.BOLD)
@@ -404,7 +404,7 @@ def gerar_relatorio_md():
 
 ---
 
-## 📊 Resumo Executivo
+## Resumo Executivo
 
 - **Total de testes:** {resultados['total']}
 - **Sucessos:** {resultados['sucessos']} ✓
@@ -413,7 +413,7 @@ def gerar_relatorio_md():
 
 ---
 
-## ✅ Resultados dos Testes
+## Resultados dos Testes
 
 """
 
@@ -444,7 +444,7 @@ def gerar_relatorio_md():
         relatorio += "|---|-------|--------|----------|\n"
 
         for i, teste in enumerate(testes, 1):
-            status = "✅ PASS" if teste['passou'] else "❌ FAIL"
+            status = "PASS" if teste['passou'] else "❌ FAIL"
             detalhes = teste['detalhes'] if teste['detalhes'] else "-"
             relatorio += f"| {i} | {teste['nome']} | {status} | {detalhes} |\n"
 
@@ -453,7 +453,7 @@ def gerar_relatorio_md():
     # Análise detalhada
     relatorio += """---
 
-## 🔍 Análise Detalhada
+## Análise Detalhada
 
 ### 1. Validação de Sintaxe
 O código Python foi validado com `py_compile` e não apresenta erros de sintaxe. Todos os imports básicos (argparse, sys, signal, os, enum) funcionam corretamente.
@@ -487,11 +487,11 @@ Validados:
 
 ### 5. Documentação PEAS
 Verificada presença das 4 seções principais:
-- ✅ PERFORMANCE (Medida de Desempenho)
-- ✅ ENVIRONMENT (Ambiente)
-- ✅ ACTUATORS (Atuadores)
-- ✅ SENSORS (Sensores)
-- ✅ INTEGRAÇÃO PEAS ↔ SART
+- PERFORMANCE (Medida de Desempenho)
+- ENVIRONMENT (Ambiente)
+- ACTUATORS (Atuadores)
+- SENSORS (Sensores)
+- INTEGRAÇÃO PEAS ↔ SART
 
 ### 6. Cenários de Experimento
 Confirmados 10 cenários diferentes:
@@ -512,42 +512,42 @@ Confirmados 10 cenários diferentes:
 
 ---
 
-## 📁 Estrutura de Arquivos
+## Estrutura de Arquivos
 
 ```
 MASPY_learning/
-├── cruzamento_maspy_learning.py     (Principal - ✅ OK)
-├── comparar_cenarios.py             (Comparador - ✅ OK)
-├── executar_testes.py               (Este script - ✅ OK)
-├── README_MELHORIAS.md              (Documentação - ✅ OK)
-└── RELATORIO_TESTES.md              (Este relatório - ✅ OK)
+├── cruzamento_maspy_learning.py     (Principal - OK)
+├── comparar_cenarios.py             (Comparador - OK)
+├── executar_testes.py               (Este script - OK)
+├── README_MELHORIAS.md              (Documentação - OK)
+└── RELATORIO_TESTES.md              (Este relatório - OK)
 ```
 
 ---
 
-## ✅ Conformidade com Trabalho 02
+## Conformidade com Trabalho 02
 
 ### Requisitos Atendidos (Tema b):
 
 | Requisito | Status | Evidência |
 |-----------|--------|-----------|
-| Aprendizagem por reforço (MASPY) | ✅ | Q-Learning implementado |
-| ≥2 tipos de agentes | ✅ | Coordenador + Veículo |
-| ≥1 ambiente | ✅ | CruzamentoLearningEnvironment |
-| ≥10 instâncias | ✅ | 11 agentes (1 coord + 10 veículos) |
-| ≥10 cenários | ✅ | 10 cenários confirmados |
-| Metodologia SART | ✅ | Documentada |
-| **Metodologia PEAS** | ✅ | **Completa (4 seções)** |
-| **Função de utilidade** | ✅ | **Implementada e testada** |
-| **Tabelas e gráficos** | ✅ | **5 gráficos + 2 CSVs** |
-| **Análise estatística** | ✅ | **Desvio padrão, média móvel** |
-| **Comparação cenários** | ✅ | **ScenarioComparator** |
+| Aprendizagem por reforço (MASPY) | | Q-Learning implementado |
+| ≥2 tipos de agentes | | Coordenador + Veículo |
+| ≥1 ambiente | | CruzamentoLearningEnvironment |
+| ≥10 instâncias | | 11 agentes (1 coord + 10 veículos) |
+| ≥10 cenários | | 10 cenários confirmados |
+| Metodologia SART | | Documentada |
+| **Metodologia PEAS** | | **Completa (4 seções)** |
+| **Função de utilidade** | | **Implementada e testada** |
+| **Tabelas e gráficos** | | **5 gráficos + 2 CSVs** |
+| **Análise estatística** | | **Desvio padrão, média móvel** |
+| **Comparação cenários** | | **ScenarioComparator** |
 
 ---
 
-## 🎯 Conclusão
+## Conclusão
 
-### Status Geral: {"✅ APROVADO" if resultados['falhas'] == 0 else "⚠️ APROVADO COM RESSALVAS"}
+### Status Geral: {"APROVADO" if resultados['falhas'] == 0 else "APROVADO COM RESSALVAS"}
 
 """
 
@@ -562,15 +562,15 @@ MASPY_learning/
 4. Gerar comparações: `python comparar_cenarios.py --cenarios todos`
 
 ### Funcionalidades Validadas:
-- ✅ Código sem erros de sintaxe
-- ✅ Sistema de métricas completo
-- ✅ Função de utilidade PEAS
-- ✅ Cálculos estatísticos
-- ✅ Documentação PEAS/SART
-- ✅ 10 cenários de experimento
-- ✅ Exportação CSV
-- ✅ Visualização gráfica
-- ✅ Comparação entre cenários
+- Código sem erros de sintaxe
+- Sistema de métricas completo
+- Função de utilidade PEAS
+- Cálculos estatísticos
+- Documentação PEAS/SART
+- 10 cenários de experimento
+- Exportação CSV
+- Visualização gráfica
+- Comparação entre cenários
 
 """
     else:
@@ -581,23 +581,12 @@ MASPY_learning/
 """
         for teste in resultados['testes']:
             if not teste['passou']:
-                relatorio += f"- ⚠️ **{teste['nome']}**: {teste['detalhes']}\n"
+                relatorio += f"- **{teste['nome']}**: {teste['detalhes']}\n"
 
     relatorio += """
 
 ---
 
-## 📚 Referências
-
-- **Trabalho 02**: docs/2025-2-SMA-Trabalho-02.pdf
-- **Documentação**: MASPY_learning/README_MELHORIAS.md
-- **Código principal**: MASPY_learning/cruzamento_maspy_learning.py
-
----
-
-**Relatório gerado automaticamente por:** `executar_testes.py`
-**Sistema:** Sistema Multi-Agentes - Aprendizado Q-Learning
-**Disciplina:** Sistemas Multiagentes - 2025.2 - UTFPR
 """
 
     # Salvar relatório

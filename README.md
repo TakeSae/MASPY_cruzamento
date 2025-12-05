@@ -229,4 +229,5 @@ python executar_testes.py
 - **Maria Eduarda S. Freitas** - mariaeduardafreitas@alunos.utfpr.edu.br
 
 **Professor:** Gleifer Vaz Alves
+
 **Disciplina:** Sistemas Multiagentes - 2025.2 - UTFPR

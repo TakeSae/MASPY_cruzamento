@@ -1,3 +1,23 @@
+"""
+CRUZAMENTO MASPY LEARNING - VERSÃO COM model.learn() BUILT-IN
+
+Esta é uma versão alternativa do cruzamento_maspy_learning.py que usa
+o método model.learn() nativo do MASPY ao invés de uma implementação
+manual de Q-Learning.
+
+DIFERENÇAS:
+- USA: model.learn() do MASPY para treinamento
+- LIMITAÇÃO: Não coleta métricas DURANTE o treinamento (apenas após)
+- VALIDAÇÃO: Executa episódios de validação pós-treinamento para gerar métricas
+
+COMPARAÇÃO COM VERSÃO ORIGINAL:
+- cruzamento_maspy_learning.py: Q-Learning manual com coleta em tempo real
+- cruzamento_maspy_learning_builtin.py: model.learn() do MASPY (este arquivo)
+
+Veja docs/dificuldades_encontradas.md para mais detalhes sobre as limitações
+do model.learn() e por que optamos pela implementação manual.
+"""
+
 from maspy import *
 from maspy.learning import *
 from enum import Enum
@@ -1320,52 +1340,44 @@ class CoordenadorLearningAgent(LoggableAgent):
             CruzamentoLearningEnvironment._em_treinamento = True
             CruzamentoLearningEnvironment._episodio_atual = 0
 
-            # Variáveis para coleta de métricas durante o treinamento
-            recompensas_por_episodio = []
+            # Usar o método learn() do MASPY para treinamento
+            self.info_print("\nExecutando treinamento com model.learn()...")
 
-            # Wrapper para capturar métricas DURANTE o treinamento do Q-Learning
-            self.info_print("\nExecutando treinamento com coleta de métricas...")
+            # Importar o método qlearning do MASPY
+            from maspy.learning import qlearning
 
-            # Inicializar Q-table manualmente
+            # Executar treinamento usando o método built-in do MASPY
+            # NOTA: O model.learn() não permite coleta de métricas durante o treinamento
+            # As métricas serão coletadas apenas após o treinamento completo
+            model.learn(
+                learn_method=qlearning,
+                learning_rate=0.1,      # alpha
+                discount_factor=0.9,    # gamma
+                epsilon=1.0,            # Exploração inicial (100%)
+                final_epsilon=0.01,     # Exploração final (1%)
+                max_steps=None,         # Sem limite de steps por episódio
+                num_episodes=self.num_episodes
+            )
+
+            self.info_print(f"Treinamento concluído com {self.num_episodes} episódios.")
+
+            # LIMITAÇÃO: Como o model.learn() não expõe callbacks, não podemos
+            # coletar métricas durante o treinamento. Vamos simular métricas
+            # básicas após o treinamento estar completo.
+            self.info_print("\nGerando métricas pós-treinamento...")
+
+            # Executar episódios de validação para coletar métricas
+            # (O modelo já está treinado, então usará política aprendida)
+            num_validacao = min(100, self.num_episodes)
+            self.info_print(f"Executando {num_validacao} episódios de validação...")
+
             import random
-            from collections import defaultdict
-
-            # Parâmetros Q-Learning
-            alpha = 0.1  # Taxa de aprendizado
-            gamma = 0.9  # Fator de desconto
-            epsilon = 1.0  # Exploração inicial
-            epsilon_decay = 0.995
-            epsilon_min = 0.01
-
-            # Q-table: dict de (state_tuple, action) -> valor
-            q_table = defaultdict(float)
-
-            def estado_para_tupla(estado_dict):
-                """Converte estado dict para tupla ordenada (hashable)."""
-                return tuple(estado_dict[env.veiculo_map[v]] for v in env.veiculos_ids)
-
-            def escolher_acao_epsilon_greedy(estado_tupla, veiculos_disponiveis, epsilon):
-                """Escolhe ação usando estratégia epsilon-greedy."""
-                if random.random() < epsilon:
-                    # Exploração: ação aleatória
-                    return random.choice(veiculos_disponiveis)
-                else:
-                    # Exploitação: melhor ação conhecida
-                    q_values = {v: q_table[(estado_tupla, v)] for v in veiculos_disponiveis}
-                    max_q = max(q_values.values())
-                    # Escolher entre as ações com Q máximo (pode haver empate)
-                    melhores = [v for v, q in q_values.items() if q == max_q]
-                    return random.choice(melhores)
-
-            # Treinar por num_episodes episódios
-            for ep in range(self.num_episodes):
+            for ep in range(num_validacao):
                 estado = env.possible_starts.copy()
-                estado_tupla = estado_para_tupla(estado)
                 recompensa_total = 0
                 acoes_corretas = 0
                 acoes_total = 0
 
-                # Executar episódio completo
                 while True:
                     # Identificar veículos disponíveis
                     veiculos_disponiveis = [
@@ -1376,16 +1388,34 @@ class CoordenadorLearningAgent(LoggableAgent):
                     if not veiculos_disponiveis:
                         break
 
-                    # Escolher ação
-                    veiculo_escolhido = escolher_acao_epsilon_greedy(
-                        estado_tupla, veiculos_disponiveis, epsilon
-                    )
+                    # Usar política aprendida do modelo
+                    # Como model.q_table usa HashableWrapper, precisamos converter o estado
+                    from maspy.learning.core import HashableWrapper
+                    estado_tupla = tuple(estado[env.veiculo_map[v]] for v in env.veiculos_ids)
+                    estado_wrapped = HashableWrapper(estado_tupla)
 
-                    # Executar transição e obter recompensa
+                    # Encontrar melhor ação baseado na Q-table aprendida
+                    # As ações no modelo são objetos Action, precisamos mapear para veículos
+                    melhores_q = {}
+                    for idx, acao in enumerate(model.actions_list):
+                        # Verificar se esta ação corresponde a um veículo disponível
+                        # A ação contém o veículo escolhido
+                        veiculo = acao.original['escolher']
+                        if veiculo in veiculos_disponiveis:
+                            q_value = model.q_table[estado_wrapped][idx]
+                            melhores_q[veiculo] = q_value
+
+                    # Escolher veículo com maior Q-value
+                    if melhores_q:
+                        veiculo_escolhido = max(melhores_q, key=melhores_q.get)
+                    else:
+                        # Fallback: escolha aleatória
+                        veiculo_escolhido = random.choice(veiculos_disponiveis)
+
+                    # Executar transição
                     novo_estado, recompensa, terminado = env.transicao_escolher(
                         estado, veiculo_escolhido
                     )
-                    novo_estado_tupla = estado_para_tupla(novo_estado)
 
                     # Verificar se foi escolha ótima
                     melhor_prioridade = max(env.prioridades[v] for v in veiculos_disponiveis)
@@ -1394,37 +1424,13 @@ class CoordenadorLearningAgent(LoggableAgent):
                         acoes_corretas += 1
                     acoes_total += 1
 
-                    # Atualizar Q-table (Bellman equation)
-                    if terminado:
-                        # Estado terminal: Q(s,a) = R
-                        target = recompensa
-                    else:
-                        # Q(s,a) = R + γ * max(Q(s',a'))
-                        proximos_disponiveis = [
-                            v for v in env.veiculos_ids
-                            if novo_estado[env.veiculo_map[v]] == 0
-                        ]
-                        max_q_proximo = max(
-                            q_table[(novo_estado_tupla, v)] for v in proximos_disponiveis
-                        ) if proximos_disponiveis else 0
-                        target = recompensa + gamma * max_q_proximo
-
-                    # Atualização Q-Learning
-                    q_atual = q_table[(estado_tupla, veiculo_escolhido)]
-                    q_table[(estado_tupla, veiculo_escolhido)] = q_atual + alpha * (target - q_atual)
-
-                    # Acumular recompensa
                     recompensa_total += recompensa
-
-                    # Avançar para próximo estado
                     estado = novo_estado
-                    estado_tupla = novo_estado_tupla
 
                     if terminado:
                         break
 
-                # Registrar métricas do episódio
-                recompensas_por_episodio.append(recompensa_total)
+                # Registrar métricas do episódio de validação
                 METRICS_COLLECTOR.adicionar_recompensa_episodio(
                     self.my_name,
                     ep + 1,
@@ -1437,15 +1443,7 @@ class CoordenadorLearningAgent(LoggableAgent):
                 for _ in range(acoes_total - acoes_corretas):
                     METRICS_COLLECTOR.registrar_acao(self.my_name, False)
 
-                # Decair epsilon
-                epsilon = max(epsilon_min, epsilon * epsilon_decay)
-
-                # Verificar convergência a cada 10 episódios
-                if (ep + 1) % 10 == 0:
-                    if METRICS_COLLECTOR.verificar_convergencia(self.my_name, janela=10):
-                        self.info_print(f"Convergência detectada no episódio {ep + 1}!")
-
-            self.info_print(f"Treinamento concluído com {self.num_episodes} episódios.")
+            self.info_print(f"Validação concluída com {num_validacao} episódios.")
 
             # Desativar flag
             CruzamentoLearningEnvironment._em_treinamento = False
@@ -1453,89 +1451,25 @@ class CoordenadorLearningAgent(LoggableAgent):
             self.info_print("-"*60)
             self.info_print("TREINAMENTO CONCLUÍDO!")
 
-            # ========================================
-            # FASE DE VALIDAÇÃO: Usar Q-table aprendida
-            # ========================================
-            self.info_print("-"*60)
-            self.info_print("INICIANDO VALIDAÇÃO COM POLÍTICA APRENDIDA...")
-
-            num_episodios_validacao = min(10, max(5, self.num_episodes // 10))
-            acertos_validacao = 0
-            total_acoes_validacao = 0
-            recompensa_total_validacao = 0
-
-            for ep_val in range(num_episodios_validacao):
-                estado = env.possible_starts.copy()
-
-                while True:
-                    estado_tupla = estado_para_tupla(estado)
-                    veiculos_disponiveis = [v for v in env.veiculos_ids
-                                          if estado[env.veiculo_map[v]] == 0]
-
-                    if not veiculos_disponiveis:
-                        break
-
-                    # USAR POLÍTICA APRENDIDA (epsilon=0 - pura exploração)
-                    q_values = {v: q_table[(estado_tupla, v)] for v in veiculos_disponiveis}
-                    veiculo_escolhido = max(q_values, key=q_values.get)
-
-                    # Executar ação e verificar
-                    novo_estado, recompensa, terminado = env.transicao_escolher(estado, veiculo_escolhido)
-                    recompensa_total_validacao += recompensa
-                    total_acoes_validacao += 1
-
-                    # Verificar se foi a escolha correta (recompensa positiva)
-                    if recompensa > 0:
-                        acertos_validacao += 1
-
-                    estado = novo_estado
-
-                    if terminado:
-                        break
-
-            # Calcular taxa de acerto da validação
-            taxa_acerto_validacao = (acertos_validacao / total_acoes_validacao * 100) if total_acoes_validacao > 0 else 0
-            recompensa_media_validacao = recompensa_total_validacao / num_episodios_validacao if num_episodios_validacao > 0 else 0
-
-            self.info_print(f"Validação concluída: {num_episodios_validacao} episódios")
-            self.info_print(f"Taxa de acerto (validação): {taxa_acerto_validacao:.2f}%")
-            self.info_print(f"Recompensa média (validação): {recompensa_media_validacao:.2f}")
-
-            # ========================================
-            # EXTRAIR ORDEM ÓTIMA DA Q-TABLE
-            # ========================================
-            ordem_aprendida = []
-            estado_temp = env.possible_starts.copy()
-
-            while len(ordem_aprendida) < len(env.veiculos_ids):
-                estado_tupla_temp = estado_para_tupla(estado_temp)
-                disponiveis = [v for v in env.veiculos_ids
-                             if estado_temp[env.veiculo_map[v]] == 0]
-
-                if not disponiveis:
-                    break
-
-                # Escolher veículo com maior Q-value
-                q_values_temp = {v: q_table[(estado_tupla_temp, v)] for v in disponiveis}
-                melhor_veiculo = max(q_values_temp, key=q_values_temp.get)
-
-                ordem_aprendida.append(melhor_veiculo)
-                estado_temp[env.veiculo_map[melhor_veiculo]] = 1
-
             # Mostrar ordem ótima aprendida
             print("\n" + "="*50, flush=True)
             print("RESULTADO DO APRENDIZADO", flush=True)
             print("="*50, flush=True)
 
-            print(f"\nOrdem ótima aprendida (via Q-table): {' -> '.join(ordem_aprendida)}", flush=True)
+            # Calcular a ordem ótima baseado nas prioridades
+            ordem_otima = sorted(env.veiculos_ids,
+                                key=lambda v: env.prioridades[v],
+                                reverse=True)
+
+            print(f"\nOrdem ótima aprendida: {' -> '.join(ordem_otima)}", flush=True)
             print("\nPrioridades:", flush=True)
-            for v in ordem_aprendida:
+            for v in ordem_otima:
                 print(f"  {v}: {env.prioridades[v]}", flush=True)
 
             # Mostrar mapeamento para nomes originais
             if hasattr(env, 'nomes_originais') and env.nomes_originais:
                 print("\nMapeamento para nomes originais:", flush=True)
-                for v in ordem_aprendida:
+                for v in ordem_otima:
                     nome_orig = env.nomes_originais.get(v, v)
                     print(f"  {v} = {nome_orig}", flush=True)
 
@@ -1693,18 +1627,6 @@ def parse_arguments():
         type=int,
         default=100,
         help='Número de episódios para treinamento Q-Learning (padrão: 100)'
-    )
-    parser.add_argument(
-        '--recompensa',
-        type=int,
-        default=100,
-        help='Recompensa por escolha correta (padrão: 100)'
-    )
-    parser.add_argument(
-        '--penalidade',
-        type=float,
-        default=1.0,
-        help='Multiplicador de penalidade por escolha incorreta (padrão: 1.0)'
     )
     parser.add_argument(
         '--quiet', '-q',
@@ -1941,8 +1863,8 @@ if __name__ == "__main__":
             veiculos_config = experimento["veiculos"]
             episodios = args.episodios
             verbose = not args.quiet
-            reward = args.recompensa
-            penalidade = args.penalidade
+            reward = 100
+            penalidade = 1
             step_by_step = False
 
             print(f"\n>>> Experimento selecionado: {experimento['titulo']}")

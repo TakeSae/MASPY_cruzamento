@@ -15,7 +15,9 @@ Sistema multi-agentes com aprendizado por reforço (Q-Learning) para otimizaçã
 ## Recursos Principais
 
 - **Q-Learning com MASPY:** Integração completa de aprendizado por reforço com framework BDI
+- **3 Implementações:** Q-Learning manual, `model.learn()` built-in, versão escalabilidade
 - **10 Cenários Pré-configurados:** Diferentes situações de tráfego (emergências, cargas, prioridades)
+- **Experimentos de Escalabilidade:** Suporte para 50, 100 e 150 agentes
 - **Sistema de Análise Avançada:** Consolidação automática de métricas com visualizações comparativas
 - **Organização por Timestamp:** Resultados individuais preservados com symlink para última execução
 - **11 Tipos de Gráficos:** 5 individuais + 6 comparativos (incluindo heatmap)
@@ -30,13 +32,16 @@ Sistema multi-agentes com aprendizado por reforço (Q-Learning) para otimizaçã
 
 ```
 Trabalho_02_Aprendizado/
-├── cruzamento_maspy_learning.py    # Sistema principal Q-Learning
-├── executar_todos_cenarios.py      # Executa todos os cenários automaticamente
-├── comparar_cenarios.py            # Comparador de múltiplos cenários
-├── analisar_comparacao.py          # Análise comparativa avançada
-├── testar_analise.py               # Script de teste do sistema de análise
-├── requirements_analise.txt        # Dependências para análise avançada
-├── cruzamento_maspy_gui.py         # Tentativa de GUI (descontinuada)
+├── cruzamento_maspy_learning.py           # Sistema principal Q-Learning
+├── cruzamento_maspy_learning_builtin.py   # Versão com model.learn() do MASPY
+├── cruzamento_maspy_learning_escalabilidade.py  # Versão para experimentos de escalabilidade
+├── experimentos_escalabilidade.py         # Script de experimentos com 50/100/150 agentes
+├── executar_todos_cenarios.py             # Executa todos os cenários automaticamente
+├── comparar_cenarios.py                   # Comparador de múltiplos cenários
+├── analisar_comparacao.py                 # Análise comparativa avançada
+├── testar_analise.py                      # Script de teste do sistema de análise
+├── requirements_analise.txt               # Dependências para análise avançada
+├── cruzamento_maspy_gui.py                # Tentativa de GUI (descontinuada)
 ├── README_ANALISE_COMPARATIVA.md   # Documentação do sistema de análise
 ├── docs/                           # Documentação
 │   ├── PEAS.md                     # Metodologia PEAS completa
@@ -199,6 +204,84 @@ Sistema de análise comparativa avançada (analisar_comparacao.py).
 
 ---
 
+## Versões Disponíveis
+
+O projeto possui **3 versões** do sistema de aprendizado, cada uma com propósitos específicos:
+
+### 1. cruzamento_maspy_learning.py (PRINCIPAL - RECOMENDADA)
+
+**Características:**
+- Q-Learning implementado manualmente
+- Controle total sobre cada episódio
+- Coleta de métricas em tempo real
+- Limitado a 10 agentes (para comparabilidade)
+
+**Quando usar:**
+- Execução padrão do trabalho
+- Análise detalhada do processo de aprendizado
+- Comparação entre cenários
+- Demonstração acadêmica
+
+**Comando:**
+```bash
+python cruzamento_maspy_learning.py --experimento padrao --episodios 1000
+```
+
+### 2. cruzamento_maspy_learning_builtin.py (ALTERNATIVA)
+
+**Características:**
+- Usa `model.learn()` nativo do MASPY
+- Menos controle sobre o processo
+- Métricas coletadas apenas pós-treinamento
+- Executa episódios de validação
+
+**Quando usar:**
+- Comparar implementação manual vs built-in
+- Verificar conformidade com MASPY puro
+- Demonstrar conhecimento do framework
+
+**Comando:**
+```bash
+python cruzamento_maspy_learning_builtin.py --experimento padrao --episodios 1000
+```
+
+**Documentação:** Ver [docs/dificuldades_encontradas.md](docs/dificuldades_encontradas.md) para detalhes sobre limitações do `model.learn()`.
+
+### 3. cruzamento_maspy_learning_escalabilidade.py (EXPERIMENTOS)
+
+**Características:**
+- Suporta número variável de agentes (sem limite de 10)
+- Otimizado para experimentos de escalabilidade
+- Aceita `--num-agentes` como parâmetro
+- Mesma implementação Q-Learning da versão principal
+
+**Quando usar:**
+- Experimentos com 50, 100, 150 agentes
+- Análise de desempenho por escala
+- Testes de viabilidade computacional
+
+**Comando:**
+```bash
+# Manual
+python cruzamento_maspy_learning_escalabilidade.py --num-agentes 50 --episodios 500
+
+# Automatizado (recomendado)
+python experimentos_escalabilidade.py
+```
+
+### Tabela Comparativa
+
+| Característica | Principal | Built-in | Escalabilidade |
+|----------------|-----------|----------|----------------|
+| Q-Learning | Manual | `model.learn()` | Manual |
+| Métricas em tempo real | ✅ | ❌ | ✅ |
+| Limite de agentes | 10 | 10 | Ilimitado |
+| Episódios de validação | ❌ | ✅ | ❌ |
+| Uso recomendado | Padrão | Comparação | Experimentos |
+| Conformidade com requisitos | ✅ | ✅ | ✅ |
+
+---
+
 ## Como Executar
 
 ### Pré-requisitos
@@ -292,7 +375,55 @@ python testar_analise.py
 
 **Documentação completa:** [README_ANALISE_COMPARATIVA.md](README_ANALISE_COMPARATIVA.md)
 
-### Opção 6: Executar Suite de Testes
+### Opção 6: Experimentos de Escalabilidade
+
+```bash
+# Executar experimentos com 50, 100 e 150 agentes
+python experimentos_escalabilidade.py
+```
+
+**Configuração dos Experimentos:**
+- **50 agentes:** 500 episódios
+- **100 agentes:** 300 episódios
+- **150 agentes:** 200 episódios
+
+**Distribuição de Agentes:**
+- 10% Emergência (prioridade 100)
+- 15% Transporte Público (prioridade 80)
+- 20% Veículos Pesados (prioridade 60)
+- 55% Veículos Comuns (prioridade 10-50)
+
+**Saída gerada em resultados_escalabilidade/:**
+- comparacao_TIMESTAMP.csv: Métricas comparativas
+- relatorio_TIMESTAMP.txt: Análise detalhada
+- Inclui: tempo de execução, taxa de acerto, recompensas
+
+**Executar manualmente um experimento específico:**
+```bash
+# 50 agentes
+python cruzamento_maspy_learning_escalabilidade.py --num-agentes 50 --episodios 500 --experimento padrao
+
+# 100 agentes
+python cruzamento_maspy_learning_escalabilidade.py --num-agentes 100 --episodios 300 --experimento padrao
+
+# 150 agentes
+python cruzamento_maspy_learning_escalabilidade.py --num-agentes 150 --episodios 200 --experimento padrao
+```
+
+### Opção 7: Versão com model.learn() Built-in do MASPY
+
+```bash
+# Executar usando o método learn() nativo do MASPY
+python cruzamento_maspy_learning_builtin.py --experimento padrao --episodios 1000
+```
+
+**Diferenças da versão built-in:**
+- Usa `model.learn(qlearning, ...)` ao invés de Q-Learning manual
+- Não coleta métricas DURANTE o treinamento (apenas após)
+- Executa episódios de validação pós-treinamento para métricas
+- Documentado em docs/dificuldades_encontradas.md
+
+### Opção 8: Executar Suite de Testes
 
 ```bash
 # Executar todos os testes
@@ -430,7 +561,17 @@ Toda a documentação está organizada na pasta **[docs/](docs/)**:
 
 ## Histórico de Versões
 
-### v1.1 (2025-12-05) - ATUAL
+### v1.2 (2025-12-05) - ATUAL
+- **Experimentos de Escalabilidade:** Sistema para testar com 50, 100 e 150 agentes
+- **cruzamento_maspy_learning_escalabilidade.py:** Versão sem limite de 10 agentes
+- **experimentos_escalabilidade.py:** Script automatizado de escalabilidade
+- **cruzamento_maspy_learning_builtin.py:** Versão com `model.learn()` do MASPY
+- Geração automática de configurações de veículos por escala
+- Análise comparativa de desempenho por número de agentes
+- Relatórios de tempo de execução e convergência por escala
+- Distribuição proporcional de tipos de veículos (emergência, público, pesados, comuns)
+
+### v1.1 (2025-12-04)
 - Sistema de análise comparativa avançada (AnalisadorComparativo)
 - 6 novos tipos de gráficos comparativos
 - Heatmap de métricas normalizadas

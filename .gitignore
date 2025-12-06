@@ -10,3 +10,6 @@
 /Trabalho_02_Aprendizado/docs/CONFORMIDADE_TRABALHO02.md
 /Trabalho_02_Aprendizado/docs/DIAGRAMAS_UML.md
 **/*.zip
+**/analise_comparativa/
+**/resultados_escalabilidade/
+**/temp_configs

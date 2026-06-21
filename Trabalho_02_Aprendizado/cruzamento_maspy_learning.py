@@ -66,6 +66,12 @@ def parse_arguments():
         help='Multiplicador de penalidade por escolha incorreta (padrão: 1.0)'
     )
     parser.add_argument(
+        '--simulacoes',
+        type=int,
+        default=20,
+        help='Número de episódios de simulação pós-treinamento (padrão: 20)'
+    )
+    parser.add_argument(
         '--quiet', '-q',
         action='store_true',
         help='Esconder logs detalhados do aprendizado'
@@ -259,6 +265,7 @@ if __name__ == "__main__":
             config = EXPERIMENTOS[args.experimento]["veiculos"]
             nome_experimento = args.experimento
             episodios = args.episodios
+            simulacoes = args.simulacoes
             recompensa_correta = args.recompensa
             penalidade_mult = args.penalidade
             verbose = not args.quiet
@@ -273,6 +280,7 @@ if __name__ == "__main__":
             config = config_interactive["veiculos"]
             nome_experimento = config_interactive.get("experimento", "customizado")
             episodios = config_interactive.get("episodios", 100)
+            simulacoes = 20
             log_level = config_interactive.get("log_level", LogLevel.INFO)
             recompensa_correta = config_interactive.get("recompensa", 100)
             penalidade_mult = config_interactive.get("penalidade", 1.0)
@@ -305,6 +313,7 @@ if __name__ == "__main__":
             agt_name="Coordenador_QLearning",
             env=env,
             num_episodes=episodios,
+            num_simulacoes=simulacoes,
             log_level=log_level
         )
 

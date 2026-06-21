@@ -47,11 +47,13 @@ class CoordenadorLearningAgent(LoggableAgent):
     a ordem ótima de travessia dos veículos.
     """
 
-    def __init__(self, agt_name=None, env=None, num_episodes=100, log_level=None):
+    def __init__(self, agt_name=None, env=None, num_episodes=100, num_simulacoes=20, log_level=None):
         super().__init__(agt_name, log_level)
 
         self.env = env
         self.num_episodes = num_episodes
+        self.num_simulacoes = num_simulacoes
+        self.q_table = defaultdict(float)
 
         # Beliefs observáveis
         self.add(Belief("status", "inicializando"))
@@ -74,6 +76,21 @@ class CoordenadorLearningAgent(LoggableAgent):
         if old_belief:
             self.rm(old_belief)
         self.add(Belief(belief_name, value))
+
+    def estado_para_tupla(self, estado_dict):
+        """Converte estado dict para tupla ordenada (hashable)."""
+        env = self.env
+        return tuple(estado_dict[env.veiculo_map[v]] for v in env.veiculos_ids)
+
+    def escolher_acao_epsilon_greedy(self, estado_tupla, veiculos_disponiveis, epsilon):
+        """Escolhe ação usando estratégia epsilon-greedy."""
+        if random.random() < epsilon:
+            return random.choice(veiculos_disponiveis)
+        else:
+            q_values = {v: self.q_table[(estado_tupla, v)] for v in veiculos_disponiveis}
+            max_q = max(q_values.values())
+            melhores = [v for v, q in q_values.items() if q == max_q]
+            return random.choice(melhores)
 
     @pl(gain, Goal("aprender"))
     def iniciar_aprendizado(self, src):
@@ -109,8 +126,6 @@ class CoordenadorLearningAgent(LoggableAgent):
             # Wrapper para capturar métricas DURANTE o treinamento do Q-Learning
             self.info_print("\nExecutando treinamento com coleta de métricas...")
 
-            # Inicializar Q-table manualmente
-
             # Parâmetros Q-Learning
             alpha = 0.1  # Taxa de aprendizado
             gamma = 0.9  # Fator de desconto
@@ -118,30 +133,14 @@ class CoordenadorLearningAgent(LoggableAgent):
             epsilon_decay = 0.995
             epsilon_min = 0.01
 
-            # Q-table: dict de (state_tuple, action) -> valor
-            q_table = defaultdict(float)
-
-            def estado_para_tupla(estado_dict):
-                """Converte estado dict para tupla ordenada (hashable)."""
-                return tuple(estado_dict[env.veiculo_map[v]] for v in env.veiculos_ids)
-
-            def escolher_acao_epsilon_greedy(estado_tupla, veiculos_disponiveis, epsilon):
-                """Escolhe ação usando estratégia epsilon-greedy."""
-                if random.random() < epsilon:
-                    # Exploração: ação aleatória
-                    return random.choice(veiculos_disponiveis)
-                else:
-                    # Exploitação: melhor ação conhecida
-                    q_values = {v: q_table[(estado_tupla, v)] for v in veiculos_disponiveis}
-                    max_q = max(q_values.values())
-                    # Escolher entre as ações com Q máximo (pode haver empate)
-                    melhores = [v for v, q in q_values.items() if q == max_q]
-                    return random.choice(melhores)
+            # Resetar Q-table persistente
+            self.q_table = defaultdict(float)
+            q_table = self.q_table
 
             # Treinar por num_episodes episódios
             for ep in range(self.num_episodes):
                 estado = env.possible_starts.copy()
-                estado_tupla = estado_para_tupla(estado)
+                estado_tupla = self.estado_para_tupla(estado)
                 recompensa_total = 0
                 acoes_corretas = 0
                 acoes_total = 0
@@ -158,7 +157,7 @@ class CoordenadorLearningAgent(LoggableAgent):
                         break
 
                     # Escolher ação
-                    veiculo_escolhido = escolher_acao_epsilon_greedy(
+                    veiculo_escolhido = self.escolher_acao_epsilon_greedy(
                         estado_tupla, veiculos_disponiveis, epsilon
                     )
 
@@ -166,7 +165,7 @@ class CoordenadorLearningAgent(LoggableAgent):
                     novo_estado, recompensa, terminado = env.transicao_escolher(
                         estado, veiculo_escolhido
                     )
-                    novo_estado_tupla = estado_para_tupla(novo_estado)
+                    novo_estado_tupla = self.estado_para_tupla(novo_estado)
 
                     # Verificar se foi escolha ótima
                     melhor_prioridade = max(env.prioridades[v] for v in veiculos_disponiveis)
@@ -249,7 +248,7 @@ class CoordenadorLearningAgent(LoggableAgent):
                 estado = env.possible_starts.copy()
 
                 while True:
-                    estado_tupla = estado_para_tupla(estado)
+                    estado_tupla = self.estado_para_tupla(estado)
                     veiculos_disponiveis = [v for v in env.veiculos_ids
                                           if estado[env.veiculo_map[v]] == 0]
 
@@ -289,7 +288,7 @@ class CoordenadorLearningAgent(LoggableAgent):
             estado_temp = env.possible_starts.copy()
 
             while len(ordem_aprendida) < len(env.veiculos_ids):
-                estado_tupla_temp = estado_para_tupla(estado_temp)
+                estado_tupla_temp = self.estado_para_tupla(estado_temp)
                 disponiveis = [v for v in env.veiculos_ids
                              if estado_temp[env.veiculo_map[v]] == 0]
 
@@ -323,6 +322,159 @@ class CoordenadorLearningAgent(LoggableAgent):
             print("\n" + "="*50, flush=True)
             print("APRENDIZADO CONCLUÍDO COM SUCESSO!", flush=True)
             print("="*50 + "\n", flush=True)
+
+            sys.stdout.flush()
+
+            # ========================================
+            # FASE DE SIMULAÇÃO: Aplicar política aprendida
+            # ========================================
+            num_sim = self.num_simulacoes
+
+            print("="*60, flush=True)
+            print("FASE DE SIMULAÇÃO", flush=True)
+            print(f"Executando {num_sim} episódios com política aprendida vs aleatória", flush=True)
+            print("="*60, flush=True)
+
+            # --- 1) Episódios com política aprendida (greedy, epsilon=0) ---
+            recompensas_aprendida = []
+            acertos_aprendida = []
+
+            for ep_sim in range(num_sim):
+                estado = env.possible_starts.copy()
+                recompensa_ep = 0
+                acertos_ep = 0
+                total_ep = 0
+
+                while True:
+                    estado_tupla = self.estado_para_tupla(estado)
+                    veiculos_disponiveis = [
+                        v for v in env.veiculos_ids
+                        if estado[env.veiculo_map[v]] == 0
+                    ]
+                    if not veiculos_disponiveis:
+                        break
+
+                    # Greedy: melhor Q-value
+                    q_values = {v: self.q_table[(estado_tupla, v)] for v in veiculos_disponiveis}
+                    veiculo_escolhido = max(q_values, key=q_values.get)
+
+                    novo_estado, recompensa, terminado = env.transicao_escolher(estado, veiculo_escolhido)
+                    recompensa_ep += recompensa
+                    total_ep += 1
+
+                    melhor_prioridade = max(env.prioridades[v] for v in veiculos_disponiveis)
+                    if env.prioridades[veiculo_escolhido] == melhor_prioridade:
+                        acertos_ep += 1
+
+                    estado = novo_estado
+                    if terminado:
+                        break
+
+                recompensas_aprendida.append(recompensa_ep)
+                acertos_aprendida.append(acertos_ep / total_ep * 100 if total_ep > 0 else 0)
+
+            # --- 2) Episódios com política aleatória (baseline) ---
+            recompensas_aleatoria = []
+            acertos_aleatoria = []
+
+            for ep_sim in range(num_sim):
+                estado = env.possible_starts.copy()
+                recompensa_ep = 0
+                acertos_ep = 0
+                total_ep = 0
+
+                while True:
+                    veiculos_disponiveis = [
+                        v for v in env.veiculos_ids
+                        if estado[env.veiculo_map[v]] == 0
+                    ]
+                    if not veiculos_disponiveis:
+                        break
+
+                    # Aleatório
+                    veiculo_escolhido = random.choice(veiculos_disponiveis)
+
+                    novo_estado, recompensa, terminado = env.transicao_escolher(estado, veiculo_escolhido)
+                    recompensa_ep += recompensa
+                    total_ep += 1
+
+                    melhor_prioridade = max(env.prioridades[v] for v in veiculos_disponiveis)
+                    if env.prioridades[veiculo_escolhido] == melhor_prioridade:
+                        acertos_ep += 1
+
+                    estado = novo_estado
+                    if terminado:
+                        break
+
+                recompensas_aleatoria.append(recompensa_ep)
+                acertos_aleatoria.append(acertos_ep / total_ep * 100 if total_ep > 0 else 0)
+
+            # --- 3) Step-by-step detalhado de 1 episódio com política aprendida ---
+            print("\n" + "-"*60, flush=True)
+            print("STEP-BY-STEP: 1 Episódio com Política Aprendida", flush=True)
+            print("-"*60, flush=True)
+
+            estado = env.possible_starts.copy()
+            passo = 1
+
+            while True:
+                estado_tupla = self.estado_para_tupla(estado)
+                veiculos_disponiveis = [
+                    v for v in env.veiculos_ids
+                    if estado[env.veiculo_map[v]] == 0
+                ]
+                if not veiculos_disponiveis:
+                    break
+
+                q_values = {v: self.q_table[(estado_tupla, v)] for v in veiculos_disponiveis}
+                veiculo_escolhido = max(q_values, key=q_values.get)
+
+                melhor_prioridade = max(env.prioridades[v] for v in veiculos_disponiveis)
+                escolha_correta = (env.prioridades[veiculo_escolhido] == melhor_prioridade)
+
+                nome_orig = env.nomes_originais.get(veiculo_escolhido, veiculo_escolhido)
+                prioridade = env.prioridades[veiculo_escolhido]
+                status_str = "CORRETO" if escolha_correta else "INCORRETO"
+
+                print(f"  Passo {passo}: {nome_orig} (prio={prioridade}) [{status_str}]", flush=True)
+
+                novo_estado, _, terminado = env.transicao_escolher(estado, veiculo_escolhido)
+                estado = novo_estado
+                passo += 1
+
+                if terminado:
+                    break
+
+            # --- 4) Tabela comparativa ---
+            import statistics
+
+            media_rec_aprendida = statistics.mean(recompensas_aprendida)
+            media_rec_aleatoria = statistics.mean(recompensas_aleatoria)
+            media_acerto_aprendida = statistics.mean(acertos_aprendida)
+            media_acerto_aleatoria = statistics.mean(acertos_aleatoria)
+            std_rec_aprendida = statistics.stdev(recompensas_aprendida) if len(recompensas_aprendida) > 1 else 0
+            std_rec_aleatoria = statistics.stdev(recompensas_aleatoria) if len(recompensas_aleatoria) > 1 else 0
+
+            print("\n" + "-"*60, flush=True)
+            print("COMPARAÇÃO: Política Aprendida vs Aleatória", flush=True)
+            print("-"*60, flush=True)
+            print(f"{'Métrica':<25} {'Aprendida':>12} {'Aleatória':>12}", flush=True)
+            print(f"{'-'*25} {'-'*12} {'-'*12}", flush=True)
+            print(f"{'Recompensa média':<25} {media_rec_aprendida:>12.2f} {media_rec_aleatoria:>12.2f}", flush=True)
+            print(f"{'Desvio padrão':<25} {std_rec_aprendida:>12.2f} {std_rec_aleatoria:>12.2f}", flush=True)
+            print(f"{'Taxa de acerto (%)':<25} {media_acerto_aprendida:>12.2f} {media_acerto_aleatoria:>12.2f}", flush=True)
+            print(f"\nMelhoria: {media_rec_aprendida - media_rec_aleatoria:+.2f} recompensa, "
+                  f"{media_acerto_aprendida - media_acerto_aleatoria:+.2f}pp acerto", flush=True)
+            print("="*60 + "\n", flush=True)
+
+            # --- 5) Registrar métricas de simulação no METRICS_COLLECTOR ---
+            METRICS_COLLECTOR.metricas_globais["simulacao_aprendida_recompensa_media"] = media_rec_aprendida
+            METRICS_COLLECTOR.metricas_globais["simulacao_aprendida_taxa_acerto"] = media_acerto_aprendida
+            METRICS_COLLECTOR.metricas_globais["simulacao_aprendida_std"] = std_rec_aprendida
+            METRICS_COLLECTOR.metricas_globais["simulacao_aleatoria_recompensa_media"] = media_rec_aleatoria
+            METRICS_COLLECTOR.metricas_globais["simulacao_aleatoria_taxa_acerto"] = media_acerto_aleatoria
+            METRICS_COLLECTOR.metricas_globais["simulacao_aleatoria_std"] = std_rec_aleatoria
+            METRICS_COLLECTOR.metricas_globais["simulacao_num_episodios"] = num_sim
 
             sys.stdout.flush()
 

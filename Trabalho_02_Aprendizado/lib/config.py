@@ -38,6 +38,28 @@ VEICULOS_CONFIG = [
 # CONFIGURAÇÕES DE EXPERIMENTOS
 
 EXPERIMENTOS = {
+    "base-novo": {
+        "titulo": "Cenário Base (16 veículos)",
+        "descricao": "Ambulância deve vencer contra veículos normais",
+        "veiculos": [
+            {"nome": "Ambulancia", "tipo": "ambulancia", "prioridade": 100},
+            {"nome": "Onibus1", "tipo": "onibus", "prioridade": 40},
+            {"nome": "Taxi1", "tipo": "taxi", "prioridade": 25},
+            {"nome": "Carro1", "tipo": "carro", "prioridade": 10},
+            {"nome": "Carro2", "tipo": "carro", "prioridade": 10},
+            {"nome": "Carro3", "tipo": "carro", "prioridade": 10},
+            {"nome": "Moto1", "tipo": "moto", "prioridade": 5},
+            {"nome": "Moto2", "tipo": "moto", "prioridade": 5},
+            {"nome": "Moto3", "tipo": "moto", "prioridade": 5},
+            {"nome": "Moto4", "tipo": "moto", "prioridade": 5},
+            {"nome": "Ambulancia", "tipo": "ambulancia", "prioridade": 100},
+            {"nome": "Onibus1", "tipo": "onibus", "prioridade": 40},
+            {"nome": "Taxi1", "tipo": "taxi", "prioridade": 25},
+            {"nome": "Carro1", "tipo": "carro", "prioridade": 10},
+            {"nome": "Carro2", "tipo": "carro", "prioridade": 10},
+            {"nome": "Carro3", "tipo": "carro", "prioridade": 10},
+        ]
+    },
     "padrao": {
         "titulo": "Cenário Padrão (10 veículos)",
         "descricao": "10 veículos com prioridades diferentes - teste completo",

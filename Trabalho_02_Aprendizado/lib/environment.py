@@ -44,11 +44,8 @@ class CruzamentoLearningEnvironment(Environment):
         # Usar configuração fornecida via variável de classe ou padrão
         # LIMITADO A 10 VEÍCULOS para aprendizado (decorator @action requer nomes fixos)
         config_base = CruzamentoLearningEnvironment._veiculos_config_override or VEICULOS_CONFIG
-        veiculos_config_original = config_base[:10]  # Máximo 10 veículos
+        veiculos_config_original = config_base  # Máximo 10 veículos
 
-        if len(config_base) > 10:
-            print(f"\nAVISO: Modo aprendizado limitado a 10 veículos.")
-            print(f"Usando os primeiros 10 de {len(config_base)} veículos do cenário.\n")
 
         # Criar configuração adaptada com nomes Veiculo1-4 (requerido pelo MASPY)
         veiculos_config = []
@@ -180,8 +177,7 @@ class CruzamentoLearningEnvironment(Environment):
 
         return new_state, reward, terminated
 
-    @action(listed, ("Veiculo1", "Veiculo2", "Veiculo3", "Veiculo4", "Veiculo5",
-                     "Veiculo6", "Veiculo7", "Veiculo8", "Veiculo9", "Veiculo10"), transicao_escolher)
+    @action(listed, tuple(f"Veiculo{i}" for i in range(1, 16)), transicao_escolher)
     def escolher_veiculo(self, agt, veiculo_id):
         """
         Ação de escolher qual veículo atravessa.

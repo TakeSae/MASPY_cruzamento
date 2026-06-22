@@ -39,7 +39,7 @@ VEICULOS_CONFIG = [
 
 EXPERIMENTOS = {
     "base-novo": {
-        "titulo": "Cenário Base (16 veículos)",
+        "titulo": "Cenário Base (15 veículos)",
         "descricao": "Ambulância deve vencer contra veículos normais",
         "veiculos": [
             {"nome": "Ambulancia", "tipo": "ambulancia", "prioridade": 100},

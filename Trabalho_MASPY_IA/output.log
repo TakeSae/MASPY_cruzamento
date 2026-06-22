@@ -1,0 +1,459 @@
+
+[1m[96m======================================================================[0m
+[1m[96m  SISTEMA MULTI-AGENTES - APRENDIZADO Q-LEARNING[0m
+[1m[96m  Trabalho 1 - SMA 2025.2 - UTFPR[0m
+[1m[96m======================================================================[0m
+
+[1m[97mEscolha o tipo de experimento:
+[0m
+  [93m1[0m. Experimento pre-definido
+  [93m2[0m. Experimento customizado
+  [91m0[0m. Sair
+
+[96m>>> Opcao: [0m
+[1m[97mExperimentos disponiveis:
+[0m
+  [93m 1[0m. base-novo                 - Cenário Base (16 veículos)
+      [96mDescricao:[0m Ambulância deve vencer contra veículos normais
+      [96mVeiculos:[0m 15
+
+  [93m 2[0m. padrao                    - Cenário Padrão (10 veículos)
+      [96mDescricao:[0m 10 veículos com prioridades diferentes - teste completo
+      [96mVeiculos:[0m 10
+
+  [93m 3[0m. base                      - Cenário Base (10 veículos)
+      [96mDescricao:[0m Ambulância deve vencer contra veículos normais
+      [96mVeiculos:[0m 10
+
+  [93m 4[0m. emergencias               - Múltiplas Emergências (10 veículos)
+      [96mDescricao:[0m Ambulância1 (prio=100) deve vencer entre emergências
+      [96mVeiculos:[0m 10
+
+  [93m 5[0m. iguais                    - Prioridades Iguais (10 veículos)
+      [96mDescricao:[0m Todos com mesma prioridade - ordem de processamento
+      [96mVeiculos:[0m 10
+
+  [93m 6[0m. pesados                   - Cargas Pesadas (10 veículos)
+      [96mDescricao:[0m Caminhão (prio=50) deve vencer
+      [96mVeiculos:[0m 10
+
+  [93m 7[0m. transporte_publico        - Transporte Público (10 veículos)
+      [96mDescricao:[0m Ônibus vs Táxi vs veículos particulares
+      [96mVeiculos:[0m 10
+
+  [93m 8[0m. prioridades_proximas      - Prioridades Próximas (10 veículos)
+      [96mDescricao:[0m Diferenças pequenas de prioridade (desafio para Q-Learning)
+      [96mVeiculos:[0m 10
+
+  [93m 9[0m. extremos                  - Prioridades Extremas (10 veículos)
+      [96mDescricao:[0m Grande diferença entre prioridades (1 vs 100)
+      [96mVeiculos:[0m 10
+
+  [93m10[0m. escalonado                - Prioridades Escalonadas (10 veículos)
+      [96mDescricao:[0m Escala uniforme de 10 até 100 de 10 em 10
+      [96mVeiculos:[0m 10
+
+  [93m11[0m. misto_complexo            - Cenário Misto Complexo (10 veículos)
+      [96mDescricao:[0m Mix de todos os tipos com prioridades variadas
+      [96mVeiculos:[0m 10
+
+  [93m12[0m. dois_veiculos             - Cenário Mínimo
+      [96mDescricao:[0m Apenas 2 veículos - caso mais simples
+      [96mVeiculos:[0m 2
+
+  [93m13[0m. tres_veiculos             - Três Veículos
+      [96mDescricao:[0m 3 veículos com prioridades distintas
+      [96mVeiculos:[0m 3
+
+[96m>>> Escolha o experimento (numero): [0m
+[1m[97mNumero de episodios de treinamento[0m (padrao: 100):
+[93mDica:[0m Mais episodios = mais aprendizado (recomendado: 100-1000)
+[96m>>> Episodios: [0m
+[1m[97mNivel de log[0m (1=SILENT, 2=ERROR, 3=INFO, 4=DEBUG, padrao: INFO):
+[93mDica:[0m INFO mostra progresso detalhado, SILENT oculta tudo
+[96m>>> Log Level: [0m
+[1m[97mRecompensa por escolha correta[0m (padrao: 100):
+[93mDica:[0m Valores maiores incentivam mais a escolha correta
+[93mExemplos:[0m 10 (baixa), 50 (media), 100 (alta), 200 (muito alta)
+[96m>>> Recompensa: [0m
+[1m[97mMultiplicador de penalidade[0m (padrao: 1.0):
+[93mDica:[0m Controla o quanto o agente e punido por erros
+[93mExemplos:[0m 0.5 (leniente), 1.0 (balanceado), 2.0 (severo)
+[96m>>> Penalidade: [0m
+[92m✓[0m Diretório de resultados criado: /home/dachii/Projetos/MESTRADO/Trabalhos/SMA/MASPY_cruzamento/Trabalho_MASPY_IA/resultados/20260622_191143/
+======================================================================
+SISTEMA MULTI-AGENTES - APRENDIZADO Q-LEARNING
+Trabalho 1 - SMA 2025.2 - UTFPR
+======================================================================
+
+Configuracao do Sistema:
+  - 15 Veiculos
+  - Log Level: SILENT
+  - Episodios Q-Learning: 1
+
+  Veiculos:
+    - Ambulancia: ambulancia (prioridade=100) [EMERGENCIA]
+    - Onibus1: onibus (prioridade=40)
+    - Taxi1: taxi (prioridade=25)
+    - Carro1: carro (prioridade=10)
+    - Carro2: carro (prioridade=10)
+    - Carro3: carro (prioridade=10)
+    - Moto1: moto (prioridade=5)
+    - Moto2: moto (prioridade=5)
+    - Moto3: moto (prioridade=5)
+    - Moto4: moto (prioridade=5)
+    - Ambulancia: ambulancia (prioridade=100) [EMERGENCIA]
+    - Onibus1: onibus (prioridade=40)
+    - Taxi1: taxi (prioridade=25)
+    - Carro1: carro (prioridade=10)
+    - Carro2: carro (prioridade=10)
+
+  Aprendizado por Reforco (Q-Learning):
+    1. Coordenador treina Q-Learning (explora estados e acoes)
+    2. Recebe recompensas (+100 prioridade correta, -penalidade proporcional)
+    3. Atualiza Q-table com experiencias
+    4. Apos treinamento, coordena veiculos via comunicacao multi-agente
+
+  Comunicacao Multi-Agente:
+    5. Coordenador solicita propostas dos veiculos (send/tell)
+    6. Veiculos enviam propostas ao coordenador
+    7. Coordenador decide ordem com politica aprendida
+    8. Veiculos recebem decisoes e ordem final
+
+======================================================================
+
+Mapeamento de veículos para aprendizado:
+  Ambulancia -> Veiculo1 (prio=100)
+  Onibus1 -> Veiculo2 (prio=40)
+  Taxi1 -> Veiculo3 (prio=25)
+  Carro1 -> Veiculo4 (prio=10)
+  Carro2 -> Veiculo5 (prio=10)
+  Carro3 -> Veiculo6 (prio=10)
+  Moto1 -> Veiculo7 (prio=5)
+  Moto2 -> Veiculo8 (prio=5)
+  Moto3 -> Veiculo9 (prio=5)
+  Moto4 -> Veiculo10 (prio=5)
+  Ambulancia -> Veiculo11 (prio=100)
+  Onibus1 -> Veiculo12 (prio=40)
+  Taxi1 -> Veiculo13 (prio=25)
+  Carro1 -> Veiculo14 (prio=10)
+  Carro2 -> Veiculo15 (prio=10)
+
+
+[92mAgentes criados:[0m
+  Coordenador: Coordenador_QLearning_1
+  Veiculo: Agente_Ambulancia_1 (id=Veiculo1, prio=100, tipo=ambulancia)
+  Veiculo: Agente_Onibus1_1 (id=Veiculo2, prio=40, tipo=onibus)
+  Veiculo: Agente_Taxi1_1 (id=Veiculo3, prio=25, tipo=taxi)
+  Veiculo: Agente_Carro1_1 (id=Veiculo4, prio=10, tipo=carro)
+  Veiculo: Agente_Carro2_1 (id=Veiculo5, prio=10, tipo=carro)
+  Veiculo: Agente_Carro3_1 (id=Veiculo6, prio=10, tipo=carro)
+  Veiculo: Agente_Moto1_1 (id=Veiculo7, prio=5, tipo=moto)
+  Veiculo: Agente_Moto2_1 (id=Veiculo8, prio=5, tipo=moto)
+  Veiculo: Agente_Moto3_1 (id=Veiculo9, prio=5, tipo=moto)
+  Veiculo: Agente_Moto4_1 (id=Veiculo10, prio=5, tipo=moto)
+  Veiculo: Agente_Ambulancia_2 (id=Veiculo11, prio=100, tipo=ambulancia)
+  Veiculo: Agente_Onibus1_2 (id=Veiculo12, prio=40, tipo=onibus)
+  Veiculo: Agente_Taxi1_2 (id=Veiculo13, prio=25, tipo=taxi)
+  Veiculo: Agente_Carro1_2 (id=Veiculo14, prio=10, tipo=carro)
+  Veiculo: Agente_Carro2_2 (id=Veiculo15, prio=10, tipo=carro)
+
+  Total: 1 coordenador + 15 veiculos = 16 agentes
+
+[92mCanais criados:[0m default, comunicacao
+[92mConexao estabelecida:[0m 16 agentes -> ambiente + 2 canais
+
+
+[1m[96mINICIANDO SISTEMA MULTI-AGENTES[0m
+======================================================================
+
+Creating Model_CruzamentoLearningEnvironment
+[38;5;220m# Admin #> Starting MASPY Program - ver.2025.11.09[0m
+[32mEnvironment:CruzamentoLearningEnvironment> Environment CruzamentoLearningEnvironment created[0m
+[38;5;81mChannel:comunicacao> Channel comunicacao created[0m
+[38;5;220m# Admin #> Starting All Agents[0m
+[38;5;220m# Admin #> Starting System[0m
+
+==================================================
+RESULTADO DO APRENDIZADO
+==================================================
+
+Ordem otima aprendida (via Q-table): Veiculo1 -> Veiculo2 -> Veiculo3 -> Veiculo4 -> Veiculo5 -> Veiculo6 -> Veiculo7 -> Veiculo8 -> Veiculo9 -> Veiculo10 -> Veiculo11 -> Veiculo12 -> Veiculo13 -> Veiculo14 -> Veiculo15
+
+Prioridades:
+  Veiculo1: 100
+  Veiculo2: 40
+  Veiculo3: 25
+  Veiculo4: 10
+  Veiculo5: 10
+  Veiculo6: 10
+  Veiculo7: 5
+  Veiculo8: 5
+  Veiculo9: 5
+  Veiculo10: 5
+  Veiculo11: 100
+  Veiculo12: 40
+  Veiculo13: 25
+  Veiculo14: 10
+  Veiculo15: 10
+
+Mapeamento para nomes originais:
+  Veiculo1 = Ambulancia
+  Veiculo2 = Onibus1
+  Veiculo3 = Taxi1
+  Veiculo4 = Carro1
+  Veiculo5 = Carro2
+  Veiculo6 = Carro3
+  Veiculo7 = Moto1
+  Veiculo8 = Moto2
+  Veiculo9 = Moto3
+  Veiculo10 = Moto4
+  Veiculo11 = Ambulancia
+  Veiculo12 = Onibus1
+  Veiculo13 = Taxi1
+  Veiculo14 = Carro1
+  Veiculo15 = Carro2
+
+==================================================
+APRENDIZADO CONCLUIDO COM SUCESSO!
+==================================================
+
+============================================================
+FASE DE SIMULACAO
+Executando 20 episodios com politica aprendida vs aleatoria
+============================================================
+
+------------------------------------------------------------
+STEP-BY-STEP: 1 Episodio com Politica Aprendida
+------------------------------------------------------------
+  Passo 1: Ambulancia (prio=100) [CORRETO]
+  Passo 2: Onibus1 (prio=40) [INCORRETO]
+  Passo 3: Taxi1 (prio=25) [INCORRETO]
+  Passo 4: Carro1 (prio=10) [INCORRETO]
+  Passo 5: Carro2 (prio=10) [INCORRETO]
+  Passo 6: Carro3 (prio=10) [INCORRETO]
+  Passo 7: Moto1 (prio=5) [INCORRETO]
+  Passo 8: Moto2 (prio=5) [INCORRETO]
+  Passo 9: Moto3 (prio=5) [INCORRETO]
+  Passo 10: Moto4 (prio=5) [INCORRETO]
+  Passo 11: Ambulancia (prio=100) [CORRETO]
+  Passo 12: Onibus1 (prio=40) [CORRETO]
+  Passo 13: Taxi1 (prio=25) [CORRETO]
+  Passo 14: Carro1 (prio=10) [CORRETO]
+  Passo 15: Carro2 (prio=10) [CORRETO]
+
+------------------------------------------------------------
+COMPARACAO: Politica Aprendida vs Aleatoria
+------------------------------------------------------------
+Metrica                      Aprendida    Aleatoria
+------------------------- ------------ ------------
+Recompensa media               -185.00      -331.25
+Desvio padrao                     0.00       323.10
+Taxa de acerto (%)               40.00        28.00
+
+Melhoria: +146.25 recompensa, +12.00pp acerto
+============================================================
+
+[38;5;220m# Admin #> Closing System[0m
+[38;5;220m# Admin #> Ending MASPY Program[0m
+
+[1m[96mSISTEMA FINALIZADO[0m
+======================================================================
+
+[1m[96m======================================================================[0m
+[1m[96m  PARAMETROS DO Q-LEARNING[0m
+[1m[96m======================================================================[0m
+  Alpha (taxa de aprendizado):   0.1
+  Gamma (fator de desconto):     0.9
+  Epsilon inicial:               1.0
+  Epsilon decay:                 0.995
+  Epsilon minimo:                0.01
+  Epsilon final (apos treino):   0.995000
+  Episodios de treinamento:      1
+  Recompensa por acerto:         +100
+  Multiplicador de penalidade:   1.0x
+
+[1m[96m======================================================================[0m
+[1m[96m  ORDEM APRENDIDA vs ORDEM OTIMA[0m
+[1m[96m======================================================================[0m
+
+  Pos   Otima (por prioridade)         Aprendida (Q-table)            Status    
+  ----- ------------------------------ ------------------------------ ----------
+  1     Ambulancia (prio=100)         Ambulancia (prio=100)         [92mOK[0m
+  2     Ambulancia (prio=100)         Onibus1 (prio=40)            [91mDIFF[0m
+  3     Onibus1 (prio=40)            Taxi1 (prio=25)              [91mDIFF[0m
+  4     Onibus1 (prio=40)            Carro1 (prio=10)             [91mDIFF[0m
+  5     Taxi1 (prio=25)              Carro2 (prio=10)             [91mDIFF[0m
+  6     Taxi1 (prio=25)              Carro3 (prio=10)             [91mDIFF[0m
+  7     Carro1 (prio=10)             Moto1 (prio=5)              [91mDIFF[0m
+  8     Carro2 (prio=10)             Moto2 (prio=5)              [91mDIFF[0m
+  9     Carro3 (prio=10)             Moto3 (prio=5)              [91mDIFF[0m
+  10    Carro1 (prio=10)             Moto4 (prio=5)              [91mDIFF[0m
+  11    Carro2 (prio=10)             Ambulancia (prio=100)         [91mDIFF[0m
+  12    Moto1 (prio=5)              Onibus1 (prio=40)            [91mDIFF[0m
+  13    Moto2 (prio=5)              Taxi1 (prio=25)              [91mDIFF[0m
+  14    Moto3 (prio=5)              Carro1 (prio=10)             [91mDIFF[0m
+  15    Moto4 (prio=5)              Carro2 (prio=10)             [91mDIFF[0m
+
+  Precisao de posicao: 1/15 (6.7%)
+  [91mA politica diverge da otima. Considere aumentar episodios ou ajustar parametros.[0m
+
+[1m[96m======================================================================[0m
+[1m[96m  RESULTADO POR VEICULO (COORDENACAO MULTI-AGENTE)[0m
+[1m[96m======================================================================[0m
+
+  Agente                    Tipo         Prio   Pos Recebida   Pos Esperada   Status    
+  ------------------------- ------------ ------ -------------- -------------- ----------
+  Agente_Ambulancia_1       ambulancia   100    1              1              [92mOK[0m
+  Agente_Onibus1_1          onibus       40     2              3              [93m~[0m
+  Agente_Taxi1_1            taxi         25     3              5              [93m~[0m
+  Agente_Carro1_1           carro        10     4              7              [93m~[0m
+  Agente_Carro2_1           carro        10     5              7              [93m~[0m
+  Agente_Carro3_1           carro        10     6              7              [93m~[0m
+  Agente_Moto1_1            moto         5      7              12             [93m~[0m
+  Agente_Moto2_1            moto         5      8              12             [93m~[0m
+  Agente_Moto3_1            moto         5      9              12             [93m~[0m
+  Agente_Moto4_1            moto         5      10             12             [93m~[0m
+  Agente_Ambulancia_2       ambulancia   100    11             1              [93m~[0m
+  Agente_Onibus1_2          onibus       40     12             3              [93m~[0m
+  Agente_Taxi1_2            taxi         25     13             5              [93m~[0m
+  Agente_Carro1_2           carro        10     14             7              [93m~[0m
+  Agente_Carro2_2           carro        10     15             7              [93m~[0m
+
+[1m[96m======================================================================[0m
+[1m[96m  COMUNICACAO MULTI-AGENTE[0m
+[1m[96m======================================================================[0m
+
+  [1m[97mCoordenador[0m (Coordenador_QLearning_1):
+    Mensagens enviadas:     45
+      - Solicitacoes:       15
+      - Decisoes:           15
+      - Ordens completas:   15
+    Mensagens recebidas:    15
+      - Propostas:          15
+
+  [1m[97mVeiculos[0m (15 agentes):
+    Total enviadas:         15
+    Total recebidas:        30
+    Media por veiculo:      1.0 env, 2.0 rec
+
+  [1m[97mTotal do sistema:[0m          60 mensagens
+  Canal utilizado:            "comunicacao"
+  Protocolo:                  send/tell via Belief
+  Descoberta de agentes:      list_agents()
+
+[1m[96m======================================================================[0m
+[1m[96m  Q-TABLE: TOP ENTRADAS (ESTADO INICIAL)[0m
+[1m[96m======================================================================[0m
+
+  Estado: todos os veiculos disponiveis (estado inicial)
+
+  Veiculo         Nome Original      Prio   Q-Value      Rank 
+  --------------- ------------------ ------ ------------ -----
+  Veiculo1        Ambulancia         100    0.0000       1
+  Veiculo2        Onibus1            40     0.0000       2
+  Veiculo3        Taxi1              25     0.0000       3
+  Veiculo4        Carro1             10     0.0000       4
+  Veiculo6        Carro3             10     0.0000       5
+  Veiculo7        Moto1              5      0.0000       6
+  Veiculo8        Moto2              5      0.0000       7
+  Veiculo9        Moto3              5      0.0000       8
+  Veiculo10       Moto4              5      0.0000       9
+  Veiculo11       Ambulancia         100    0.0000       10
+  Veiculo12       Onibus1            40     0.0000       11
+  Veiculo13       Taxi1              25     0.0000       12
+  Veiculo14       Carro1             10     0.0000       13
+  Veiculo15       Carro2             10     0.0000       14
+  Veiculo5        Carro2             10     -9.0000      15
+
+  [1m[97mEstatisticas da Q-Table:[0m
+    Entradas totais:       225
+    Entradas nao-zero:     15
+    Q-value maximo:        10.0000
+    Q-value minimo:        -9.5000
+
+
+======================================================================
+RELATÓRIO DE MÉTRICAS DE APRENDIZADO
+======================================================================
+
+
+[1m[96mAgente: Coordenador_QLearning_1[0m
+----------------------------------------------------------------------
+
+  [1m[97mMétricas de Desempenho:[0m
+    Episódios executados: 1
+    Recompensa total: [92m-620.00[0m
+    Recompensa média: [92m-620.00[0m
+    Desvio padrão: 0.00
+    Ações corretas: [92m3[0m
+    Ações incorretas: [91m12[0m
+    Taxa de acerto: [92m20.00%[0m
+
+  [1m[97mAnálise de Episódios:[0m
+    Melhor episódio: 1 (recompensa: [92m-620.00[0m)
+    Pior episódio: 1 (recompensa: [91m-620.00[0m)
+
+  [1m[97mConvergência:[0m
+    Status: [93mNÃO CONVERGIU[0m
+    (Threshold requerido: 95%)
+
+  [1m[97mFunção de Utilidade:[0m
+    Utilidade Total: [92m0.1000[0m (0-1 scale)
+    Componentes:
+      • Taxa de Acerto: 0.2000 (peso α=0.5)
+      • Convergência: 0.0000 (peso β=0.3)
+      • Recompensa: 0.0000 (peso γ=0.2)
+    Classificação: [91mINSUFICIENTE[0m
+
+  [93mAgentes sem metricas de treinamento (10):[0m
+  (Participaram apenas da fase de coordenacao multi-agente)
+    - Agente_Ambulancia
+    - Agente_Onibus1
+    - Agente_Taxi1
+    - Agente_Carro1
+    - Agente_Carro2
+    - Agente_Carro3
+    - Agente_Moto1
+    - Agente_Moto2
+    - Agente_Moto3
+    - Agente_Moto4
+
+======================================================================
+
+
+[92m✓[0m Métricas exportadas para: /home/dachii/Projetos/MESTRADO/Trabalhos/SMA/MASPY_cruzamento/Trabalho_MASPY_IA/resultados/20260622_191143/metricas_aprendizado.csv
+
+[96mi[0m Gerando gráficos de visualização (5 gráficos)...
+[96mi[0m Diretório: /home/dachii/Projetos/MESTRADO/Trabalhos/SMA/MASPY_cruzamento/Trabalho_MASPY_IA/resultados/20260622_191143/graficos
+[96m>[0m [1/5] Gerando gráfico de recompensa por episódio...
+[92m✓[0m [1/5] Gráfico salvo: recompensa_por_episodio.png
+[96m>[0m [2/5] Gerando gráfico de recompensa acumulada...
+[92m✓[0m [2/5] Gráfico salvo: recompensa_acumulada.png
+[96m>[0m [3/5] Gerando gráfico de média móvel...
+[92m✓[0m [3/5] Gráfico salvo: media_movel.png
+[96m>[0m [4/5] Gerando gráfico de comparação de desempenho...
+[92m✓[0m [4/5] Gráfico salvo: comparacao_desempenho.png
+[96m>[0m [5/5] Gerando gráfico de análise de convergência...
+[92m✓[0m [5/5] Gráfico salvo: analise_convergencia.png
+
+[92m✓[0m Todos os 5 gráficos foram salvos com sucesso!
+[96mi[0m Localização: /home/dachii/Projetos/MESTRADO/Trabalhos/SMA/MASPY_cruzamento/Trabalho_MASPY_IA/resultados/20260622_191143/graficos/
+
+[1m[96mTempo total de execucao:[0m 16.22 segundos
+
+======================================================================
+[92mSISTEMA ENCERRADO COM SUCESSO[0m
+======================================================================
+
+[1m[97mResultados salvos em:[0m /home/dachii/Projetos/MESTRADO/Trabalhos/SMA/MASPY_cruzamento/Trabalho_MASPY_IA/resultados/20260622_191143/
+
+[1m[97mArquivos gerados:[0m
+  - metricas_aprendizado.csv - Dados de metricas
+  - graficos/ - Visualizacoes graficas (5 graficos)
+  - info_execucao.txt - Informacoes da execucao
+
+[1m[97mAcesso rapido:[0m
+  - resultados/ultima_execucao/ - Symlink para esta execucao
+
+[93mDica:[0m Execute multiplos cenarios para gerar comparacoes automaticas!

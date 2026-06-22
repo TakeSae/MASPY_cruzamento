@@ -90,7 +90,6 @@ def imprimir_configuracao(config, log_level, episodios=100):
     """Imprime a configuracao do sistema."""
     print("="*70)
     print("SISTEMA MULTI-AGENTES - APRENDIZADO Q-LEARNING")
-    print("Trabalho 1 - SMA 2025.2 - UTFPR")
     print("="*70)
 
     print("\nConfiguracao do Sistema:")
@@ -122,7 +121,6 @@ def menu_interativo():
     """Interface interativa colorida para configurar o experimento."""
     print("\n" + titulo("="*70))
     print(titulo("  SISTEMA MULTI-AGENTES - APRENDIZADO Q-LEARNING"))
-    print(titulo("  Trabalho 1 - SMA 2025.2 - UTFPR"))
     print(titulo("="*70) + "\n")
 
     # Escolher tipo de experimento

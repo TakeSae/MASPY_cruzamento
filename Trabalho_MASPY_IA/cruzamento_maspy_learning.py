@@ -2,7 +2,6 @@
 Sistema Multi-Agentes de Negociacao em Cruzamento com Aprendizado Q-Learning
 Versao Modularizada - Imports from lib/
 
-Trabalho 02 - Aprendizado - SMA 2025.2 - UTFPR
 
 Fluxo Multi-Agente:
 1. Cria CruzamentoLearningEnvironment
@@ -383,6 +382,180 @@ if __name__ == "__main__":
         print("\n" + titulo("SISTEMA FINALIZADO"))
         print("="*70 + "\n")
 
+        # ========================================
+        # RELATORIO POS-EXECUCAO DETALHADO
+        # ========================================
+
+        # 1) PARAMETROS Q-LEARNING
+        print(titulo("="*70))
+        print(titulo("  PARAMETROS DO Q-LEARNING"))
+        print(titulo("="*70))
+        ql = coordenador.ql_params
+        print(f"  Alpha (taxa de aprendizado):   {ql['alpha']}")
+        print(f"  Gamma (fator de desconto):     {ql['gamma']}")
+        print(f"  Epsilon inicial:               {ql['epsilon_inicial']}")
+        print(f"  Epsilon decay:                 {ql['epsilon_decay']}")
+        print(f"  Epsilon minimo:                {ql['epsilon_min']}")
+        if coordenador.epsilon_final is not None:
+            print(f"  Epsilon final (apos treino):   {coordenador.epsilon_final:.6f}")
+        print(f"  Episodios de treinamento:      {episodios}")
+        print(f"  Recompensa por acerto:         +{recompensa_correta}")
+        print(f"  Multiplicador de penalidade:   {penalidade_mult}x")
+        print()
+
+        # 2) ORDEM APRENDIDA vs ORDEM OTIMA
+        print(titulo("="*70))
+        print(titulo("  ORDEM APRENDIDA vs ORDEM OTIMA"))
+        print(titulo("="*70))
+
+        # Ordem otima: veiculos ordenados por prioridade decrescente
+        ordem_otima = sorted(
+            env.veiculos_ids,
+            key=lambda v: env.prioridades[v],
+            reverse=True
+        )
+        ordem_aprendida = coordenador.ordem_aprendida
+
+        # Calcular acertos de posicao
+        acertos_posicao = 0
+        total_posicoes = len(ordem_otima)
+
+        print(f"\n  {'Pos':<5} {'Otima (por prioridade)':<30} {'Aprendida (Q-table)':<30} {'Status':<10}")
+        print(f"  {'-'*5} {'-'*30} {'-'*30} {'-'*10}")
+        for i in range(total_posicoes):
+            v_otimo = ordem_otima[i] if i < len(ordem_otima) else "?"
+            v_aprendido = ordem_aprendida[i] if i < len(ordem_aprendida) else "?"
+
+            nome_otimo = env.nomes_originais.get(v_otimo, v_otimo)
+            prio_otimo = env.prioridades.get(v_otimo, 0)
+            nome_aprendido = env.nomes_originais.get(v_aprendido, v_aprendido)
+            prio_aprendido = env.prioridades.get(v_aprendido, 0)
+
+            # Considerar correto se a prioridade bate (empates sao validos)
+            match = prio_aprendido == prio_otimo
+            if match:
+                acertos_posicao += 1
+            status = sucesso("OK") if match else erro("DIFF")
+
+            print(f"  {i+1:<5} {nome_otimo} (prio={prio_otimo}){'':<{18-len(nome_otimo)}} "
+                  f"{nome_aprendido} (prio={prio_aprendido}){'':<{18-len(nome_aprendido)}} "
+                  f"{status}")
+
+        taxa_posicao = acertos_posicao / total_posicoes * 100 if total_posicoes > 0 else 0
+        print(f"\n  Precisao de posicao: {acertos_posicao}/{total_posicoes} ({taxa_posicao:.1f}%)")
+        if taxa_posicao == 100:
+            print(f"  {sucesso('A politica aprendida replica perfeitamente a ordem otima!')}")
+        elif taxa_posicao >= 80:
+            print(f"  {aviso('A politica esta proxima da otima. Mais episodios podem melhorar.')}")
+        else:
+            print(f"  {erro('A politica diverge da otima. Considere aumentar episodios ou ajustar parametros.')}")
+        print()
+
+        # 3) TABELA POR VEICULO (posicao recebida vs esperada)
+        print(titulo("="*70))
+        print(titulo("  RESULTADO POR VEICULO (COORDENACAO MULTI-AGENTE)"))
+        print(titulo("="*70))
+
+        print(f"\n  {'Agente':<25} {'Tipo':<12} {'Prio':<6} {'Pos Recebida':<14} {'Pos Esperada':<14} {'Status':<10}")
+        print(f"  {'-'*25} {'-'*12} {'-'*6} {'-'*14} {'-'*14} {'-'*10}")
+        for v in veiculos:
+            # Posicao esperada = posicao na ordem otima (por prioridade)
+            pos_esperada = None
+            for idx, v_otimo in enumerate(ordem_otima):
+                if env.prioridades.get(v_otimo, 0) == v.prioridade:
+                    # Encontrar a primeira posicao com essa prioridade que ainda nao foi atribuida
+                    pos_esperada = idx + 1
+                    break
+            if pos_esperada is None:
+                pos_esperada = "?"
+
+            pos_recebida = v.posicao_recebida if v.posicao_recebida else "-"
+            match = (isinstance(pos_recebida, int) and isinstance(pos_esperada, int)
+                     and pos_recebida == pos_esperada)
+            # Considerar match se prioridade na posicao recebida bate com prioridade na posicao esperada
+            if isinstance(pos_recebida, int) and pos_recebida <= len(ordem_aprendida):
+                vid_recebido = ordem_aprendida[pos_recebida - 1]
+                prio_na_pos_recebida = env.prioridades.get(vid_recebido, 0)
+                prio_esperada = env.prioridades.get(ordem_otima[pos_recebida - 1], 0) if pos_recebida <= len(ordem_otima) else 0
+                match_prio = (prio_na_pos_recebida == prio_esperada)
+            else:
+                match_prio = False
+
+            status = sucesso("OK") if match_prio else (aviso("~") if isinstance(pos_recebida, int) else "-")
+
+            print(f"  {v.my_name:<25} {v.tipo:<12} {v.prioridade:<6} {str(pos_recebida):<14} {str(pos_esperada):<14} {status}")
+        print()
+
+        # 4) RESUMO DA COMUNICACAO MULTI-AGENTE
+        print(titulo("="*70))
+        print(titulo("  COMUNICACAO MULTI-AGENTE"))
+        print(titulo("="*70))
+
+        coord_stats = coordenador.comm_stats
+        total_msgs_veiculos_env = sum(v.comm_stats["mensagens_enviadas"] for v in veiculos)
+        total_msgs_veiculos_rec = sum(v.comm_stats["mensagens_recebidas"] for v in veiculos)
+        total_msgs_sistema = coord_stats["mensagens_enviadas"] + total_msgs_veiculos_env
+
+        print(f"\n  {destaque('Coordenador')} ({coordenador.my_name}):")
+        print(f"    Mensagens enviadas:     {coord_stats['mensagens_enviadas']}")
+        print(f"      - Solicitacoes:       {coord_stats['solicitacoes_enviadas']}")
+        print(f"      - Decisoes:           {coord_stats['decisoes_enviadas']}")
+        print(f"      - Ordens completas:   {coord_stats['ordens_enviadas']}")
+        print(f"    Mensagens recebidas:    {coord_stats['mensagens_recebidas']}")
+        print(f"      - Propostas:          {coord_stats['propostas_recebidas']}")
+
+        print(f"\n  {destaque('Veiculos')} ({len(veiculos)} agentes):")
+        print(f"    Total enviadas:         {total_msgs_veiculos_env}")
+        print(f"    Total recebidas:        {total_msgs_veiculos_rec}")
+        print(f"    Media por veiculo:      {total_msgs_veiculos_env/len(veiculos):.1f} env, {total_msgs_veiculos_rec/len(veiculos):.1f} rec")
+
+        print(f"\n  {destaque('Total do sistema:')}          {total_msgs_sistema} mensagens")
+        print(f"  Canal utilizado:            \"{coord_stats['canal_utilizado']}\"")
+        print(f"  Protocolo:                  send/tell via Belief")
+        print(f"  Descoberta de agentes:      list_agents()")
+        print()
+
+        # 5) Q-TABLE: TOP ENTRADAS
+        print(titulo("="*70))
+        print(titulo("  Q-TABLE: TOP ENTRADAS (ESTADO INICIAL)"))
+        print(titulo("="*70))
+
+        # Mostrar Q-values para o estado inicial (todos veiculos disponiveis)
+        estado_inicial = env.possible_starts.copy()
+        estado_tupla_inicial = coordenador.estado_para_tupla(estado_inicial)
+
+        q_estado_inicial = {}
+        for v in env.veiculos_ids:
+            q_val = coordenador.q_table.get((estado_tupla_inicial, v), 0.0)
+            q_estado_inicial[v] = q_val
+
+        q_sorted = sorted(q_estado_inicial.items(), key=lambda x: x[1], reverse=True)
+
+        print(f"\n  Estado: todos os veiculos disponiveis (estado inicial)")
+        print(f"\n  {'Veiculo':<15} {'Nome Original':<18} {'Prio':<6} {'Q-Value':<12} {'Rank':<5}")
+        print(f"  {'-'*15} {'-'*18} {'-'*6} {'-'*12} {'-'*5}")
+        for rank, (vid, qval) in enumerate(q_sorted, 1):
+            nome_orig = env.nomes_originais.get(vid, vid)
+            prio = env.prioridades.get(vid, 0)
+            print(f"  {vid:<15} {nome_orig:<18} {prio:<6} {qval:<12.4f} {rank}")
+
+        # Stats da Q-table
+        total_entries = len(coordenador.q_table)
+        non_zero = sum(1 for v in coordenador.q_table.values() if v != 0.0)
+        max_q = max(coordenador.q_table.values()) if coordenador.q_table else 0
+        min_q = min(coordenador.q_table.values()) if coordenador.q_table else 0
+
+        print(f"\n  {destaque('Estatisticas da Q-Table:')}")
+        print(f"    Entradas totais:       {total_entries}")
+        print(f"    Entradas nao-zero:     {non_zero}")
+        print(f"    Q-value maximo:        {max_q:.4f}")
+        print(f"    Q-value minimo:        {min_q:.4f}")
+        print()
+
+        # ========================================
+        # RELATORIO DE METRICAS ORIGINAL
+        # ========================================
+
         # Gerar relatorio de metricas
         relatorio = METRICS_COLLECTOR.gerar_relatorio()
         print(relatorio)
@@ -403,6 +576,16 @@ if __name__ == "__main__":
             "Multiplicador de penalidade": penalidade_mult,
             "Log level": log_level.name,
             "Canais de comunicacao": "default, comunicacao",
+            "Alpha": ql["alpha"],
+            "Gamma": ql["gamma"],
+            "Epsilon inicial": ql["epsilon_inicial"],
+            "Epsilon decay": ql["epsilon_decay"],
+            "Epsilon min": ql["epsilon_min"],
+            "Epsilon final": f"{coordenador.epsilon_final:.6f}" if coordenador.epsilon_final else "N/A",
+            "Q-Table entradas": total_entries,
+            "Q-Table entradas nao-zero": non_zero,
+            "Total mensagens multi-agente": total_msgs_sistema,
+            "Precisao ordem aprendida": f"{taxa_posicao:.1f}%",
         })
 
         # Adicionar resultado ao comparador de cenarios

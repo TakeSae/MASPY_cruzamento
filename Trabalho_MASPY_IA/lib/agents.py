@@ -71,6 +71,27 @@ class CoordenadorLearningAgent(LoggableAgent):
         self.num_veiculos_esperados = 0
         self.ordem_aprendida = []
 
+        # Parametros Q-Learning (expostos para relatorio pos-execucao)
+        self.ql_params = {
+            "alpha": 0.1,
+            "gamma": 0.9,
+            "epsilon_inicial": 1.0,
+            "epsilon_decay": 0.995,
+            "epsilon_min": 0.01,
+        }
+        self.epsilon_final = None  # valor final apos treinamento
+
+        # Contadores de comunicacao multi-agente
+        self.comm_stats = {
+            "mensagens_enviadas": 0,
+            "mensagens_recebidas": 0,
+            "propostas_recebidas": 0,
+            "decisoes_enviadas": 0,
+            "ordens_enviadas": 0,
+            "solicitacoes_enviadas": 0,
+            "canal_utilizado": "comunicacao",
+        }
+
         # Beliefs observaveis
         self.add(Belief("status", "inicializando"))
         self.add(Belief("episodio_atual", 0))
@@ -140,11 +161,11 @@ class CoordenadorLearningAgent(LoggableAgent):
             self.info_print("\nExecutando treinamento com coleta de metricas...")
 
             # Parametros Q-Learning
-            alpha = 0.1
-            gamma = 0.9
-            epsilon = 1.0
-            epsilon_decay = 0.995
-            epsilon_min = 0.01
+            alpha = self.ql_params["alpha"]
+            gamma = self.ql_params["gamma"]
+            epsilon = self.ql_params["epsilon_inicial"]
+            epsilon_decay = self.ql_params["epsilon_decay"]
+            epsilon_min = self.ql_params["epsilon_min"]
 
             # Resetar Q-table
             self.q_table = defaultdict(float)
@@ -221,7 +242,9 @@ class CoordenadorLearningAgent(LoggableAgent):
                     if METRICS_COLLECTOR.verificar_convergencia(self.my_name, janela=10):
                         self.info_print(f"Convergencia detectada no episodio {ep + 1}!")
 
+            self.epsilon_final = epsilon
             self.info_print(f"Treinamento concluido com {self.num_episodes} episodios.")
+            self.info_print(f"Epsilon final: {epsilon:.6f}")
 
             CruzamentoLearningEnvironment._em_treinamento = False
 
@@ -504,6 +527,8 @@ class CoordenadorLearningAgent(LoggableAgent):
         # Enviar solicitacao de proposta para cada veiculo via canal "comunicacao"
         for veiculo_name in veiculos_encontrados:
             self.send(veiculo_name, tell, Belief("solicitar_proposta", self.my_name), "comunicacao")
+            self.comm_stats["mensagens_enviadas"] += 1
+            self.comm_stats["solicitacoes_enviadas"] += 1
 
         self.info_print("Aguardando propostas dos veiculos...")
 
@@ -514,6 +539,8 @@ class CoordenadorLearningAgent(LoggableAgent):
         Quando todas as propostas chegam, decide a ordem.
         """
         self.propostas_recebidas.append(dados)
+        self.comm_stats["mensagens_recebidas"] += 1
+        self.comm_stats["propostas_recebidas"] += 1
         self.debug_print(f"Proposta recebida de {src}: {dados}")
 
         if len(self.propostas_recebidas) >= self.num_veiculos_esperados:
@@ -572,6 +599,8 @@ class CoordenadorLearningAgent(LoggableAgent):
                 nome_orig = env.nomes_originais.get(veiculo_id, veiculo_id)
                 self.info_print(f"  Posicao {posicao + 1}: {nome_orig} (prio={decisao['prioridade']}) -> {agent_name}")
                 self.send(agent_name, tell, Belief("decisao", decisao), "comunicacao")
+                self.comm_stats["mensagens_enviadas"] += 1
+                self.comm_stats["decisoes_enviadas"] += 1
 
         # Enviar ordem completa para todos os veiculos
         ordem_info = {
@@ -581,6 +610,8 @@ class CoordenadorLearningAgent(LoggableAgent):
         }
         for agent_name in veiculos_encontrados:
             self.send(agent_name, tell, Belief("ordem_completa", ordem_info), "comunicacao")
+            self.comm_stats["mensagens_enviadas"] += 1
+            self.comm_stats["ordens_enviadas"] += 1
 
         self.info_print("\n" + "="*60)
         self.info_print("COORDENACAO MULTI-AGENTE CONCLUIDA!")
@@ -621,6 +652,12 @@ class VeiculoLearningAgent(LoggableAgent):
         self.historico_acoes = []
         self.recompensa_acumulada = 0
 
+        # Contadores de comunicacao
+        self.comm_stats = {
+            "mensagens_enviadas": 0,
+            "mensagens_recebidas": 0,
+        }
+
         # Registrar no coletor de metricas
         METRICS_COLLECTOR.registrar_agente(agt_name)
 
@@ -656,6 +693,7 @@ class VeiculoLearningAgent(LoggableAgent):
         }
 
         self.send(coord_name, tell, Belief("proposta", proposta), "comunicacao")
+        self.comm_stats["mensagens_enviadas"] += 1
         self.debug_print(f"[{self.my_name}] Proposta enviada: veiculo_id={self.veiculo_id}, prio={self.prioridade}")
 
     @pl(gain, Belief("decisao", Any))
@@ -665,6 +703,7 @@ class VeiculoLearningAgent(LoggableAgent):
         """
         self.posicao_recebida = decisao.get("posicao", 0)
         total = decisao.get("total", 0)
+        self.comm_stats["mensagens_recebidas"] += 1
 
         self._update_belief("status", "atravessando")
 
@@ -679,6 +718,7 @@ class VeiculoLearningAgent(LoggableAgent):
         Recebe a ordem completa de travessia e encerra o ciclo.
         """
         ordem = ordem_info.get("ordem", [])
+        self.comm_stats["mensagens_recebidas"] += 1
         self._update_belief("status", "concluido")
 
         self.debug_print(f"[{self.my_name}] Ordem completa recebida: {' -> '.join(ordem)}")
